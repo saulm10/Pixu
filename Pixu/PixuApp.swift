@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct PixuApp: App {
+    @State private var authStatus = AuthStatus()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
-        }
+            MainTabView()
+        }.environment(authStatus)
     }
 }

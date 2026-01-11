@@ -6,33 +6,133 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXFileReference section */
-		018417EC2F02C6DB0064494B /* Pixu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pixu.app; sourceTree = BUILT_PRODUCTS_DIR; };
-/* End PBXFileReference section */
+/* Begin PBXBuildFile section */
+		011F44722F12D7CF0055D0AE /* AuthStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011F44712F12D7CA0055D0AE /* AuthStatus.swift */; };
+		011F44752F12E04D0055D0AE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011F44742F12E04D0055D0AE /* Constants.swift */; };
+		011F44772F12E0DE0055D0AE /* LoginDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011F44762F12E0DB0055D0AE /* LoginDTO.swift */; };
+		015A04622F03FB66007AA3F7 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015A04612F03FB66007AA3F7 /* MainTabView.swift */; };
+		015A04642F03FB78007AA3F7 /* HomeTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015A04632F03FB78007AA3F7 /* HomeTabView.swift */; };
+		015A04662F03FB7E007AA3F7 /* ScrollTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015A04652F03FB7E007AA3F7 /* ScrollTabView.swift */; };
+		015A04682F03FB9B007AA3F7 /* UserTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015A04672F03FB9B007AA3F7 /* UserTabView.swift */; };
+		015A046A2F03FBB5007AA3F7 /* SearchTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015A04692F03FBB5007AA3F7 /* SearchTabView.swift */; };
+		015A046C2F03FBE8007AA3F7 /* HomeTabVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015A046B2F03FBE8007AA3F7 /* HomeTabVM.swift */; };
+		015A046E2F03FBF7007AA3F7 /* ScrollTabVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015A046D2F03FBF7007AA3F7 /* ScrollTabVM.swift */; };
+		015A04702F03FC03007AA3F7 /* UserTabVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015A046F2F03FC03007AA3F7 /* UserTabVM.swift */; };
+		015A04722F03FC0B007AA3F7 /* SearchTabVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015A04712F03FC0B007AA3F7 /* SearchTabVM.swift */; };
+		015A04782F03FCBD007AA3F7 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015A04772F03FCBD007AA3F7 /* APIClient.swift */; };
+		015A047A2F03FCCF007AA3F7 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015A04792F03FCCF007AA3F7 /* APIManager.swift */; };
+		015A047D2F03FE20007AA3F7 /* CommonsLib in Frameworks */ = {isa = PBXBuildFile; productRef = 015A047C2F03FE20007AA3F7 /* CommonsLib */; };
+		015A04872F040248007AA3F7 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 015A04862F040248007AA3F7 /* Localizable.xcstrings */; };
+		015A048A2F040554007AA3F7 /* GlobalBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015A04892F040554007AA3F7 /* GlobalBackground.swift */; };
+		0184180A2F02D01F0064494B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 018418052F02D01F0064494B /* Assets.xcassets */; };
+		0184180B2F02D01F0064494B /* PixuIconApp.icon in Resources */ = {isa = PBXBuildFile; fileRef = 018418082F02D01F0064494B /* PixuIconApp.icon */; };
+		0184180C2F02D01F0064494B /* PixuApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018418072F02D01F0064494B /* PixuApp.swift */; };
+		01AEBE7D2F1004720041E55C /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AEBE7C2F1004720041E55C /* Users.swift */; };
+		01AEBE822F1007270041E55C /* CreateUserInputDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AEBE812F10071B0041E55C /* CreateUserInputDTO.swift */; };
+		01AEBE852F11287D0041E55C /* ButtonsStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AEBE842F11287D0041E55C /* ButtonsStyles.swift */; };
+		01AEBE872F126B380041E55C /* TextFieldsStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AEBE862F126B380041E55C /* TextFieldsStyles.swift */; };
+/* End PBXBuildFile section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		018417EE2F02C6DB0064494B /* Pixu */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Pixu;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
+/* Begin PBXFileReference section */
+		011F44712F12D7CA0055D0AE /* AuthStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthStatus.swift; sourceTree = "<group>"; };
+		011F44742F12E04D0055D0AE /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		011F44762F12E0DB0055D0AE /* LoginDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDTO.swift; sourceTree = "<group>"; };
+		015A04612F03FB66007AA3F7 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		015A04632F03FB78007AA3F7 /* HomeTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabView.swift; sourceTree = "<group>"; };
+		015A04652F03FB7E007AA3F7 /* ScrollTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollTabView.swift; sourceTree = "<group>"; };
+		015A04672F03FB9B007AA3F7 /* UserTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTabView.swift; sourceTree = "<group>"; };
+		015A04692F03FBB5007AA3F7 /* SearchTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTabView.swift; sourceTree = "<group>"; };
+		015A046B2F03FBE8007AA3F7 /* HomeTabVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabVM.swift; sourceTree = "<group>"; };
+		015A046D2F03FBF7007AA3F7 /* ScrollTabVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollTabVM.swift; sourceTree = "<group>"; };
+		015A046F2F03FC03007AA3F7 /* UserTabVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTabVM.swift; sourceTree = "<group>"; };
+		015A04712F03FC0B007AA3F7 /* SearchTabVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTabVM.swift; sourceTree = "<group>"; };
+		015A04772F03FCBD007AA3F7 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		015A04792F03FCCF007AA3F7 /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
+		015A04862F040248007AA3F7 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		015A04892F040554007AA3F7 /* GlobalBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalBackground.swift; sourceTree = "<group>"; };
+		018417EC2F02C6DB0064494B /* Pixu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pixu.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		018418052F02D01F0064494B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		018418072F02D01F0064494B /* PixuApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixuApp.swift; sourceTree = "<group>"; };
+		018418082F02D01F0064494B /* PixuIconApp.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = PixuIconApp.icon; sourceTree = "<group>"; };
+		01AEBE7C2F1004720041E55C /* Users.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
+		01AEBE812F10071B0041E55C /* CreateUserInputDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserInputDTO.swift; sourceTree = "<group>"; };
+		01AEBE842F11287D0041E55C /* ButtonsStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonsStyles.swift; sourceTree = "<group>"; };
+		01AEBE862F126B380041E55C /* TextFieldsStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldsStyles.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		018417E92F02C6DB0064494B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				015A047D2F03FE20007AA3F7 /* CommonsLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		011F44702F12D6B70055D0AE /* SessionManager */ = {
+			isa = PBXGroup;
+			children = (
+				011F44712F12D7CA0055D0AE /* AuthStatus.swift */,
+			);
+			path = SessionManager;
+			sourceTree = "<group>";
+		};
+		011F44732F12E0220055D0AE /* Enum */ = {
+			isa = PBXGroup;
+			children = (
+				011F44742F12E04D0055D0AE /* Constants.swift */,
+			);
+			path = Enum;
+			sourceTree = "<group>";
+		};
+		015A045F2F03FB21007AA3F7 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				015A046B2F03FBE8007AA3F7 /* HomeTabVM.swift */,
+				015A046D2F03FBF7007AA3F7 /* ScrollTabVM.swift */,
+				015A046F2F03FC03007AA3F7 /* UserTabVM.swift */,
+				015A04712F03FC0B007AA3F7 /* SearchTabVM.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		015A04602F03FB24007AA3F7 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				015A04612F03FB66007AA3F7 /* MainTabView.swift */,
+				015A04632F03FB78007AA3F7 /* HomeTabView.swift */,
+				015A04652F03FB7E007AA3F7 /* ScrollTabView.swift */,
+				015A04672F03FB9B007AA3F7 /* UserTabView.swift */,
+				015A04692F03FBB5007AA3F7 /* SearchTabView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		015A04762F03FCA2007AA3F7 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				01AEBE7B2F1004500041E55C /* Endpoints */,
+				015A04772F03FCBD007AA3F7 /* APIClient.swift */,
+				015A04792F03FCCF007AA3F7 /* APIManager.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		015A04882F040542007AA3F7 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				015A04892F040554007AA3F7 /* GlobalBackground.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		018417E32F02C6DB0064494B = {
 			isa = PBXGroup;
 			children = (
-				018417EE2F02C6DB0064494B /* Pixu */,
+				018418092F02D01F0064494B /* Pixu */,
 				018417ED2F02C6DB0064494B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,6 +143,75 @@
 				018417EC2F02C6DB0064494B /* Pixu.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		018418062F02D01F0064494B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				015A04862F040248007AA3F7 /* Localizable.xcstrings */,
+				018418052F02D01F0064494B /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		018418092F02D01F0064494B /* Pixu */ = {
+			isa = PBXGroup;
+			children = (
+				018418082F02D01F0064494B /* PixuIconApp.icon */,
+				015A04602F03FB24007AA3F7 /* View */,
+				015A045F2F03FB21007AA3F7 /* ViewModel */,
+				015A04882F040542007AA3F7 /* Components */,
+				01AEBE832F11285D0041E55C /* Styles */,
+				015A04762F03FCA2007AA3F7 /* Network */,
+				01AEBE7E2F1006E30041E55C /* Models */,
+				011F44702F12D6B70055D0AE /* SessionManager */,
+				018418062F02D01F0064494B /* Resources */,
+				018418072F02D01F0064494B /* PixuApp.swift */,
+			);
+			path = Pixu;
+			sourceTree = "<group>";
+		};
+		01AEBE7B2F1004500041E55C /* Endpoints */ = {
+			isa = PBXGroup;
+			children = (
+				01AEBE7C2F1004720041E55C /* Users.swift */,
+			);
+			path = Endpoints;
+			sourceTree = "<group>";
+		};
+		01AEBE7E2F1006E30041E55C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				011F44732F12E0220055D0AE /* Enum */,
+				01AEBE802F1007020041E55C /* InputDTO */,
+				01AEBE7F2F1006FC0041E55C /* DTO */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		01AEBE7F2F1006FC0041E55C /* DTO */ = {
+			isa = PBXGroup;
+			children = (
+				011F44762F12E0DB0055D0AE /* LoginDTO.swift */,
+			);
+			path = DTO;
+			sourceTree = "<group>";
+		};
+		01AEBE802F1007020041E55C /* InputDTO */ = {
+			isa = PBXGroup;
+			children = (
+				01AEBE812F10071B0041E55C /* CreateUserInputDTO.swift */,
+			);
+			path = InputDTO;
+			sourceTree = "<group>";
+		};
+		01AEBE832F11285D0041E55C /* Styles */ = {
+			isa = PBXGroup;
+			children = (
+				01AEBE842F11287D0041E55C /* ButtonsStyles.swift */,
+				01AEBE862F126B380041E55C /* TextFieldsStyles.swift */,
+			);
+			path = Styles;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -60,11 +229,9 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				018417EE2F02C6DB0064494B /* Pixu */,
-			);
 			name = Pixu;
 			packageProductDependencies = (
+				015A047C2F03FE20007AA3F7 /* CommonsLib */,
 			);
 			productName = Pixu;
 			productReference = 018417EC2F02C6DB0064494B /* Pixu.app */;
@@ -91,9 +258,13 @@
 			knownRegions = (
 				en,
 				Base,
+				es,
 			);
 			mainGroup = 018417E32F02C6DB0064494B;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				015A047B2F03FE20007AA3F7 /* XCLocalSwiftPackageReference "../../Proyectos/CommonsLib" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 018417ED2F02C6DB0064494B /* Products */;
 			projectDirPath = "";
@@ -109,6 +280,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0184180A2F02D01F0064494B /* Assets.xcassets in Resources */,
+				0184180B2F02D01F0064494B /* PixuIconApp.icon in Resources */,
+				015A04872F040248007AA3F7 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +293,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01AEBE822F1007270041E55C /* CreateUserInputDTO.swift in Sources */,
+				011F44752F12E04D0055D0AE /* Constants.swift in Sources */,
+				01AEBE852F11287D0041E55C /* ButtonsStyles.swift in Sources */,
+				015A047A2F03FCCF007AA3F7 /* APIManager.swift in Sources */,
+				015A04782F03FCBD007AA3F7 /* APIClient.swift in Sources */,
+				015A048A2F040554007AA3F7 /* GlobalBackground.swift in Sources */,
+				015A04642F03FB78007AA3F7 /* HomeTabView.swift in Sources */,
+				015A04702F03FC03007AA3F7 /* UserTabVM.swift in Sources */,
+				011F44722F12D7CF0055D0AE /* AuthStatus.swift in Sources */,
+				015A046C2F03FBE8007AA3F7 /* HomeTabVM.swift in Sources */,
+				01AEBE7D2F1004720041E55C /* Users.swift in Sources */,
+				015A04662F03FB7E007AA3F7 /* ScrollTabView.swift in Sources */,
+				015A046A2F03FBB5007AA3F7 /* SearchTabView.swift in Sources */,
+				011F44772F12E0DE0055D0AE /* LoginDTO.swift in Sources */,
+				0184180C2F02D01F0064494B /* PixuApp.swift in Sources */,
+				015A046E2F03FBF7007AA3F7 /* ScrollTabVM.swift in Sources */,
+				015A04622F03FB66007AA3F7 /* MainTabView.swift in Sources */,
+				015A04722F03FC0B007AA3F7 /* SearchTabVM.swift in Sources */,
+				01AEBE872F126B380041E55C /* TextFieldsStyles.swift in Sources */,
+				015A04682F03FB9B007AA3F7 /* UserTabView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,6 +379,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -242,6 +437,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -249,7 +445,7 @@
 		018417F82F02C6DD0064494B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = PixuIconApp;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -273,7 +469,7 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -281,7 +477,7 @@
 		018417F92F02C6DD0064494B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = PixuIconApp;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -305,7 +501,7 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -332,6 +528,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		015A047B2F03FE20007AA3F7 /* XCLocalSwiftPackageReference "../../Proyectos/CommonsLib" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../Proyectos/CommonsLib;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		015A047C2F03FE20007AA3F7 /* CommonsLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CommonsLib;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 018417E42F02C6DB0064494B /* Project object */;
 }

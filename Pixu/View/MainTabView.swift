@@ -13,7 +13,8 @@ struct MainTabView: View {
 
     @State var homeTabVM: HomeTabVM = HomeTabVM()
     @State var scrollTabVM: ScrollTabVM = ScrollTabVM()
-    @State var userTabVM: UserTabVM = UserTabVM()
+    @State var userLoginVM: UserLoginVM = UserLoginVM()
+    @State var userVM: UserVM = UserVM()
     @State var searchTabVM: SearchTabVM = SearchTabVM()
 
     @State private var selection = 0
@@ -43,7 +44,10 @@ struct MainTabView: View {
                     ? "person.circle.fill" : "person.circle",
                 value: 2
             ) {
-                UserTabView(vm: userTabVM)
+                UserTabView(
+                    vmLogin: userLoginVM,
+                    vmUser: userVM
+                )
             }
 
             Tab(
@@ -68,17 +72,21 @@ struct MainTabView: View {
         .defaultAdaptableTabBarPlacement(.tabBar)
         .onAppear(){
             Task{
-                authStatus.isLoggedIn = await userTabVM.loginAuth()                
+                authStatus.isLoggedIn = await userLoginVM.loginAuth()
             }
         }
     }
 }
 
 #Preview {
+    var authStatus = AuthStatus()
+
     MainTabView(
         homeTabVM: HomeTabVM(apiManager: .test),
         scrollTabVM: ScrollTabVM(apiManager: .test),
-        userTabVM: UserTabVM(apiManager: .test),
+        userLoginVM: UserLoginVM(apiManager: .test),
+        userVM: UserVM(apiManager: .test),
         searchTabVM: SearchTabVM(apiManager: .test)
-    )
+    )        .environment(authStatus)
+
 }

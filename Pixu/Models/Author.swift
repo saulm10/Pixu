@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Author: Codable, Identifiable {
+struct Author: Codable, Identifiable, Equatable, Hashable {
     let id: UUID
     let firstName: String
     let lastName: String

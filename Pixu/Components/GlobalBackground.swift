@@ -9,7 +9,6 @@ import Foundation
 import SwiftUI
 
 struct GlobalBackground: ViewModifier {
-
     func body(content: Content) -> some View {
         ZStack {
             Rectangle()

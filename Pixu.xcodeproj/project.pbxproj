@@ -13,7 +13,7 @@
 		011F44772F12E0DE0055D0AE /* LoginDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011F44762F12E0DB0055D0AE /* LoginDTO.swift */; };
 		011F447A2F13BEE90055D0AE /* UserLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011F44792F13BEDF0055D0AE /* UserLoginView.swift */; };
 		011F447C2F13BEF30055D0AE /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011F447B2F13BEEC0055D0AE /* UserView.swift */; };
-		011F447E2F13BF070055D0AE /* UserAcountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011F447D2F13BEF60055D0AE /* UserAcountView.swift */; };
+		011F447E2F13BF070055D0AE /* UserAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011F447D2F13BEF60055D0AE /* UserAccountView.swift */; };
 		011F44812F13C8E30055D0AE /* UserLoginVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011F44802F13C8D80055D0AE /* UserLoginVM.swift */; };
 		011F44832F13C9130055D0AE /* UserVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011F44822F13C90B0055D0AE /* UserVM.swift */; };
 		015A04622F03FB66007AA3F7 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015A04612F03FB66007AA3F7 /* MainTabView.swift */; };
@@ -31,7 +31,7 @@
 		0184180A2F02D01F0064494B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 018418052F02D01F0064494B /* Assets.xcassets */; };
 		0184180B2F02D01F0064494B /* PixuIconApp.icon in Resources */ = {isa = PBXBuildFile; fileRef = 018418082F02D01F0064494B /* PixuIconApp.icon */; };
 		0184180C2F02D01F0064494B /* PixuApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018418072F02D01F0064494B /* PixuApp.swift */; };
-		01AEBE7D2F1004720041E55C /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AEBE7C2F1004720041E55C /* Users.swift */; };
+		01AEBE7D2F1004720041E55C /* UsersEndpopint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AEBE7C2F1004720041E55C /* UsersEndpopint.swift */; };
 		01AEBE822F1007270041E55C /* CreateUserInputDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AEBE812F10071B0041E55C /* CreateUserInputDTO.swift */; };
 		01AEBE852F11287D0041E55C /* ButtonsStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AEBE842F11287D0041E55C /* ButtonsStyles.swift */; };
 		01AEBE872F126B380041E55C /* TextFieldsStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AEBE862F126B380041E55C /* TextFieldsStyles.swift */; };
@@ -45,6 +45,28 @@
 		01EBC0B22F15918100BF31FF /* EditColectionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0B12F15917D00BF31FF /* EditColectionVM.swift */; };
 		01EBC0B42F1591B900BF31FF /* CreateCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0B32F15919F00BF31FF /* CreateCollection.swift */; };
 		01EBC0B62F1591D900BF31FF /* CreateCollectionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0B52F1591D900BF31FF /* CreateCollectionVM.swift */; };
+		01EBC0B82F16A1DC00BF31FF /* CollectionDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0B72F16A1D200BF31FF /* CollectionDTO.swift */; };
+		01EBC0BA2F16A25100BF31FF /* MangaDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0B92F16A24F00BF31FF /* MangaDTO.swift */; };
+		01EBC0BC2F16A25F00BF31FF /* AuthorDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0BB2F16A25600BF31FF /* AuthorDTO.swift */; };
+		01EBC0BE2F16A26A00BF31FF /* DemographicDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0BD2F16A26400BF31FF /* DemographicDTO.swift */; };
+		01EBC0C02F16A27100BF31FF /* ThemeDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0BF2F16A26C00BF31FF /* ThemeDTO.swift */; };
+		01EBC0C22F16A27700BF31FF /* GenreDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0C12F16A27400BF31FF /* GenreDTO.swift */; };
+		01EBC0CE2F16A79F00BF31FF /* CollectionsEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0CD2F16A79A00BF31FF /* CollectionsEndpoint.swift */; };
+		01EBC0D02F16AD6900BF31FF /* UserAccountVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0CF2F16AD5200BF31FF /* UserAccountVM.swift */; };
+		01EBC0D22F19134900BF31FF /* CircleAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0D12F19134500BF31FF /* CircleAvatar.swift */; };
+		01EBC0D42F1921A800BF31FF /* MangaDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0D32F1921A400BF31FF /* MangaDetail.swift */; };
+		01EBC0D62F1977B700BF31FF /* MangaCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0D52F1977B200BF31FF /* MangaCard.swift */; };
+		01EBC0D82F1A53A700BF31FF /* Chip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0D72F1A539C00BF31FF /* Chip.swift */; };
+		01EBC0DC2F1B9AF900BF31FF /* AuthorEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0DB2F1B9AF300BF31FF /* AuthorEndpoint.swift */; };
+		01EBC0DE2F1B9E9700BF31FF /* DemographicsEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0DD2F1B9E8B00BF31FF /* DemographicsEndpoint.swift */; };
+		01EBC0E02F1B9EAF00BF31FF /* ThemeEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0DF2F1B9EAF00BF31FF /* ThemeEndpoint.swift */; };
+		01EBC0E22F1B9EBE00BF31FF /* GenreEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0E12F1B9EBE00BF31FF /* GenreEndpoint.swift */; };
+		01EBC0E42F1B9FCF00BF31FF /* MangasEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0E32F1B9FCF00BF31FF /* MangasEndpoint.swift */; };
+		01EBC0E62F1BA04D00BF31FF /* PageDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0E52F1BA04900BF31FF /* PageDTO.swift */; };
+		01EBC0E82F1BA2A000BF31FF /* SearchEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0E72F1BA29800BF31FF /* SearchEndpoint.swift */; };
+		01EBC0EA2F1BA2CB00BF31FF /* CustomSearchInputDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0E92F1BA2CB00BF31FF /* CustomSearchInputDTO.swift */; };
+		01EBC0EC2F1BA2FA00BF31FF /* AuthorIdsRequestInputDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0EB2F1BA2FA00BF31FF /* AuthorIdsRequestInputDTO.swift */; };
+		01EBC0EE2F1BA81F00BF31FF /* UserMangaCollectionRequestInputDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EBC0ED2F1BA81D00BF31FF /* UserMangaCollectionRequestInputDTO.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,7 +76,7 @@
 		011F44762F12E0DB0055D0AE /* LoginDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDTO.swift; sourceTree = "<group>"; };
 		011F44792F13BEDF0055D0AE /* UserLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserLoginView.swift; sourceTree = "<group>"; };
 		011F447B2F13BEEC0055D0AE /* UserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserView.swift; sourceTree = "<group>"; };
-		011F447D2F13BEF60055D0AE /* UserAcountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAcountView.swift; sourceTree = "<group>"; };
+		011F447D2F13BEF60055D0AE /* UserAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccountView.swift; sourceTree = "<group>"; };
 		011F44802F13C8D80055D0AE /* UserLoginVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserLoginVM.swift; sourceTree = "<group>"; };
 		011F44822F13C90B0055D0AE /* UserVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserVM.swift; sourceTree = "<group>"; };
 		015A04612F03FB66007AA3F7 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
@@ -72,7 +94,7 @@
 		018418052F02D01F0064494B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		018418072F02D01F0064494B /* PixuApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixuApp.swift; sourceTree = "<group>"; };
 		018418082F02D01F0064494B /* PixuIconApp.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = PixuIconApp.icon; sourceTree = "<group>"; };
-		01AEBE7C2F1004720041E55C /* Users.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
+		01AEBE7C2F1004720041E55C /* UsersEndpopint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersEndpopint.swift; sourceTree = "<group>"; };
 		01AEBE812F10071B0041E55C /* CreateUserInputDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserInputDTO.swift; sourceTree = "<group>"; };
 		01AEBE842F11287D0041E55C /* ButtonsStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonsStyles.swift; sourceTree = "<group>"; };
 		01AEBE862F126B380041E55C /* TextFieldsStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldsStyles.swift; sourceTree = "<group>"; };
@@ -86,6 +108,28 @@
 		01EBC0B12F15917D00BF31FF /* EditColectionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditColectionVM.swift; sourceTree = "<group>"; };
 		01EBC0B32F15919F00BF31FF /* CreateCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCollection.swift; sourceTree = "<group>"; };
 		01EBC0B52F1591D900BF31FF /* CreateCollectionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCollectionVM.swift; sourceTree = "<group>"; };
+		01EBC0B72F16A1D200BF31FF /* CollectionDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionDTO.swift; sourceTree = "<group>"; };
+		01EBC0B92F16A24F00BF31FF /* MangaDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaDTO.swift; sourceTree = "<group>"; };
+		01EBC0BB2F16A25600BF31FF /* AuthorDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorDTO.swift; sourceTree = "<group>"; };
+		01EBC0BD2F16A26400BF31FF /* DemographicDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemographicDTO.swift; sourceTree = "<group>"; };
+		01EBC0BF2F16A26C00BF31FF /* ThemeDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeDTO.swift; sourceTree = "<group>"; };
+		01EBC0C12F16A27400BF31FF /* GenreDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreDTO.swift; sourceTree = "<group>"; };
+		01EBC0CD2F16A79A00BF31FF /* CollectionsEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionsEndpoint.swift; sourceTree = "<group>"; };
+		01EBC0CF2F16AD5200BF31FF /* UserAccountVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccountVM.swift; sourceTree = "<group>"; };
+		01EBC0D12F19134500BF31FF /* CircleAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleAvatar.swift; sourceTree = "<group>"; };
+		01EBC0D32F1921A400BF31FF /* MangaDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaDetail.swift; sourceTree = "<group>"; };
+		01EBC0D52F1977B200BF31FF /* MangaCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaCard.swift; sourceTree = "<group>"; };
+		01EBC0D72F1A539C00BF31FF /* Chip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chip.swift; sourceTree = "<group>"; };
+		01EBC0DB2F1B9AF300BF31FF /* AuthorEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorEndpoint.swift; sourceTree = "<group>"; };
+		01EBC0DD2F1B9E8B00BF31FF /* DemographicsEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemographicsEndpoint.swift; sourceTree = "<group>"; };
+		01EBC0DF2F1B9EAF00BF31FF /* ThemeEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeEndpoint.swift; sourceTree = "<group>"; };
+		01EBC0E12F1B9EBE00BF31FF /* GenreEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreEndpoint.swift; sourceTree = "<group>"; };
+		01EBC0E32F1B9FCF00BF31FF /* MangasEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangasEndpoint.swift; sourceTree = "<group>"; };
+		01EBC0E52F1BA04900BF31FF /* PageDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageDTO.swift; sourceTree = "<group>"; };
+		01EBC0E72F1BA29800BF31FF /* SearchEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchEndpoint.swift; sourceTree = "<group>"; };
+		01EBC0E92F1BA2CB00BF31FF /* CustomSearchInputDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSearchInputDTO.swift; sourceTree = "<group>"; };
+		01EBC0EB2F1BA2FA00BF31FF /* AuthorIdsRequestInputDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorIdsRequestInputDTO.swift; sourceTree = "<group>"; };
+		01EBC0ED2F1BA81D00BF31FF /* UserMangaCollectionRequestInputDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMangaCollectionRequestInputDTO.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,7 +165,7 @@
 			children = (
 				011F44792F13BEDF0055D0AE /* UserLoginView.swift */,
 				011F447B2F13BEEC0055D0AE /* UserView.swift */,
-				011F447D2F13BEF60055D0AE /* UserAcountView.swift */,
+				011F447D2F13BEF60055D0AE /* UserAccountView.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -131,6 +175,7 @@
 			children = (
 				011F44802F13C8D80055D0AE /* UserLoginVM.swift */,
 				011F44822F13C90B0055D0AE /* UserVM.swift */,
+				01EBC0CF2F16AD5200BF31FF /* UserAccountVM.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -176,6 +221,8 @@
 		015A04882F040542007AA3F7 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				01EBC0D72F1A539C00BF31FF /* Chip.swift */,
+				01EBC0D12F19134500BF31FF /* CircleAvatar.swift */,
 				015A04892F040554007AA3F7 /* GlobalBackground.swift */,
 			);
 			path = Components;
@@ -226,7 +273,14 @@
 		01AEBE7B2F1004500041E55C /* Endpoints */ = {
 			isa = PBXGroup;
 			children = (
-				01AEBE7C2F1004720041E55C /* Users.swift */,
+				01EBC0E72F1BA29800BF31FF /* SearchEndpoint.swift */,
+				01EBC0CD2F16A79A00BF31FF /* CollectionsEndpoint.swift */,
+				01EBC0E32F1B9FCF00BF31FF /* MangasEndpoint.swift */,
+				01EBC0DB2F1B9AF300BF31FF /* AuthorEndpoint.swift */,
+				01EBC0DD2F1B9E8B00BF31FF /* DemographicsEndpoint.swift */,
+				01EBC0DF2F1B9EAF00BF31FF /* ThemeEndpoint.swift */,
+				01EBC0E12F1B9EBE00BF31FF /* GenreEndpoint.swift */,
+				01AEBE7C2F1004720041E55C /* UsersEndpopint.swift */,
 			);
 			path = Endpoints;
 			sourceTree = "<group>";
@@ -250,6 +304,13 @@
 		01AEBE7F2F1006FC0041E55C /* DTO */ = {
 			isa = PBXGroup;
 			children = (
+				01EBC0E52F1BA04900BF31FF /* PageDTO.swift */,
+				01EBC0B72F16A1D200BF31FF /* CollectionDTO.swift */,
+				01EBC0B92F16A24F00BF31FF /* MangaDTO.swift */,
+				01EBC0BB2F16A25600BF31FF /* AuthorDTO.swift */,
+				01EBC0BD2F16A26400BF31FF /* DemographicDTO.swift */,
+				01EBC0BF2F16A26C00BF31FF /* ThemeDTO.swift */,
+				01EBC0C12F16A27400BF31FF /* GenreDTO.swift */,
 				011F44762F12E0DB0055D0AE /* LoginDTO.swift */,
 			);
 			path = DTO;
@@ -258,7 +319,10 @@
 		01AEBE802F1007020041E55C /* InputDTO */ = {
 			isa = PBXGroup;
 			children = (
+				01EBC0ED2F1BA81D00BF31FF /* UserMangaCollectionRequestInputDTO.swift */,
 				01AEBE812F10071B0041E55C /* CreateUserInputDTO.swift */,
+				01EBC0E92F1BA2CB00BF31FF /* CustomSearchInputDTO.swift */,
+				01EBC0EB2F1BA2FA00BF31FF /* AuthorIdsRequestInputDTO.swift */,
 			);
 			path = InputDTO;
 			sourceTree = "<group>";
@@ -275,6 +339,8 @@
 		01EBC0AB2F1565A300BF31FF /* Manga */ = {
 			isa = PBXGroup;
 			children = (
+				01EBC0D52F1977B200BF31FF /* MangaCard.swift */,
+				01EBC0D32F1921A400BF31FF /* MangaDetail.swift */,
 			);
 			path = Manga;
 			sourceTree = "<group>";
@@ -385,36 +451,58 @@
 			files = (
 				01EBC09B2F15524700BF31FF /* Theme.swift in Sources */,
 				01AEBE822F1007270041E55C /* CreateUserInputDTO.swift in Sources */,
+				01EBC0BC2F16A25F00BF31FF /* AuthorDTO.swift in Sources */,
 				01EBC09D2F15525200BF31FF /* Demographic.swift in Sources */,
 				011F44832F13C9130055D0AE /* UserVM.swift in Sources */,
+				01EBC0D02F16AD6900BF31FF /* UserAccountVM.swift in Sources */,
 				011F44752F12E04D0055D0AE /* Constants.swift in Sources */,
+				01EBC0D62F1977B700BF31FF /* MangaCard.swift in Sources */,
 				01AEBE852F11287D0041E55C /* ButtonsStyles.swift in Sources */,
+				01EBC0EC2F1BA2FA00BF31FF /* AuthorIdsRequestInputDTO.swift in Sources */,
+				01EBC0CE2F16A79F00BF31FF /* CollectionsEndpoint.swift in Sources */,
 				015A047A2F03FCCF007AA3F7 /* APIManager.swift in Sources */,
 				01EBC09F2F15526800BF31FF /* Author.swift in Sources */,
+				01EBC0C22F16A27700BF31FF /* GenreDTO.swift in Sources */,
 				01174A462F13CB550016843B /* UserTabView.swift in Sources */,
 				015A04782F03FCBD007AA3F7 /* APIClient.swift in Sources */,
 				015A048A2F040554007AA3F7 /* GlobalBackground.swift in Sources */,
+				01EBC0EA2F1BA2CB00BF31FF /* CustomSearchInputDTO.swift in Sources */,
+				01EBC0D42F1921A800BF31FF /* MangaDetail.swift in Sources */,
+				01EBC0B82F16A1DC00BF31FF /* CollectionDTO.swift in Sources */,
 				015A04642F03FB78007AA3F7 /* HomeTabView.swift in Sources */,
 				01EBC0992F15523500BF31FF /* Genre.swift in Sources */,
 				011F44722F12D7CF0055D0AE /* AuthStatus.swift in Sources */,
 				011F447A2F13BEE90055D0AE /* UserLoginView.swift in Sources */,
+				01EBC0E02F1B9EAF00BF31FF /* ThemeEndpoint.swift in Sources */,
 				015A046C2F03FBE8007AA3F7 /* HomeTabVM.swift in Sources */,
 				011F447C2F13BEF30055D0AE /* UserView.swift in Sources */,
-				01AEBE7D2F1004720041E55C /* Users.swift in Sources */,
+				01EBC0E22F1B9EBE00BF31FF /* GenreEndpoint.swift in Sources */,
+				01AEBE7D2F1004720041E55C /* UsersEndpopint.swift in Sources */,
 				01EBC0B62F1591D900BF31FF /* CreateCollectionVM.swift in Sources */,
+				01EBC0C02F16A27100BF31FF /* ThemeDTO.swift in Sources */,
+				01EBC0D22F19134900BF31FF /* CircleAvatar.swift in Sources */,
 				015A04662F03FB7E007AA3F7 /* ScrollTabView.swift in Sources */,
-				011F447E2F13BF070055D0AE /* UserAcountView.swift in Sources */,
+				01EBC0E62F1BA04D00BF31FF /* PageDTO.swift in Sources */,
+				011F447E2F13BF070055D0AE /* UserAccountView.swift in Sources */,
+				01EBC0E82F1BA2A000BF31FF /* SearchEndpoint.swift in Sources */,
 				011F44812F13C8E30055D0AE /* UserLoginVM.swift in Sources */,
 				01EBC0A92F15577600BF31FF /* Collection.swift in Sources */,
 				01EBC0972F1551DB00BF31FF /* Manga.swift in Sources */,
 				015A046A2F03FBB5007AA3F7 /* SearchTabView.swift in Sources */,
 				011F44772F12E0DE0055D0AE /* LoginDTO.swift in Sources */,
 				01EBC0B22F15918100BF31FF /* EditColectionVM.swift in Sources */,
+				01EBC0E42F1B9FCF00BF31FF /* MangasEndpoint.swift in Sources */,
+				01EBC0BA2F16A25100BF31FF /* MangaDTO.swift in Sources */,
+				01EBC0D82F1A53A700BF31FF /* Chip.swift in Sources */,
 				0184180C2F02D01F0064494B /* PixuApp.swift in Sources */,
+				01EBC0DE2F1B9E9700BF31FF /* DemographicsEndpoint.swift in Sources */,
 				01EBC0AE2F15914C00BF31FF /* EditCollection.swift in Sources */,
 				015A046E2F03FBF7007AA3F7 /* ScrollTabVM.swift in Sources */,
+				01EBC0DC2F1B9AF900BF31FF /* AuthorEndpoint.swift in Sources */,
+				01EBC0EE2F1BA81F00BF31FF /* UserMangaCollectionRequestInputDTO.swift in Sources */,
 				015A04622F03FB66007AA3F7 /* MainTabView.swift in Sources */,
 				01EBC0B42F1591B900BF31FF /* CreateCollection.swift in Sources */,
+				01EBC0BE2F16A26A00BF31FF /* DemographicDTO.swift in Sources */,
 				015A04722F03FC0B007AA3F7 /* SearchTabVM.swift in Sources */,
 				01AEBE872F126B380041E55C /* TextFieldsStyles.swift in Sources */,
 			);
@@ -569,8 +657,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.smdc.Pixu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_APPROACHABLE_CONCURRENCY = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 6.0;
@@ -601,8 +689,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.smdc.Pixu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_APPROACHABLE_CONCURRENCY = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 6.0;

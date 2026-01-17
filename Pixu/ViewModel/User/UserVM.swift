@@ -8,7 +8,7 @@
 import Combine
 import SwiftUI
 
-@Observable
+@MainActor @Observable
 final class UserVM {
     private let apiManager: APIManager
     
@@ -23,8 +23,10 @@ final class UserVM {
         self.apiManager = apiManager
     }
     
-    func loadCollections() {
-        collections = Collection.testList
+    func loadCollections() async {
+        isLoading = true
+        collections = await apiManager.collection.getCollection()
+        isLoading = false
     }
     
     func deleteManga(_: Manga){

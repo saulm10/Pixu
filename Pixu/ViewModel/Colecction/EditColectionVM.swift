@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-@Observable
+@MainActor @Observable
 class EditColectionVM: ObservableObject {
     let collection: Collection
     

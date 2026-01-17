@@ -62,18 +62,11 @@ struct MainTabView: View {
         }
 
         .tint(Color.brandPrimary)
-        .searchable(
-            text: $searchTabVM.searchText,
-            placement: .toolbar,
-            prompt: .globalSearch
-        )
         .tabBarMinimizeBehavior(.onScrollDown)
         .tabViewStyle(.sidebarAdaptable)
         .defaultAdaptableTabBarPlacement(.tabBar)
-        .onAppear(){
-            Task{
-                authStatus.isLoggedIn = await userLoginVM.loginAuth()
-            }
+        .task {
+            authStatus.isLoggedIn = await userLoginVM.loginAuth()
         }
     }
 }
@@ -87,6 +80,6 @@ struct MainTabView: View {
         userLoginVM: UserLoginVM(apiManager: .test),
         userVM: UserVM(apiManager: .test),
         searchTabVM: SearchTabVM(apiManager: .test)
-    )        .environment(authStatus)
+    ).environment(authStatus)
 
 }

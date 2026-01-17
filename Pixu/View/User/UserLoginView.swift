@@ -169,6 +169,10 @@ struct RegisterSheet: View {
     @State private var email = ""
     @State private var password = ""
 
+    var isValidPassword: Bool {
+        password.count >= 8
+    }
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -228,6 +232,10 @@ struct RegisterSheet: View {
                                 SecureField("", text: $password)
                                     .roundedTextFieldStyle()
                             }
+                            Text("Mínimo 8 caracteres")
+                                .foregroundColor(
+                                    password.count >= 8 ? .green : .gray
+                                )
                         }
 
                         // Botón de registro
@@ -235,6 +243,7 @@ struct RegisterSheet: View {
                             Text(.userLoginButtonSignup)
 
                         }.buttonStyle(.primary)
+                            .disabled(!isValidPassword)
                     }
                     .padding(24)
                 }
@@ -254,7 +263,7 @@ struct RegisterSheet: View {
 }
 
 #Preview {
-   var authStatus = AuthStatus()
+    var authStatus = AuthStatus()
 
     UserLoginView(vm: UserLoginVM(apiManager: .test))
         .environment(authStatus)

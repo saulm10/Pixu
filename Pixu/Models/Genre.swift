@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Genre: Codable, Identifiable {
+struct Genre: Codable, Identifiable, Equatable, Hashable {
     let id: UUID
     let genre: String
 }

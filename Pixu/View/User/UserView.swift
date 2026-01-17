@@ -9,6 +9,8 @@ import SwiftUI
 
 struct UserView: View {
     @Bindable var vm: UserVM
+    @State var userVM: UserAccountVM = UserAccountVM()
+
     @State private var showingAddManga = false
     @State private var selectedCollectionForEdit: Collection?
 
@@ -29,6 +31,7 @@ struct UserView: View {
                     }
                 }
             }
+            .globalBackground()
             .navigationTitle("Mi Colección")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -38,8 +41,10 @@ struct UserView: View {
                     Button {
                         showingAddManga = true
                     } label: {
-                        Image(systemName: "plus.circle.fill")
+                        Image(systemName: "plus")
                             .font(.title2)
+                            .foregroundColor(.primary)
+                            .bold()
                     }
                 }
             }
@@ -51,25 +56,17 @@ struct UserView: View {
             .sheet(item: $selectedCollectionForEdit) { collection in
                 EditMangaView(vm: EditColectionVM(collection: collection))
             }
-            .onAppear {
-                vm.loadCollections()
+            .task {
+                await vm.loadCollections()
             }
         }
     }
 
-    // MARK: - User Initial Button
     private var userInitialButton: some View {
-        Button {
-            // TODO: Navegar a configuración de usuario
+        NavigationLink {
+            UserAcountView(vm: userVM)
         } label: {
-            Circle()
-                .fill(Color.blue)
-                .frame(width: 40, height: 40)
-                .overlay(
-                    Text("U")  // TODO: Obtener inicial del usuario
-                        .font(.headline)
-                        .foregroundColor(.white)
-                )
+            CircleAvatar()
         }
     }
 
@@ -94,9 +91,6 @@ struct UserView: View {
                     icon: "checkmark.seal.fill",
                     color: .green
                 )
-            }
-
-            HStack(spacing: 12) {
                 StatCard(
                     title: "Total Tomos",
                     value: "\(vm.totalVolumesOwned)",
@@ -125,7 +119,7 @@ struct UserView: View {
                 ForEach(vm.collections) { collection in
                     CollectionRowView(
                         collection: collection,
-                        onEdit: { selectedCollectionForEdit = collection  },
+                        onEdit: { selectedCollectionForEdit = collection },
                         onDelete: { vm.deleteCollection(collection.manga.id) }
                     )
                 }
@@ -312,6 +306,7 @@ struct MangaRowView: View {
         }
     }
 }
+
 struct CollectionRowView: View {
     let collection: Collection
     let onEdit: () -> Void

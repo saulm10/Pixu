@@ -18,8 +18,20 @@ struct Collection: Codable, Identifiable {
 extension Collection {
     
     static let testList: [Collection] = [
-        .test,
-        .test
+        Collection(
+            id: UUID(),
+            completeCollection: true,
+            readingVolume: 1,
+            volumesOwned: [1],
+            manga: .testList.first!
+        ),
+        Collection(
+            id: UUID(),
+            completeCollection: false,
+            readingVolume: 3,
+            volumesOwned: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            manga: .testList.last!
+        )
     ]
     
     static let test = Collection(

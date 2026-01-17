@@ -8,7 +8,7 @@
 import Combine
 import SwiftUI
 
-@Observable
+@MainActor @Observable
 final class ScrollTabVM {
     private let apiManager: APIManager
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Demographic: Codable, Identifiable {
+struct Demographic: Codable, Identifiable, Equatable, Hashable {
     let id: UUID
     let demographic: String
 }

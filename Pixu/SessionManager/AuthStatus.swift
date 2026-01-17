@@ -9,4 +9,6 @@ import SwiftUI
 @Observable
 final class AuthStatus {
     var isLoggedIn: Bool = false
+    var initial: Character = "U"
+    var login: String = ""
 }

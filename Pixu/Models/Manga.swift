@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct Manga: Codable, Identifiable {
+struct Manga: Codable, Identifiable, Equatable, Hashable {
     let id: Int
     let title: String
     let titleEnglish: String?

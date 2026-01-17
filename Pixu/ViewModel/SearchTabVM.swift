@@ -8,7 +8,7 @@
 import Combine
 import SwiftUI
 
-@Observable
+@MainActor @Observable
 final class SearchTabVM {
     var searchText: String = ""
     private let apiManager: APIManager

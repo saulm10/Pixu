@@ -9,14 +9,14 @@ import Foundation
 import KeyChain
 import NetworkAPI
 
-protocol UserEndpoint {
+protocol UsersEndpoint {
     func createUser(email: String, password: String) async -> Bool
     func loginUser(email: String, password: String) async -> Bool
     func loginAuth() async -> Bool
-    func logOut()
+    func logOut() -> Bool
 }
 
-struct Users: UserEndpoint {
+struct Users: UsersEndpoint {
     let apiClient = NetworkManager.shared.client
     let keychain = KeychainManager.shared
 
@@ -80,12 +80,13 @@ struct Users: UserEndpoint {
         }
     }
     
-    func logOut() {
+    func logOut() -> Bool {
         keychain.delete(forKey: KeyChainK.token.rawValue)
+        return true
     }
 }
 
-struct UserTest: UserEndpoint {
+struct UserTest: UsersEndpoint {
     func createUser(email: String, password: String) async -> Bool {
         return true
     }
@@ -98,7 +99,7 @@ struct UserTest: UserEndpoint {
         return true
     }
     
-    func logOut() {
-        
+    func logOut() -> Bool {
+        return true
     }
 }

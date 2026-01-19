@@ -15,25 +15,21 @@ final class HomeTabVM {
     private var hasLoaded = false
 
     var filteredMangas: [Manga] = []
-    var bestMangas: [Manga] = []
+    var bestMangas: Pager<Manga>
     var genres: [String] = []
 
     var selectedManga: Manga? = nil
-    var selectedGenre: String? = nil {
-        didSet {
-            guard oldValue != selectedGenre,
-                let genre = selectedGenre
-            else { return }
-
-            Task {
-                await loadMangasByGenre(genre)
-            }
-        }
-
-    }
+    var selectedGenre: String? = nil
 
     init(apiManager: APIManager = .live) {
         self.apiManager = apiManager
+
+        self.bestMangas = Pager(pageSize: 10) { page, per in
+            await apiManager.manga.getBestMangas(
+                page: page,
+                per: per
+            ).items
+        }
     }
 
     func loadData() async {
@@ -42,10 +38,7 @@ final class HomeTabVM {
         genres = await apiManager.genre.getAllGenres()
         selectedGenre = genres.first
 
-        bestMangas = await apiManager.manga.getBestMangas(
-            page: 1,
-            per: 10
-        ).items
+        await bestMangas.loadNextPage()
 
         if let genre = selectedGenre {
             await loadMangasByGenre(genre)

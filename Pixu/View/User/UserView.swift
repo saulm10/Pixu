@@ -323,7 +323,7 @@ struct CollectionRowView: View {
         HStack(spacing: 12) {
             // Portada
             AsyncImage(
-                url: URL(string: collection.manga.mainPicture)
+                url: URL(string: collection.manga.cleanMainPicture)
             ) { image in
                 image
                     .resizable()

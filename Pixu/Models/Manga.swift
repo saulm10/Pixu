@@ -11,10 +11,10 @@ struct Manga: Codable, Identifiable, Equatable, Hashable {
     let title: String
     let titleEnglish: String?
     let titleJapanese: String
-    let sypnosis: String
-    let background: String
+    let sypnosis: String?
+    let background: String?
     let url: String?
-    let mainPicture: String
+    let mainPicture: String?
     let chapters: Int?
     let volumes: Int?
     let score: Double
@@ -32,8 +32,8 @@ struct Manga: Codable, Identifiable, Equatable, Hashable {
     }
 
     var cleanMainPicture: String {
-        mainPicture.replacingOccurrences(of: "\\", with: "")
-            .replacingOccurrences(of: "\"", with: "")
+        mainPicture?.replacingOccurrences(of: "\\", with: "")
+            .replacingOccurrences(of: "\"", with: "") ?? ""
     }
 }
 

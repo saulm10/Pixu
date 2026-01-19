@@ -43,9 +43,10 @@ struct MangaDetail: View {
                     authorsSection
                     
                     // Background info
-                    if !manga.background.isEmpty {
+                    if let background = manga.background, !background.isEmpty {
                         backgroundSection
                     }
+
                     
                     // Botón de MyAnimeList
                     if !manga.cleanURL.isEmpty {
@@ -276,7 +277,7 @@ struct MangaDetail: View {
                 .font(.system(size: 22, weight: .bold))
                 .foregroundStyle(Color.primary)
             
-            Text(manga.sypnosis)
+            Text(manga.sypnosis ?? "")
                 .font(.system(size: 16))
                 .foregroundStyle(Color.primary.opacity(0.8))
                 .lineSpacing(4)
@@ -344,7 +345,7 @@ struct MangaDetail: View {
                 .font(.system(size: 22, weight: .bold))
                 .foregroundStyle(Color.primary)
             
-            Text(manga.background)
+            Text(manga.background ?? "")
                 .font(.system(size: 16))
                 .foregroundStyle(Color.primary.opacity(0.8))
                 .lineSpacing(4)

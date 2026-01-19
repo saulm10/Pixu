@@ -17,7 +17,9 @@ struct EditMangaView: View {
                 Section("Manga") {
                     HStack {
                         AsyncImage(
-                            url: URL(string: vm.collection.manga.mainPicture)
+                            url: URL(
+                                string: vm.collection.manga.cleanMainPicture
+                            )
                         ) { image in
                             image
                                 .resizable()

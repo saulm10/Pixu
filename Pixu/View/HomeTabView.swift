@@ -48,16 +48,16 @@ struct HomeTabView: View {
         VStack(alignment: .leading, spacing: 24) {
 
             // Sección: Mejores mangas
-            VStack(alignment: .leading, spacing: 12) {
+            LazyVStack(alignment: .leading, spacing: 12) {
                 Text("Mejores mangas:")
                     .font(.title2)
                     .fontWeight(.bold)
                     .padding(.horizontal)
 
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 16) {
+                    LazyHStack(spacing: 16) {
                         ForEach(
-                            Array(vm.bestMangas.enumerated()),
+                            Array(vm.bestMangas.items.enumerated()),
                             id: \.element.id
                         ) { index, manga in
                             ZStack(alignment: .bottomTrailing) {
@@ -65,6 +65,14 @@ struct HomeTabView: View {
                                     vm.selectedManga = manga
                                 }
                                 .frame(width: 150, height: 220)
+                                .onAppear {
+                                    if manga.id == vm.bestMangas.items.last?.id {
+                                        Task {
+                                            await vm.bestMangas.loadNextPage()
+                                        }
+                                    }
+                                }
+                                
                                 Circle()
                                     .fill(.brandPrimary)
                                     .overlay {
@@ -75,6 +83,12 @@ struct HomeTabView: View {
                                     }
                                     .frame(width: 50)
                             }
+                        }
+
+                        // Indicador de carga al final
+                        if vm.bestMangas.isLoading {
+                            ProgressView()
+                                .frame(width: 150, height: 220)
                         }
                     }
                     .padding(.horizontal)
@@ -90,7 +104,7 @@ struct HomeTabView: View {
 
                 // Chips de géneros
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 12) {
+                    LazyHStack(spacing: 12) {
                         ForEach(vm.genres, id: \.self) { genre in
                             Chip(
                                 title: genre,

@@ -9,13 +9,13 @@ import Foundation
 import NetworkAPI
 
 protocol GenresEndpoint {
-    func getAllGenres() async -> [Genre]
+    func getAllGenres() async -> [String]
 }
 
 struct Genres: GenresEndpoint {
     let apiClient = NetworkManager.shared.client
 
-    func getAllGenres() async -> [Genre] {
+    func getAllGenres() async -> [String] {
         do {
             return try await apiClient.get(
                 path: "list/genres",
@@ -29,7 +29,7 @@ struct Genres: GenresEndpoint {
 }
 
 struct GenresTest: GenresEndpoint {
-    func getAllGenres() async -> [Genre] {
-        return Genre.testList
+    func getAllGenres() async -> [String] {
+        return ["Action", "Romance", "Comedy", "Drama", "Fantasy"]
     }
 }

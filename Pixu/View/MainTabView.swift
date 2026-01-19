@@ -60,7 +60,6 @@ struct MainTabView: View {
                 SearchTabView(vm: searchTabVM)
             }
         }
-
         .tint(Color.brandPrimary)
         .tabBarMinimizeBehavior(.onScrollDown)
         .tabViewStyle(.sidebarAdaptable)

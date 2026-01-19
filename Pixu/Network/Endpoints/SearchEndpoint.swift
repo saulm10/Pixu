@@ -10,10 +10,12 @@ import NetworkAPI
 
 protocol SearchEndpoint {
     func searchMangasBeginsWith(search: String) async -> [Manga]
-    func searchMangasContains(search: String, page: Int, per: Int) async -> MangaPage
+    func searchMangasContains(search: String, page: Int, per: Int) async
+        -> MangaPageDTO
     func searchAuthors(search: String) async -> [Author]
     func getMangaById(id: String) async -> Manga?
-    func advancedSearchMangas(input: CustomSearchInputDTO, page: Int, per: Int) async -> MangaPage
+    func advancedSearchMangas(input: CustomSearchInputDTO, page: Int, per: Int)
+        async -> MangaPageDTO
 }
 
 struct Searchs: SearchEndpoint {
@@ -30,8 +32,10 @@ struct Searchs: SearchEndpoint {
             return []
         }
     }
-    
-    func searchMangasContains(search: String, page: Int = 1, per: Int = 10) async -> MangaPage {
+
+    func searchMangasContains(search: String, page: Int = 1, per: Int = 10)
+        async -> MangaPageDTO
+    {
         do {
             return try await apiClient.get(
                 path: "search/mangasContains/\(search)",
@@ -42,10 +46,13 @@ struct Searchs: SearchEndpoint {
                 temporaryAuth: nil
             )
         } catch {
-            return MangaPage(items: [], metadata: PageMetadata(page: 1, per: 10, total: 0))
+            return MangaPageDTO(
+                items: [],
+                metadata: PageMetadata(page: 1, per: 10, total: 0)
+            )
         }
     }
-    
+
     func searchAuthors(search: String) async -> [Author] {
         do {
             return try await apiClient.get(
@@ -57,7 +64,7 @@ struct Searchs: SearchEndpoint {
             return []
         }
     }
-    
+
     func getMangaById(id: String) async -> Manga? {
         do {
             return try await apiClient.get(
@@ -69,8 +76,12 @@ struct Searchs: SearchEndpoint {
             return nil
         }
     }
-    
-    func advancedSearchMangas(input: CustomSearchInputDTO, page: Int = 1, per: Int = 10) async -> MangaPage {
+
+    func advancedSearchMangas(
+        input: CustomSearchInputDTO,
+        page: Int = 1,
+        per: Int = 10
+    ) async -> MangaPageDTO {
         do {
             return try await apiClient.post(
                 path: "search/manga",
@@ -82,7 +93,10 @@ struct Searchs: SearchEndpoint {
                 temporaryAuth: nil
             )
         } catch {
-            return MangaPage(items: [], metadata: PageMetadata(page: 1, per: 10, total: 0))
+            return MangaPageDTO(
+                items: [],
+                metadata: PageMetadata(page: 1, per: 10, total: 0)
+            )
         }
     }
 }
@@ -90,58 +104,74 @@ struct Searchs: SearchEndpoint {
 struct SearchsTest: SearchEndpoint {
     func searchMangasBeginsWith(search: String) async -> [Manga] {
         return Manga.testList.filter { manga in
-            manga.title.lowercased().hasPrefix(search.lowercased()) ||
-            (manga.titleEnglish?.lowercased().hasPrefix(search.lowercased()) ?? false)
+            manga.title.lowercased().hasPrefix(search.lowercased())
+                || (manga.titleEnglish?.lowercased().hasPrefix(
+                    search.lowercased()
+                ) ?? false)
         }
     }
-    
-    func searchMangasContains(search: String, page: Int = 1, per: Int = 10) async -> MangaPage {
+
+    func searchMangasContains(search: String, page: Int = 1, per: Int = 10)
+        async -> MangaPageDTO
+    {
         let filtered = Manga.testList.filter { manga in
-            manga.title.lowercased().contains(search.lowercased()) ||
-            (manga.titleEnglish?.lowercased().contains(search.lowercased()) ?? false)
+            manga.title.lowercased().contains(search.lowercased())
+                || (manga.titleEnglish?.lowercased().contains(
+                    search.lowercased()
+                ) ?? false)
         }
-        return MangaPage(
+        return MangaPageDTO(
             items: filtered,
             metadata: PageMetadata(page: page, per: per, total: filtered.count)
         )
     }
-    
+
     func searchAuthors(search: String) async -> [Author] {
         return Author.testList.filter { author in
-            author.firstName.lowercased().contains(search.lowercased()) ||
-            author.lastName.lowercased().contains(search.lowercased())
+            author.firstName.lowercased().contains(search.lowercased())
+                || author.lastName.lowercased().contains(search.lowercased())
         }
     }
-    
+
     func getMangaById(id: String) async -> Manga? {
         return Manga.testList.first { $0.id.description == id }
     }
-    
-    func advancedSearchMangas(input: CustomSearchInputDTO, page: Int = 1, per: Int = 10) async -> MangaPage {
+
+    func advancedSearchMangas(
+        input: CustomSearchInputDTO,
+        page: Int = 1,
+        per: Int = 10
+    ) async -> MangaPageDTO {
         var filtered = Manga.testList
-        
+
         if let title = input.searchTitle {
             filtered = filtered.filter { manga in
                 if input.searchContains {
                     return manga.title.lowercased().contains(title.lowercased())
                 } else {
-                    return manga.title.lowercased().hasPrefix(title.lowercased())
+                    return manga.title.lowercased().hasPrefix(
+                        title.lowercased()
+                    )
                 }
             }
         }
-        
+
         if let firstName = input.searchAuthorFirstName {
             filtered = filtered.filter { manga in
-                manga.authors.contains { $0.firstName.lowercased().contains(firstName.lowercased()) }
+                manga.authors.contains {
+                    $0.firstName.lowercased().contains(firstName.lowercased())
+                }
             }
         }
-        
+
         if let lastName = input.searchAuthorLastName {
             filtered = filtered.filter { manga in
-                manga.authors.contains { $0.lastName.lowercased().contains(lastName.lowercased()) }
+                manga.authors.contains {
+                    $0.lastName.lowercased().contains(lastName.lowercased())
+                }
             }
         }
-        
+
         if let genres = input.searchGenres {
             filtered = filtered.filter { manga in
                 genres.allSatisfy { genre in
@@ -149,7 +179,7 @@ struct SearchsTest: SearchEndpoint {
                 }
             }
         }
-        
+
         if let themes = input.searchThemes {
             filtered = filtered.filter { manga in
                 themes.allSatisfy { theme in
@@ -157,16 +187,18 @@ struct SearchsTest: SearchEndpoint {
                 }
             }
         }
-        
+
         if let demographics = input.searchDemographics {
             filtered = filtered.filter { manga in
                 demographics.allSatisfy { demographic in
-                    manga.demographics.contains { $0.demographic == demographic }
+                    manga.demographics.contains {
+                        $0.demographic == demographic
+                    }
                 }
             }
         }
-        
-        return MangaPage(
+
+        return MangaPageDTO(
             items: filtered,
             metadata: PageMetadata(page: page, per: per, total: filtered.count)
         )

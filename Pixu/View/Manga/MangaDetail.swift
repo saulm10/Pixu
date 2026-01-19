@@ -48,7 +48,9 @@ struct MangaDetail: View {
                     }
                     
                     // Botón de MyAnimeList
-                    malButton
+                    if !manga.cleanURL.isEmpty {
+                        malButton                        
+                    }
                 }
                 .padding(.horizontal)
                 .padding(.bottom, 32)
@@ -71,7 +73,7 @@ struct MangaDetail: View {
     private var heroSection: some View {
         ZStack(alignment: .bottomTrailing) {
             // Imagen principal con gradiente
-            AsyncImage(url: URL(string: manga.mainPicture)) { phase in
+            AsyncImage(url: URL(string: manga.cleanMainPicture)) { phase in
                 switch phase {
                 case .success(let image):
                     image
@@ -351,7 +353,7 @@ struct MangaDetail: View {
     
     // MARK: - MAL Button
     private var malButton: some View {
-        Link(destination: URL(string: manga.url)!) {
+        Link(destination: URL(string: manga.cleanURL)!) {
             HStack {
                 Image(systemName: "link.circle.fill")
                     .font(.system(size: 20))

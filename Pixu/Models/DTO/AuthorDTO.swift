@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct AuthorPage: Codable {
+struct AuthorPageDTO: Codable {
     let items: [Author]
     let metadata: PageMetadata
 }

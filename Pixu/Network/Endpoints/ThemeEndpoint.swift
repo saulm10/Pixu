@@ -9,13 +9,13 @@ import Foundation
 import NetworkAPI
 
 protocol ThemesEndpoint {
-    func getAllThemes() async -> [Theme]
+    func getAllThemes() async -> [String]
 }
 
 struct Themes: ThemesEndpoint {
     let apiClient = NetworkManager.shared.client
 
-    func getAllThemes() async -> [Theme] {
+    func getAllThemes() async -> [String] {
         do {
             return try await apiClient.get(
                 path: "list/themes",
@@ -29,7 +29,7 @@ struct Themes: ThemesEndpoint {
 }
 
 struct ThemesTest: ThemesEndpoint {
-    func getAllThemes() async -> [Theme] {
-        return Theme.testList
+    func getAllThemes() async -> [String] {
+        return ["algo", "otros"]
     }
 }

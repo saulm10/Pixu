@@ -9,18 +9,22 @@ import Foundation
 import NetworkAPI
 
 protocol MangasEndpoint {
-    func getBestMangas(page: Int, per: Int) async -> MangaPage
-    func getAllMangas(page: Int, per: Int) async -> MangaPage
-    func getMangasByGenre(genre: String, page: Int, per: Int) async -> MangaPage
-    func getMangasByDemographic(demographic: String, page: Int, per: Int) async -> MangaPage
-    func getMangasByTheme(theme: String, page: Int, per: Int) async -> MangaPage
-    func getMangasByAuthor(authorId: UUID, page: Int, per: Int) async -> MangaPage
+    func getBestMangas(page: Int, per: Int) async -> MangaPageDTO
+    func getAllMangas(page: Int, per: Int) async -> MangaPageDTO
+    func getMangasByGenre(genre: String, page: Int, per: Int) async
+        -> MangaPageDTO
+    func getMangasByDemographic(demographic: String, page: Int, per: Int) async
+        -> MangaPageDTO
+    func getMangasByTheme(theme: String, page: Int, per: Int) async
+        -> MangaPageDTO
+    func getMangasByAuthor(authorId: UUID, page: Int, per: Int) async
+        -> MangaPageDTO
 }
 
 struct Mangas: MangasEndpoint {
     let apiClient = NetworkManager.shared.client
 
-    func getBestMangas(page: Int = 1, per: Int = 10) async -> MangaPage {
+    func getBestMangas(page: Int = 1, per: Int = 10) async -> MangaPageDTO {
         do {
             return try await apiClient.get(
                 path: "list/bestMangas",
@@ -31,11 +35,14 @@ struct Mangas: MangasEndpoint {
                 temporaryAuth: nil
             )
         } catch {
-            return MangaPage(items: [], metadata: PageMetadata(page: 1, per: 10, total: 0))
+            return MangaPageDTO(
+                items: [],
+                metadata: PageMetadata(page: 1, per: 10, total: 0)
+            )
         }
     }
-    
-    func getAllMangas(page: Int = 1, per: Int = 10) async -> MangaPage {
+
+    func getAllMangas(page: Int = 1, per: Int = 10) async -> MangaPageDTO {
         do {
             return try await apiClient.get(
                 path: "list/mangas",
@@ -46,11 +53,16 @@ struct Mangas: MangasEndpoint {
                 temporaryAuth: nil
             )
         } catch {
-            return MangaPage(items: [], metadata: PageMetadata(page: 1, per: 10, total: 0))
+            return MangaPageDTO(
+                items: [],
+                metadata: PageMetadata(page: 1, per: 10, total: 0)
+            )
         }
     }
-    
-    func getMangasByGenre(genre: String, page: Int = 1, per: Int = 10) async -> MangaPage {
+
+    func getMangasByGenre(genre: String, page: Int = 1, per: Int = 10) async
+        -> MangaPageDTO
+    {
         do {
             return try await apiClient.get(
                 path: "list/mangaByGenre/\(genre)",
@@ -61,11 +73,18 @@ struct Mangas: MangasEndpoint {
                 temporaryAuth: nil
             )
         } catch {
-            return MangaPage(items: [], metadata: PageMetadata(page: 1, per: 10, total: 0))
+            return MangaPageDTO(
+                items: [],
+                metadata: PageMetadata(page: 1, per: 10, total: 0)
+            )
         }
     }
-    
-    func getMangasByDemographic(demographic: String, page: Int = 1, per: Int = 10) async -> MangaPage {
+
+    func getMangasByDemographic(
+        demographic: String,
+        page: Int = 1,
+        per: Int = 10
+    ) async -> MangaPageDTO {
         do {
             return try await apiClient.get(
                 path: "list/mangaByDemographic/\(demographic)",
@@ -76,11 +95,16 @@ struct Mangas: MangasEndpoint {
                 temporaryAuth: nil
             )
         } catch {
-            return MangaPage(items: [], metadata: PageMetadata(page: 1, per: 10, total: 0))
+            return MangaPageDTO(
+                items: [],
+                metadata: PageMetadata(page: 1, per: 10, total: 0)
+            )
         }
     }
-    
-    func getMangasByTheme(theme: String, page: Int = 1, per: Int = 10) async -> MangaPage {
+
+    func getMangasByTheme(theme: String, page: Int = 1, per: Int = 10) async
+        -> MangaPageDTO
+    {
         do {
             return try await apiClient.get(
                 path: "list/mangaByTheme/\(theme)",
@@ -91,11 +115,16 @@ struct Mangas: MangasEndpoint {
                 temporaryAuth: nil
             )
         } catch {
-            return MangaPage(items: [], metadata: PageMetadata(page: 1, per: 10, total: 0))
+            return MangaPageDTO(
+                items: [],
+                metadata: PageMetadata(page: 1, per: 10, total: 0)
+            )
         }
     }
-    
-    func getMangasByAuthor(authorId: UUID, page: Int = 1, per: Int = 10) async -> MangaPage {
+
+    func getMangasByAuthor(authorId: UUID, page: Int = 1, per: Int = 10) async
+        -> MangaPageDTO
+    {
         do {
             return try await apiClient.get(
                 path: "list/mangaByAuthor/\(authorId)",
@@ -106,61 +135,82 @@ struct Mangas: MangasEndpoint {
                 temporaryAuth: nil
             )
         } catch {
-            return MangaPage(items: [], metadata: PageMetadata(page: 1, per: 10, total: 0))
+            return MangaPageDTO(
+                items: [],
+                metadata: PageMetadata(page: 1, per: 10, total: 0)
+            )
         }
     }
 }
 
 struct MangasTest: MangasEndpoint {
-    func getBestMangas(page: Int = 1, per: Int = 10) async -> MangaPage {
-        return MangaPage(
+    func getBestMangas(page: Int = 1, per: Int = 10) async -> MangaPageDTO {
+        return MangaPageDTO(
             items: Manga.testList,
-            metadata: PageMetadata(page: page, per: per, total: Manga.testList.count)
+            metadata: PageMetadata(
+                page: page,
+                per: per,
+                total: Manga.testList.count
+            )
         )
     }
-    
-    func getAllMangas(page: Int = 1, per: Int = 10) async -> MangaPage {
-        return MangaPage(
+
+    func getAllMangas(page: Int = 1, per: Int = 10) async -> MangaPageDTO {
+        return MangaPageDTO(
             items: Manga.testList,
-            metadata: PageMetadata(page: page, per: per, total: Manga.testList.count)
+            metadata: PageMetadata(
+                page: page,
+                per: per,
+                total: Manga.testList.count
+            )
         )
     }
-    
-    func getMangasByGenre(genre: String, page: Int = 1, per: Int = 10) async -> MangaPage {
+
+    func getMangasByGenre(genre: String, page: Int = 1, per: Int = 10) async
+        -> MangaPageDTO
+    {
         let filtered = Manga.testList.filter { manga in
             manga.genres.contains { $0.genre == genre }
         }
-        return MangaPage(
+        return MangaPageDTO(
             items: filtered,
             metadata: PageMetadata(page: page, per: per, total: filtered.count)
         )
     }
-    
-    func getMangasByDemographic(demographic: String, page: Int = 1, per: Int = 10) async -> MangaPage {
+
+    func getMangasByDemographic(
+        demographic: String,
+        page: Int = 1,
+        per: Int = 10
+    ) async -> MangaPageDTO {
         let filtered = Manga.testList.filter { manga in
             manga.demographics.contains { $0.demographic == demographic }
         }
-        return MangaPage(
+        return MangaPageDTO(
             items: filtered,
             metadata: PageMetadata(page: page, per: per, total: filtered.count)
         )
     }
-    
-    func getMangasByTheme(theme: String, page: Int = 1, per: Int = 10) async -> MangaPage {
+
+    func getMangasByTheme(theme: String, page: Int = 1, per: Int = 10) async
+        -> MangaPageDTO
+    {
         let filtered = Manga.testList.filter { manga in
             manga.themes.contains { $0.theme == theme }
         }
-        return MangaPage(
+        return MangaPageDTO(
             items: filtered,
             metadata: PageMetadata(page: page, per: per, total: filtered.count)
         )
     }
-    
-    func getMangasByAuthor(authorId: UUID, page: Int = 1, per: Int = 10) async -> MangaPage {
+
+    func getMangasByAuthor(authorId: UUID, page: Int = 1, per: Int = 10) async
+        -> MangaPageDTO
+    {
         let filtered = Manga.testList.filter { manga in
             manga.authors.contains { $0.id == authorId }
         }
-        return MangaPage(
+        return MangaPageDTO(
             items: filtered,
             metadata: PageMetadata(page: page, per: per, total: filtered.count)
         )

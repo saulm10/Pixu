@@ -132,6 +132,14 @@
 		01EBC0ED2F1BA81D00BF31FF /* UserMangaCollectionRequestInputDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMangaCollectionRequestInputDTO.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		0129C62F2F1E98A900F03D84 /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		018417E92F02C6DB0064494B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -256,6 +264,7 @@
 		018418092F02D01F0064494B /* Pixu */ = {
 			isa = PBXGroup;
 			children = (
+				0129C62F2F1E98A900F03D84 /* Shared */,
 				018418082F02D01F0064494B /* PixuIconApp.icon */,
 				015A04602F03FB24007AA3F7 /* View */,
 				015A045F2F03FB21007AA3F7 /* ViewModel */,
@@ -384,6 +393,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				0129C62F2F1E98A900F03D84 /* Shared */,
 			);
 			name = Pixu;
 			packageProductDependencies = (

@@ -13,9 +13,9 @@ struct Manga: Codable, Identifiable, Equatable, Hashable {
     let titleJapanese: String
     let sypnosis: String
     let background: String
-    let url: String
+    let url: String?
     let mainPicture: String
-    let chapters: Int
+    let chapters: Int?
     let volumes: Int?
     let score: Double
     let status: String
@@ -25,6 +25,16 @@ struct Manga: Codable, Identifiable, Equatable, Hashable {
     let themes: [Theme]
     let demographics: [Demographic]
     let authors: [Author]
+
+    var cleanURL: String {
+        url?.replacingOccurrences(of: "\\", with: "")
+            .replacingOccurrences(of: "\"", with: "") ?? ""
+    }
+
+    var cleanMainPicture: String {
+        mainPicture.replacingOccurrences(of: "\\", with: "")
+            .replacingOccurrences(of: "\"", with: "")
+    }
 }
 
 extension Manga {
@@ -79,7 +89,9 @@ extension Manga {
             ],
             authors: [
                 Author(
-                    id: UUID(uuidString: "6F0B6948-08C4-4761-8BE1-192E68AB0A2F")!,
+                    id: UUID(
+                        uuidString: "6F0B6948-08C4-4761-8BE1-192E68AB0A2F"
+                    )!,
                     firstName: "Kentarou",
                     lastName: "Miura",
                     role: "Story & Art"

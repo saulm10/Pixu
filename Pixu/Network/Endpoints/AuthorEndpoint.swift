@@ -10,7 +10,7 @@ import NetworkAPI
 
 protocol AuthorsEndpoint {
     func getAllAuthors() async -> [Author]
-    func getAuthorsPaged(page: Int, per: Int) async -> AuthorPage
+    func getAuthorsPaged(page: Int, per: Int) async -> AuthorPageDTO
     func getAuthorsByIds(ids: [UUID]) async -> [Author]
 }
 
@@ -28,8 +28,8 @@ struct Authors: AuthorsEndpoint {
             return []
         }
     }
-    
-    func getAuthorsPaged(page: Int = 1, per: Int = 10) async -> AuthorPage {
+
+    func getAuthorsPaged(page: Int = 1, per: Int = 10) async -> AuthorPageDTO {
         do {
             return try await apiClient.get(
                 path: "list/authorsPaged",
@@ -40,10 +40,13 @@ struct Authors: AuthorsEndpoint {
                 temporaryAuth: nil
             )
         } catch {
-            return AuthorPage(items: [], metadata: PageMetadata(page: 1, per: 10, total: 0))
+            return AuthorPageDTO(
+                items: [],
+                metadata: PageMetadata(page: 1, per: 10, total: 0)
+            )
         }
     }
-    
+
     func getAuthorsByIds(ids: [UUID]) async -> [Author] {
         do {
             return try await apiClient.post(
@@ -61,14 +64,18 @@ struct AuthorsTest: AuthorsEndpoint {
     func getAllAuthors() async -> [Author] {
         return Author.testList
     }
-    
-    func getAuthorsPaged(page: Int = 1, per: Int = 10) async -> AuthorPage {
-        return AuthorPage(
+
+    func getAuthorsPaged(page: Int = 1, per: Int = 10) async -> AuthorPageDTO {
+        return AuthorPageDTO(
             items: Author.testList,
-            metadata: PageMetadata(page: page, per: per, total: Author.testList.count)
+            metadata: PageMetadata(
+                page: page,
+                per: per,
+                total: Author.testList.count
+            )
         )
     }
-    
+
     func getAuthorsByIds(ids: [UUID]) async -> [Author] {
         return Author.testList.filter { ids.contains($0.id) }
     }

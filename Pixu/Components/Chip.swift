@@ -15,13 +15,15 @@ public struct Chip: View {
     public var body: some View {
         Text(title)
             .font(.system(size: 14, weight: .medium))
-            .foregroundStyle(.textOnTertiary)
+            .foregroundStyle(isSelected ? .textOnPrimary : .textOnTertiary)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
             .background {
                 Capsule()
-                    .fill(.brandTertiary)
+                    .fill(isSelected ? .brandPrimary : .brandTertiary)
             }
-            .disabled(isSelected)
+            .onTapGesture {
+                onTap()
+            }
     }
 }

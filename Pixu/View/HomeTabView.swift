@@ -36,10 +36,10 @@ struct HomeTabView: View {
                     }
                 }
             }
+            .toolbarRole(.editor)
             .task {
                 await vm.loadData()
             }
-            .toolbarRole(.editor)
             .globalBackground()
         }
     }
@@ -93,12 +93,13 @@ struct HomeTabView: View {
                     HStack(spacing: 12) {
                         ForEach(vm.genres, id: \.self) { genre in
                             Chip(
-                                title: genre.genre,
+                                title: genre,
                                 isSelected: vm.selectedGenre == genre
                             ) {
                                 vm.selectedGenre = genre
                             }
                         }
+
                     }
                     .padding(.horizontal)
                 }
@@ -115,16 +116,16 @@ struct HomeTabView: View {
                         MangaCard(manga: manga) {
                             vm.selectedManga = manga
                         }
-                            .frame(height: 220)
+                        .frame(height: 220)
                     }
-                    ProgressView()
-                        .onAppear {
-                            Task.detached {
-                                await vm.loadMoreFilteredMangas()
-                            }
-                        }
                 }
                 .padding(.horizontal)
+                ProgressView()
+                    .onAppear {
+                        Task.detached {
+                            await vm.loadMoreFilteredMangas()
+                        }
+                    }
             }
         }
 
@@ -132,7 +133,5 @@ struct HomeTabView: View {
 }
 
 #Preview {
-    NavigationStack {
-        HomeTabView(vm: HomeTabVM(apiManager: .test))
-    }
+    HomeTabView(vm: HomeTabVM(apiManager: .test))
 }

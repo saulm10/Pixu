@@ -24,7 +24,7 @@ struct MangaCard: View {
         GlassEffectContainer {
             ZStack {
                 ImageUrlCache(
-                    manga.mainPicture,
+                    manga.cleanMainPicture,
                     contentMode: .fill
                 )
             }

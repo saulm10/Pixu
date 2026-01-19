@@ -11,11 +11,11 @@ import NetworkAPI
 protocol SearchEndpoint {
     func searchMangasBeginsWith(search: String) async -> [Manga]
     func searchMangasContains(search: String, page: Int, per: Int) async
-        -> MangaPageDTO
+        -> PageDTO<Manga>
     func searchAuthors(search: String) async -> [Author]
     func getMangaById(id: String) async -> Manga?
     func advancedSearchMangas(input: CustomSearchInputDTO, page: Int, per: Int)
-        async -> MangaPageDTO
+        async -> PageDTO<Manga>
 }
 
 struct Searchs: SearchEndpoint {
@@ -34,7 +34,7 @@ struct Searchs: SearchEndpoint {
     }
 
     func searchMangasContains(search: String, page: Int = 1, per: Int = 10)
-        async -> MangaPageDTO
+        async -> PageDTO<Manga>
     {
         do {
             return try await apiClient.get(
@@ -46,7 +46,7 @@ struct Searchs: SearchEndpoint {
                 temporaryAuth: nil
             )
         } catch {
-            return MangaPageDTO(
+            return PageDTO<Manga>(
                 items: [],
                 metadata: PageMetadata(page: 1, per: 10, total: 0)
             )
@@ -81,7 +81,7 @@ struct Searchs: SearchEndpoint {
         input: CustomSearchInputDTO,
         page: Int = 1,
         per: Int = 10
-    ) async -> MangaPageDTO {
+    ) async -> PageDTO<Manga> {
         do {
             return try await apiClient.post(
                 path: "search/manga",
@@ -93,7 +93,7 @@ struct Searchs: SearchEndpoint {
                 temporaryAuth: nil
             )
         } catch {
-            return MangaPageDTO(
+            return PageDTO<Manga>(
                 items: [],
                 metadata: PageMetadata(page: 1, per: 10, total: 0)
             )
@@ -112,7 +112,7 @@ struct SearchsTest: SearchEndpoint {
     }
 
     func searchMangasContains(search: String, page: Int = 1, per: Int = 10)
-        async -> MangaPageDTO
+        async -> PageDTO<Manga>
     {
         let filtered = Manga.testList.filter { manga in
             manga.title.lowercased().contains(search.lowercased())
@@ -120,7 +120,7 @@ struct SearchsTest: SearchEndpoint {
                     search.lowercased()
                 ) ?? false)
         }
-        return MangaPageDTO(
+        return PageDTO<Manga>(
             items: filtered,
             metadata: PageMetadata(page: page, per: per, total: filtered.count)
         )
@@ -141,7 +141,7 @@ struct SearchsTest: SearchEndpoint {
         input: CustomSearchInputDTO,
         page: Int = 1,
         per: Int = 10
-    ) async -> MangaPageDTO {
+    ) async -> PageDTO<Manga> {
         var filtered = Manga.testList
 
         if let title = input.searchTitle {
@@ -198,7 +198,7 @@ struct SearchsTest: SearchEndpoint {
             }
         }
 
-        return MangaPageDTO(
+        return PageDTO<Manga>(
             items: filtered,
             metadata: PageMetadata(page: page, per: per, total: filtered.count)
         )

@@ -7,7 +7,12 @@
 
 import Foundation
 
-struct PageMetadata: Codable {
+struct PageDTO<T: Codable & Sendable>: Codable, Sendable {
+    let items: [T]
+    let metadata: PageMetadata
+}
+
+struct PageMetadata: Codable, Sendable {
     let page: Int
     let per: Int
     let total: Int

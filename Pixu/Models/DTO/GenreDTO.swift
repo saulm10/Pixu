@@ -11,9 +11,3 @@ struct GenreDTO: Codable {
     let id: UUID
     let genre: String
 }
-
-extension GenreDTO {
-    var toGenre: Genre {
-        Genre(id: id, genre: genre)
-    }
-}

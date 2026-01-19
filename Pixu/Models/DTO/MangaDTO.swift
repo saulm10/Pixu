@@ -7,10 +7,6 @@
 
 import Foundation
 
-struct MangaPageDTO: Codable {
-    let items: [Manga]
-    let metadata: PageMetadata
-}
 struct MangaDTO: Codable {
     let id: Int
     let title: String
@@ -31,33 +27,4 @@ struct MangaDTO: Codable {
     let themes: [ThemeDTO]
     let demographics: [DemographicDTO]
     let authors: [AuthorDTO]
-}
-
-extension MangaDTO {
-    var toManga: Manga {
-        Manga(
-            id: id,
-            title: title,
-            titleEnglish: titleEnglish,
-            titleJapanese: titleJapanese ?? "",
-            sypnosis: sypnosis ?? "",
-            background: background ?? "",
-            url: (url ?? "")
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-                .replacingOccurrences(of: "\"", with: ""),
-            mainPicture: (mainPicture ?? "")
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-                .replacingOccurrences(of: "\"", with: ""),
-            chapters: chapters ?? 0,
-            volumes: volumes ?? 0,
-            score: score,
-            status: status,
-            startDate: startDate ?? "",
-
-            genres: genres.map(\.toGenre),
-            themes: themes.map(\.toTheme),
-            demographics: demographics.map(\.toDemographic),
-            authors: authors.map(\.toAuthor)
-        )
-    }
 }

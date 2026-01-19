@@ -11,9 +11,3 @@ struct ThemeDTO: Codable {
     var id: UUID
     let theme: String
 }
-
-extension ThemeDTO{
-    var toTheme: Theme {
-        Theme(id: id, theme: theme)
-    }
-}

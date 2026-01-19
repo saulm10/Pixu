@@ -10,7 +10,7 @@ import NetworkAPI
 
 protocol AuthorsEndpoint {
     func getAllAuthors() async -> [Author]
-    func getAuthorsPaged(page: Int, per: Int) async -> AuthorPageDTO
+    func getAuthorsPaged(page: Int, per: Int) async -> PageDTO<Author>
     func getAuthorsByIds(ids: [UUID]) async -> [Author]
 }
 
@@ -29,7 +29,7 @@ struct Authors: AuthorsEndpoint {
         }
     }
 
-    func getAuthorsPaged(page: Int = 1, per: Int = 10) async -> AuthorPageDTO {
+    func getAuthorsPaged(page: Int = 1, per: Int = 10) async -> PageDTO<Author> {
         do {
             return try await apiClient.get(
                 path: "list/authorsPaged",
@@ -40,7 +40,7 @@ struct Authors: AuthorsEndpoint {
                 temporaryAuth: nil
             )
         } catch {
-            return AuthorPageDTO(
+            return PageDTO<Author>(
                 items: [],
                 metadata: PageMetadata(page: 1, per: 10, total: 0)
             )
@@ -65,8 +65,8 @@ struct AuthorsTest: AuthorsEndpoint {
         return Author.testList
     }
 
-    func getAuthorsPaged(page: Int = 1, per: Int = 10) async -> AuthorPageDTO {
-        return AuthorPageDTO(
+    func getAuthorsPaged(page: Int = 1, per: Int = 10) async -> PageDTO<Author> {
+        return PageDTO<Author>(
             items: Author.testList,
             metadata: PageMetadata(
                 page: page,

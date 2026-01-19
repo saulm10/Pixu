@@ -11,9 +11,3 @@ struct DemographicDTO: Codable {
     let id: UUID
     let demographic: String
 }
-
-extension DemographicDTO {
-    var toDemographic: Demographic {
-        Demographic(id: id, demographic: demographic)
-    }
-}

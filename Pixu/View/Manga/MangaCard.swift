@@ -5,8 +5,8 @@
 //  Created by Saul Martinez Diez on 15/1/26.
 //
 
-import SwiftUI
 import Components
+import SwiftUI
 
 struct MangaCard: View {
     let manga: Manga
@@ -21,24 +21,82 @@ struct MangaCard: View {
     }
 
     var body: some View {
-        GlassEffectContainer {
-            ZStack {
-                ImageUrlCache(
-                    manga.cleanMainPicture,
-                    contentMode: .fill
-                )
-            }
-        }
+        ImageUrlCache(
+            manga.cleanMainPicture,
+            contentMode: .fill
+        )
+        .frame(width: 180, height: 250)
         .clipShape(RoundedRectangle(cornerRadius: 14))
-        .padding()
         .onTapGesture {
             onTap()
+        }
+        .glassEffect(
+            in: RoundedRectangle(cornerRadius: 14)
+        )
+    }
+}
+
+extension MangaCard {
+    static var loading: some View {
+        MangaCardSkeleton()
+    }
+}
+
+private struct MangaCardSkeleton: View {
+    @State private var isAnimating = false
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 14)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color.gray.opacity(0.3),
+                            Color.gray.opacity(0.2),
+                            Color.gray.opacity(0.3),
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color.white.opacity(0),
+                                    Color.white.opacity(0.3),
+                                    Color.white.opacity(0),
+                                ],
+                                startPoint: isAnimating ? .leading : .trailing,
+                                endPoint: isAnimating ? .trailing : .leading
+                            )
+                        )
+                        .opacity(0.6)
+                )
+        }
+        .glassEffect(
+            in: RoundedRectangle(cornerRadius: 14)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .padding()
+        .onAppear {
+            withAnimation(
+                .easeInOut(duration: 1.5)
+                    .repeatForever(autoreverses: false)
+            ) {
+                isAnimating = true
+            }
         }
     }
 }
 
-
-#Preview {
+#Preview("Normal") {
     MangaCard(manga: .test)
+        .frame(width: 300, height: 400)
+}
+
+#Preview("Loading") {
+    MangaCard.loading
         .frame(width: 300, height: 400)
 }

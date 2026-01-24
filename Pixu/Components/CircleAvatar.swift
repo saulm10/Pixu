@@ -8,17 +8,21 @@
 import SwiftUI
 
 struct CircleAvatar: View {
+    @Environment(AuthStatus.self) private var authStatus
+    
     var body: some View {
         Circle()
             .fill(Color.clear)
             .overlay(
-                Text("U")  // TODO: inicial del usuario
+                Text(authStatus.initial)
                     .font(.title2)
                     .foregroundColor(.primary)
                     .bold()
             )
+            .aspectRatio(1, contentMode: .fit)
+            .frame(width: 32)
     }
 }
-#Preview {
+#Preview(traits: .devEnvironment) {
     CircleAvatar()
 }

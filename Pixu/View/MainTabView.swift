@@ -11,37 +11,32 @@ import SwiftUI
 struct MainTabView: View {
     @Environment(AuthStatus.self) private var authStatus
 
+    @State var vm: MainTabVM = MainTabVM()
     @State var homeTabVM: HomeTabVM = HomeTabVM()
     @State var scrollTabVM: ScrollTabVM = ScrollTabVM()
     @State var userLoginVM: UserLoginVM = UserLoginVM()
     @State var userVM: UserVM = UserVM()
     @State var searchTabVM: SearchTabVM = SearchTabVM()
 
-    @State private var selection = 0
-
     var body: some View {
-        TabView(selection: $selection) {
+        TabView(selection: $vm.selection) {
             Tab(
                 .tabHome,
-                systemImage: selection == 0 ? "house" : "house.fill",
+                systemImage: "house",
                 value: 0
             ) {
                 HomeTabView(vm: homeTabVM)
             }
-
             Tab(
                 .tabScroll,
-                systemImage: selection == 1
-                    ? "play.rectangle.fill" : "play.rectangle",
+                systemImage: "play.rectangle",
                 value: 1
             ) {
                 ScrollTabView(vm: scrollTabVM)
             }
-
             Tab(
                 .tabUser,
-                systemImage: selection == 2
-                    ? "person.circle.fill" : "person.circle",
+                systemImage: "person",
                 value: 2
             ) {
                 UserTabView(
@@ -49,11 +44,9 @@ struct MainTabView: View {
                     vmUser: userVM
                 )
             }
-
             Tab(
                 .tabSearch,
-                systemImage: selection == 3
-                    ? "magnifyingglass.circle.fill" : "magnifyingglass",
+                systemImage: "magnifyingglass",
                 value: 3,
                 role: .search
             ) {
@@ -64,21 +57,19 @@ struct MainTabView: View {
         .tabBarMinimizeBehavior(.onScrollDown)
         .tabViewStyle(.sidebarAdaptable)
         .defaultAdaptableTabBarPlacement(.tabBar)
-        .task {
+        .task(priority: .userInitiated) {
             authStatus.isLoggedIn = await userLoginVM.loginAuth()
         }
+        .environment(vm)
     }
 }
 
-#Preview {
-    var authStatus = AuthStatus()
-
+#Preview(traits: .devEnvironment) {
     MainTabView(
         homeTabVM: HomeTabVM(apiManager: .test),
         scrollTabVM: ScrollTabVM(apiManager: .test),
         userLoginVM: UserLoginVM(apiManager: .test),
         userVM: UserVM(apiManager: .test),
         searchTabVM: SearchTabVM(apiManager: .test)
-    ).environment(authStatus)
-
+    )
 }

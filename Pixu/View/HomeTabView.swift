@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HomeTabView: View {
+    @Environment(AuthStatus.self) private var authStatus
+    @Environment(MainTabVM.self) private var mainTabVM
     @Bindable var vm: HomeTabVM
 
     var body: some View {
@@ -31,21 +33,31 @@ struct HomeTabView: View {
                             .font(.largeTitle)
                             .foregroundColor(.primary)
                             .bold()
-
-                        Spacer()
                     }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        mainTabVM.selection = 2
+                    }) {
+                        CircleAvatar()
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             .toolbarRole(.editor)
-            .task {
+            .task(priority: .userInitiated) {
                 await vm.loadData()
             }
             .globalBackground()
+        }.refreshable {
+            Task {
+                await vm.loadData(refresh: true)
+            }
         }
     }
 
     private var content: some View {
-        VStack(alignment: .leading, spacing: 24) {
+        LazyVStack(alignment: .leading, spacing: 24) {
 
             // Sección: Mejores mangas
             LazyVStack(alignment: .leading, spacing: 12) {
@@ -55,24 +67,23 @@ struct HomeTabView: View {
                     .padding(.horizontal)
 
                 ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(spacing: 16) {
+                    LazyHStack {
                         ForEach(
-                            Array(vm.bestMangas.items.enumerated()),
+                            Array(vm.bestMangas.enumerated()),
                             id: \.element.id
                         ) { index, manga in
                             ZStack(alignment: .bottomTrailing) {
                                 MangaCard(manga: manga) {
                                     vm.selectedManga = manga
                                 }
-                                .frame(width: 150, height: 220)
                                 .onAppear {
-                                    if manga.id == vm.bestMangas.items.last?.id {
+                                    if manga.id == vm.bestMangas.last?.id {
                                         Task {
-                                            await vm.bestMangas.loadNextPage()
+                                            await vm.loadBestMangas()
                                         }
                                     }
                                 }
-                                
+
                                 Circle()
                                     .fill(.brandPrimary)
                                     .overlay {
@@ -84,14 +95,7 @@ struct HomeTabView: View {
                                     .frame(width: 50)
                             }
                         }
-
-                        // Indicador de carga al final
-                        if vm.bestMangas.isLoading {
-                            ProgressView()
-                                .frame(width: 150, height: 220)
-                        }
                     }
-                    .padding(.horizontal)
                 }
             }
 
@@ -113,7 +117,6 @@ struct HomeTabView: View {
                                 vm.selectedGenre = genre
                             }
                         }
-
                     }
                     .padding(.horizontal)
                 }
@@ -121,31 +124,28 @@ struct HomeTabView: View {
                 // Grid de mangas filtrados
                 LazyVGrid(
                     columns: [
-                        GridItem(.flexible(), spacing: 16),
-                        GridItem(.flexible(), spacing: 16),
+                        GridItem(.adaptive(minimum: 180))
                     ],
-                    spacing: 16
                 ) {
                     ForEach(vm.filteredMangas) { manga in
                         MangaCard(manga: manga) {
                             vm.selectedManga = manga
                         }
-                        .frame(height: 220)
+                        .onAppear {
+                            if manga.id == vm.filteredMangas.last?.id {
+                                Task {
+                                    await vm.loadFilteredMangas()
+                                }
+                            }
+                        }
+
                     }
                 }
-                .padding(.horizontal)
-                ProgressView()
-                    .onAppear {
-                        Task.detached {
-                            await vm.loadMoreFilteredMangas()
-                        }
-                    }
             }
-        }
-
+        }.padding(.horizontal)
     }
 }
 
-#Preview {
+#Preview(traits: .devEnvironment) {
     HomeTabView(vm: HomeTabVM(apiManager: .test))
 }

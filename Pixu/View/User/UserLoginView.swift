@@ -262,9 +262,6 @@ struct RegisterSheet: View {
     }
 }
 
-#Preview {
-    var authStatus = AuthStatus()
-
+#Preview(traits: .devEnvironment) {
     UserLoginView(vm: UserLoginVM(apiManager: .test))
-        .environment(authStatus)
 }

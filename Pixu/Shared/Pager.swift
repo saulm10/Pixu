@@ -6,46 +6,28 @@
 //
 
 import SwiftUI
+import Combine
 
-@Observable @MainActor
-final class Pager<T: Identifiable> {
-    var items: [T] = []
-    var currentPage: Int = 1
-    var isLoading: Bool = false
-    var hasReachedEnd: Bool = false
+actor PageState {
+    private var page = 0
+    private var isLoading = false
+    private var hasMorePages = true
     
-    private let pageSize: Int
-    private let fetchProvider: (Int, Int) async throws -> [T]
-    
-    init(pageSize: Int = 20, fetchProvider: @escaping (Int, Int) async throws -> [T]) {
-        self.pageSize = pageSize
-        self.fetchProvider = fetchProvider
+    func nextPage() -> Int? {
+        guard !isLoading, hasMorePages else { return nil }
+        isLoading = true
+        page += 1
+        return page
     }
     
-    func loadNextPage() async {
-        // Check y set en una sola operación
-        guard !isLoading && !hasReachedEnd else { return }
-        isLoading = true  // ← Ya está bien posicionado
-        
-        defer { isLoading = false }
-        
-        do {
-            let newItems = try await fetchProvider(currentPage, pageSize)
-            print("✅ Página \(currentPage): recibidos \(newItems.count) items")
-            if newItems.count < pageSize {
-                hasReachedEnd = true
-            }
-            items.append(contentsOf: newItems)
-            currentPage += 1
-        } catch {
-            print("❌ Error cargando página: \(error)")
-        }
+    func finishLoading(hasMore: Bool = true) {
+        isLoading = false
+        hasMorePages = hasMore
     }
     
     func reset() {
-        items = []
-        currentPage = 0
-        hasReachedEnd = false
+        page = 0
         isLoading = false
+        hasMorePages = true
     }
 }

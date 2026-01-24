@@ -97,7 +97,6 @@ struct UserAcountView: View {
     }
 }
 
-#Preview {
+#Preview(traits: .devEnvironment) {
     UserAcountView(vm: UserAccountVM())
-        .environment(AuthStatus())
 }

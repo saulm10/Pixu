@@ -16,7 +16,7 @@ struct ScrollTabView: View {
     }
 }
 
-#Preview {
+#Preview(traits: .devEnvironment) {
     ScrollTabView(vm: ScrollTabVM())
 }
 

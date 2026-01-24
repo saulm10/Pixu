@@ -436,6 +436,6 @@ struct CollectionRowView: View {
     }
 }
 
-#Preview {
+#Preview(traits: .devEnvironment) {
     UserView(vm: UserVM(apiManager: .test))
 }

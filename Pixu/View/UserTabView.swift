@@ -24,7 +24,7 @@ struct UserTabView: View {
     }
 }
 
-#Preview {
+#Preview(traits: .devEnvironment) {
     UserTabView(
         vmLogin: UserLoginVM(apiManager: .test),
         vmUser: UserVM(apiManager: .test)

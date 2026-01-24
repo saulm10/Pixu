@@ -11,66 +11,75 @@ import SwiftUI
 @MainActor @Observable
 final class HomeTabVM {
     private let apiManager: APIManager
-
-    private var hasLoaded = false
-
+    var hasLoaded = false
+    
+    // Arrays simples
     var filteredMangas: [Manga] = []
-    var bestMangas: Pager<Manga>
+    var bestMangas: [Manga] = []
+    
+    // PageStates simples
+    private let filteredMangasPS = PageState()
+    private let bestMangasPS = PageState()
+    
     var genres: [String] = []
-
-    var selectedManga: Manga? = nil
-    var selectedGenre: String? = nil
-
+    var selectedManga: Manga?
+    
+    var selectedGenre: String? = nil {
+        didSet {
+            guard selectedGenre != oldValue else { return }
+            Task { await resetAndReloadFilteredMangas() }
+        }
+    }
+    
     init(apiManager: APIManager = .live) {
         self.apiManager = apiManager
-
-        self.bestMangas = Pager(pageSize: 10) { page, per in
-            await apiManager.manga.getBestMangas(
-                page: page,
-                per: per
-            ).items
-        }
     }
-
-    func loadData() async {
+    
+    func loadData(refresh: Bool = false) async {
+        refresh ? hasLoaded = false : ()
+        
         guard !hasLoaded else { return }
-
+        
         genres = await apiManager.genre.getAllGenres()
         selectedGenre = genres.first
-
-        await bestMangas.loadNextPage()
-
-        if let genre = selectedGenre {
-            await loadMangasByGenre(genre)
-        }
-
+        
+        await loadBestMangas()
+        await loadFilteredMangas()
+        
         hasLoaded = true
     }
-
-    func loadMangasByGenre(_ genre: String) async {
-        filteredMangas = await apiManager.manga
-            .getMangasByGenre(
-                genre: genre,
-                page: 1,
-                per: 10
-            ).items
+    
+    func loadBestMangas() async {
+        guard let page = await bestMangasPS.nextPage() else { return }
+        
+        let response = await apiManager.manga.getBestMangas(page: page, per: 20)
+        bestMangas.append(contentsOf: response.items)
+        
+        let hasMore = response.items.count == 20
+        await bestMangasPS.finishLoading(hasMore: hasMore)
     }
-
-    //    func loadBestMangas() async {
-    //        let page = await apiManager.manga.getBestMangas(page: 1, per: 10)
-    //        bestMangas = page.items
-    //    }
-    //
-    //    func loadGenres() async {
-    //        genres =
-    //    }
-
-    func loadFiltededMangas() async {
-
+    
+    func loadFilteredMangas() async {
+        guard let page = await filteredMangasPS.nextPage() else { return }
+        guard let genre = selectedGenre else {
+            await filteredMangasPS.finishLoading(hasMore: false)
+            return
+        }
+        
+        let response = await apiManager.manga.getMangasByGenre(
+            genre: genre,
+            page: page,
+            per: 20
+        )
+        filteredMangas.append(contentsOf: response.items)
+        
+        let hasMore = response.items.count == 20
+        await filteredMangasPS.finishLoading(hasMore: hasMore)
     }
-
-    func loadMoreFilteredMangas() async {
-
+    
+    private func resetAndReloadFilteredMangas() async {
+        filteredMangas = []
+        await filteredMangasPS.reset()
+        await loadFilteredMangas()
     }
-
 }

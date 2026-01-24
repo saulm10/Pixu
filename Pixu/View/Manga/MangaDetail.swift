@@ -701,7 +701,6 @@ struct ReadingVolumeButton: View {
     }
 }
 
-// MARK: - Preview
-#Preview {
+#Preview(traits: .devEnvironment) {
     MangaDetail(manga: Manga.test)
 }

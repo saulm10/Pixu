@@ -20,6 +20,7 @@ struct HomeTabView: View {
             .navigationDestination(item: $vm.selectedManga) { manga in
                 MangaDetail(manga: manga)
             }
+            .toolbarRole(.editor)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
@@ -35,7 +36,7 @@ struct HomeTabView: View {
                             .bold()
                     }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
                         mainTabVM.selection = 2
                     }) {
@@ -44,7 +45,6 @@ struct HomeTabView: View {
                     .buttonStyle(.plain)
                 }
             }
-            .toolbarRole(.editor)
             .task(priority: .userInitiated) {
                 await vm.loadData()
             }

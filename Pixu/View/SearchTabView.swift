@@ -22,24 +22,19 @@ struct SearchTabView: View {
             .navigationDestination(item: $vm.selectedManga) { manga in
                 MangaDetail(manga: manga)
             }
+            .toolbarRole(.editor)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    HStack(spacing: 8) {
-                        Text("Buscar")
-                            .font(.largeTitle)
-                            .foregroundColor(.primary)
-                            .bold()
-
-                        Spacer()
-                    }
+                    Text("Buscar")
+                        .font(.largeTitle)
+                        .foregroundColor(.primary)
+                        .bold()
                 }
             }
-            .toolbarRole(.editor)
             .task(priority: .userInitiated) {
                 await vm.loadData()
             }
-            .globalBackground()
             .sheet(isPresented: $showDemographics) {
                 SearchablePickerView(
                     title: "Seleccionar Público",
@@ -64,6 +59,7 @@ struct SearchTabView: View {
                     itemLabel: { $0 }
                 )
             }
+            .globalBackground()
         }
         .searchable(text: $vm.searchText, prompt: "Buscar mangas...")
     }

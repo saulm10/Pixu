@@ -8,71 +8,73 @@
 import SwiftUI
 
 struct UserView: View {
+    @Environment(MainTabVM.self) private var mainTabVM
+
     @Bindable var vm: UserVM
     @State var userVM: UserAccountVM = UserAccountVM()
 
-    @State private var showingAddManga = false
-    @State private var selectedCollectionForEdit: Collection?
-
     var body: some View {
         NavigationStack {
-            ZStack {
-                if vm.isLoading {
-                    ProgressView("Cargando colección...")
-                } else if vm.collections.isEmpty {
-                    emptyStateView
-                } else {
-                    ScrollView {
-                        VStack(spacing: 20) {
-                            statisticsSection
-                            collectionsListSection
-                        }
-                        .padding()
-                    }
-                }
+            ScrollView {
+                content
             }
-            .globalBackground()
-            .navigationTitle("Mi Colección")
+            .navigationDestination(item: $vm.selectedManga) { manga in
+                MangaDetail(manga: manga)
+            }
+            .toolbarRole(.editor)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    userInitialButton
+                ToolbarItem(placement: .principal) {
+                    Text("Mi colección")
+                        .font(.largeTitle)
+                        .foregroundColor(.primary)
+                        .bold()
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        showingAddManga = true
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink {
+                        UserAcountView(vm: userVM)
                     } label: {
-                        Image(systemName: "plus")
-                            .font(.title2)
-                            .foregroundColor(.primary)
-                            .bold()
+                        CircleAvatar()
                     }
                 }
-            }
-            .sheet(isPresented: $showingAddManga) {
-                AddMangaView { request in
-                    //vm.addOrUpdateManga(request)
-                }
-            }
-            .sheet(item: $selectedCollectionForEdit) { collection in
-                EditMangaView(vm: EditColectionVM(collection: collection))
             }
             .task {
                 await vm.loadCollections()
             }
+            .globalBackground()
         }
     }
 
-    private var userInitialButton: some View {
-        NavigationLink {
-            UserAcountView(vm: userVM)
-        } label: {
-            CircleAvatar()
+    private var content: some View {
+        ZStack {
+            if vm.isLoading {
+                ProgressView("Cargando colección...")
+            } else if vm.collections.isEmpty {
+                emptyStateView
+            } else {
+                LazyVStack(spacing: 20) {
+                    statisticsSection
+                    collectionsListSection
+                }
+                .padding()
+            }
         }
     }
+    
+//    @ViewBuilder
+//    private var contentBody: some View {
+//        switch vm.state {
+//        case .loading:
+//            LoadingMangasList
+//        case .loaded:
+//            MangasList
+//        case .empty:
+//            ListEmptyView
+//        }
+//    }
 
-    // MARK: - Statistics Section
     private var statisticsSection: some View {
-        VStack(spacing: 12) {
+        LazyVStack(spacing: 12) {
             Text("Estadísticas")
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -110,24 +112,23 @@ struct UserView: View {
 
     // MARK: - Collections List Section
     private var collectionsListSection: some View {
-        VStack(spacing: 12) {
+        LazyVStack(spacing: 12) {
             Text("Mis Mangas")
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            VStack(spacing: 8) {
-                ForEach(vm.collections) { collection in
-                    CollectionRowView(
-                        collection: collection,
-                        onEdit: { selectedCollectionForEdit = collection },
-                        onDelete: { vm.deleteCollection(collection.manga.id) }
-                    )
-                }
-            }
+            //            VStack(spacing: 8) {
+            //                ForEach(vm.collections) { collection in
+            //                    CollectionRowView(
+            //                        collection: collection,
+            //                        onEdit: { selectedCollectionForEdit = collection },
+            //                        onDelete: { vm.deleteCollection(collection.manga.id) }
+            //                    )
+            //                }
+            //            }
         }
     }
 
-    // MARK: - Empty State
     private var emptyStateView: some View {
         VStack(spacing: 20) {
             Image(systemName: "books.vertical")
@@ -143,7 +144,7 @@ struct UserView: View {
                 .foregroundColor(.secondary)
 
             Button {
-                showingAddManga = true
+                mainTabVM.selection = 3
             } label: {
                 Label("Añadir mi primer manga", systemImage: "plus.circle.fill")
                     .font(.headline)

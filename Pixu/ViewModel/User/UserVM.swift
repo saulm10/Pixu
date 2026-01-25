@@ -12,10 +12,14 @@ import SwiftUI
 final class UserVM {
     private let apiManager: APIManager
     
+    var state: ViewState = .empty
+    
     var collections: [Collection] = []
     var completeCollectionsCount: Int = 0
     var totalVolumesOwned: Int = 0
     var currentlyReadingCount: Int = 0
+    
+    var selectedManga: Manga?
     
     var isLoading: Bool = false
 

@@ -57,9 +57,6 @@ struct MainTabView: View {
         .tabBarMinimizeBehavior(.onScrollDown)
         .tabViewStyle(.sidebarAdaptable)
         .defaultAdaptableTabBarPlacement(.tabBar)
-        .task(priority: .userInitiated) {
-            authStatus.isLoggedIn = await userLoginVM.loginAuth()
-        }
         .environment(vm)
     }
 }

@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 #if DEBUG
 struct AppEnvironmentModifier: PreviewModifier {
     struct Context {
@@ -17,7 +15,7 @@ struct AppEnvironmentModifier: PreviewModifier {
     }
 
     static func makeSharedContext() async throws -> Context {
-        let auth = AuthStatus()
+        let auth = AuthStatus(apiManager: .test)
         let tabs = MainTabVM()
         
         return Context(authStatus: auth, mainTabVM: tabs)

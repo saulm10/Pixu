@@ -19,8 +19,12 @@ final class AuthStatus {
     
     init(apiManager: APIManager = .live) {
         self.apiManager = apiManager
-        Task{
-            isLoggedIn = await apiManager.user.loginAuth()
+        Task {
+            await loginAuth()
         }
+    }
+    
+    func loginAuth() async {
+        isLoggedIn = await apiManager.user.loginAuth()
     }
 }

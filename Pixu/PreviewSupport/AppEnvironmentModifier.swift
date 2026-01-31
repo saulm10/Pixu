@@ -32,4 +32,34 @@ extension PreviewTrait where T == Preview.ViewTraits {
     /// Inyecta AuthStatus y MainTabVM simulados.
     static var devEnvironment: Self = .modifier(AppEnvironmentModifier())
 }
+
+#endif
+
+#if DEBUG
+struct AppEnvironmentModifierNoLogin: PreviewModifier {
+    struct Context {
+        let authStatus: AuthStatus
+        let mainTabVM: MainTabVM
+    }
+
+    static func makeSharedContext() async throws -> Context {
+        let auth = AuthStatus(apiManager: .test)
+        let tabs = MainTabVM()
+                
+        return Context(authStatus: auth, mainTabVM: tabs)
+    }
+
+    func body(content: Content, context: Context) -> some View {
+        
+        content
+            .environment(context.authStatus)
+            .environment(context.mainTabVM)
+    }
+}
+
+
+extension PreviewTrait where T == Preview.ViewTraits {
+    /// Inyecta AuthStatus y MainTabVM simulados.
+    static var devEnvironmentNoLogin: Self = .modifier(AppEnvironmentModifierNoLogin())
+}
 #endif

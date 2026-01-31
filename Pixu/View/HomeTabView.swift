@@ -91,13 +91,52 @@ struct HomeTabView: View {
                                             .font(.title)
                                             .foregroundColor(.textOnPrimary)
                                             .bold()
+                                    }.frame(width: 50)
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Sección: Colección propia
+            LazyVStack(alignment: .leading, spacing: 12) {
+                Text("Colección:")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .padding(.horizontal)
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack {
+                        ForEach(
+                            Array(vm.bestMangas.enumerated()),
+                            id: \.element.id
+                        ) { index, manga in
+                            ZStack(alignment: .bottomTrailing) {
+                                MangaCard(manga: manga) {
+                                    vm.selectedManga = manga
+                                }
+                                .onAppear {
+                                    if manga.id == vm.bestMangas.last?.id {
+                                        Task {
+                                            await vm.loadBestMangas()
+                                        }
+                                    }
+                                }
+
+                                Circle()
+                                    .fill(.brandPrimary)
+                                    .overlay {
+                                        Text((index + 1).description)
+                                            .font(.title)
+                                            .foregroundColor(.textOnPrimary)
+                                            .bold()
                                     }
                                     .frame(width: 50)
                             }
                         }
                     }
                 }
-            }
+            }.requiresAuthentication()
 
             // Sección: Mangas por género
             LazyVStack(alignment: .leading, spacing: 12) {
@@ -124,7 +163,7 @@ struct HomeTabView: View {
                 // Grid de mangas filtrados
                 LazyVGrid(
                     columns: [
-                        GridItem(.adaptive(minimum: 180))
+                        GridItem(.adaptive(minimum: 170))
                     ],
                 ) {
                     ForEach(vm.filteredMangas) { manga in
@@ -146,6 +185,10 @@ struct HomeTabView: View {
     }
 }
 
-#Preview(traits: .devEnvironment) {
+#Preview("Loged in", traits: .devEnvironment) {
+    HomeTabView(vm: HomeTabVM(apiManager: .test))
+}
+
+#Preview("No Logged", traits: .devEnvironmentNoLogin) {
     HomeTabView(vm: HomeTabVM(apiManager: .test))
 }

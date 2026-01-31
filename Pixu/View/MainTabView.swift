@@ -18,6 +18,8 @@ struct MainTabView: View {
     @State var userVM: UserVM = UserVM()
     @State var searchTabVM: SearchTabVM = SearchTabVM()
 
+    @State private var showSplash = true
+
     var body: some View {
         TabView(selection: $vm.selection) {
             Tab(
@@ -58,6 +60,18 @@ struct MainTabView: View {
         .tabViewStyle(.sidebarAdaptable)
         .defaultAdaptableTabBarPlacement(.tabBar)
         .environment(vm)
+        .overlay {
+            if showSplash {
+                SplashAnimationView()
+                  .transition(.opacity)
+            }
+        }
+        .task {
+            try? await Task.sleep(for: .milliseconds(1500))
+            withAnimation {
+                showSplash = false
+            }
+        }
     }
 }
 

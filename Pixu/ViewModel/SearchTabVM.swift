@@ -147,9 +147,9 @@ final class SearchTabVM {
                 return
             }
             
-            print("📊 Resultados obtenidos: \(response.items.count)")
+            print("📊 Resultados obtenidos: \(response.count)")
             
-            filteredMangas.append(contentsOf: response.items)
+            filteredMangas.append(contentsOf: response)
             
             // Actualizar estado basado en resultados
             if filteredMangas.isEmpty {
@@ -158,7 +158,7 @@ final class SearchTabVM {
                 state = .loaded
             }
 
-            let hasMore = response.items.count == 20
+            let hasMore = response.count == 20
             await filteredMangasPS.finishLoading(hasMore: hasMore)
         }
         

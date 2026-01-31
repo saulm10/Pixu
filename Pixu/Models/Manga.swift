@@ -4,42 +4,76 @@
 //
 //  Created by Saul Martinez Diez on 12/1/26.
 //
+
 import Foundation
+import SwiftData
 
-struct Manga: Codable, Identifiable, Equatable, Hashable {
-    let id: Int
-    let title: String
-    let titleEnglish: String?
-    let titleJapanese: String
-    let sypnosis: String?
-    let background: String?
-    let url: String?
-    let mainPicture: String?
-    let chapters: Int?
-    let volumes: Int?
-    let score: Double
-    let status: String
-    let startDate: String
+@Model
+final class Manga{
+    #Index<Manga>([\.id])
+    var id: Int
+    var title: String
+    var titleEnglish: String?
+    var titleJapanese: String?
+    var sypnosis: String?
+    var background: String?
+    var url: String
+    var mainPicture: String
+    var chapters: Int?
+    var volumes: Int?
+    var score: Double?
+    var status: String?
+    var startDate: String?
+    var endDate: String?
 
-    let genres: [Genre]
-    let themes: [Theme]
-    let demographics: [Demographic]
-    let authors: [Author]
-
-    var cleanURL: String {
-        url?.replacingOccurrences(of: "\\", with: "")
+    @Relationship var genres: [Genre]
+    @Relationship var themes: [Theme]
+    @Relationship var demographics: [Demographic]
+    @Relationship var authors: [Author]
+    
+    init(
+        id: Int,
+        title: String,
+        titleEnglish: String? = nil,
+        titleJapanese: String? = nil,
+        sypnosis: String? = nil,
+        background: String? = nil,
+        url: String? = nil,
+        mainPicture: String? = nil,
+        chapters: Int? = nil,
+        volumes: Int? = nil,
+        score: Double? = nil,
+        status: String? = nil,
+        startDate: String? = nil,
+        genres: [Genre],
+        themes: [Theme],
+        demographics: [Demographic],
+        authors: [Author]
+    ) {
+        self.id = id
+        self.title = title
+        self.titleEnglish = titleEnglish
+        self.titleJapanese = titleJapanese
+        self.sypnosis = sypnosis
+        self.background = background
+        self.url = url?.replacingOccurrences(of: "\\", with: "")
             .replacingOccurrences(of: "\"", with: "") ?? ""
-    }
-
-    var cleanMainPicture: String {
-        mainPicture?.replacingOccurrences(of: "\\", with: "")
+        self.mainPicture = mainPicture?.replacingOccurrences(of: "\\", with: "")
             .replacingOccurrences(of: "\"", with: "") ?? ""
+        self.chapters = chapters
+        self.volumes = volumes
+        self.score = score
+        self.status = status
+        self.startDate = startDate
+        self.genres = genres
+        self.themes = themes
+        self.demographics = demographics
+        self.authors = authors
     }
 }
 
 extension Manga {
-
-    static let testList: [Manga] = [
+    nonisolated(unsafe) static let testList: [Manga] = [
         Manga(
             id: 2,
             title: "Berserk",
@@ -300,7 +334,7 @@ extension Manga {
         ),
     ]
 
-    static let test: Manga = Manga(
+    nonisolated(unsafe) static let test: Manga = Manga(
         id: 2,
         title: "Berserk",
         titleEnglish: "Berserk",

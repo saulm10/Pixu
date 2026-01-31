@@ -10,7 +10,7 @@ import NetworkAPI
 
 protocol AuthorsEndpoint {
     func getAllAuthors() async -> [Author]
-    func getAuthorsPaged(page: Int, per: Int) async -> PageDTO<Author>
+    func getAuthorsPaged(page: Int, per: Int) async -> [Author]
     func getAuthorsByIds(ids: [UUID]) async -> [Author]
 }
 
@@ -19,19 +19,20 @@ struct Authors: AuthorsEndpoint {
 
     func getAllAuthors() async -> [Author] {
         do {
-            return try await apiClient.get(
+            let dto: [AuthorDTO] = try await apiClient.get(
                 path: "list/authors",
                 queryParameters: [:],
                 temporaryAuth: nil
             )
+            return dto.map(\.toAuthor)
         } catch {
             return []
         }
     }
 
-    func getAuthorsPaged(page: Int = 1, per: Int = 10) async -> PageDTO<Author> {
+    func getAuthorsPaged(page: Int = 1, per: Int = 10) async -> [Author] {
         do {
-            return try await apiClient.get(
+            let dto: [AuthorDTO] = try await apiClient.get(
                 path: "list/authorsPaged",
                 queryParameters: [
                     "page": page.description,
@@ -39,21 +40,20 @@ struct Authors: AuthorsEndpoint {
                 ],
                 temporaryAuth: nil
             )
+            return dto.map(\.toAuthor)
         } catch {
-            return PageDTO<Author>(
-                items: [],
-                metadata: PageMetadata(page: 1, per: 10, total: 0)
-            )
+            return []
         }
     }
 
     func getAuthorsByIds(ids: [UUID]) async -> [Author] {
         do {
-            return try await apiClient.post(
+            let dto: [AuthorDTO] = try await apiClient.post(
                 path: "list/authorsByIds",
                 body: ["ids": ids],
                 temporaryAuth: nil
             )
+            return dto.map(\.toAuthor)
         } catch {
             return []
         }
@@ -65,15 +65,8 @@ struct AuthorsTest: AuthorsEndpoint {
         return Author.testList
     }
 
-    func getAuthorsPaged(page: Int = 1, per: Int = 10) async -> PageDTO<Author> {
-        return PageDTO<Author>(
-            items: Author.testList,
-            metadata: PageMetadata(
-                page: page,
-                per: per,
-                total: Author.testList.count
-            )
-        )
+    func getAuthorsPaged(page: Int = 1, per: Int = 10) async -> [Author] {
+        return Author.testList
     }
 
     func getAuthorsByIds(ids: [UUID]) async -> [Author] {

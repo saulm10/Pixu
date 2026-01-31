@@ -22,10 +22,10 @@ struct MangaCard: View {
 
     var body: some View {
         ImageUrlCache(
-            manga.cleanMainPicture,
+            manga.mainPicture,
             contentMode: .fill
         )
-        .frame(width: 180, height: 250)
+        .frame(width: 170, height: 250)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .onTapGesture {
             onTap()

@@ -6,15 +6,22 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Demographic: Codable, Identifiable, Equatable, Hashable {
-    let id: UUID
-    let demographic: String
+@Model
+final class Demographic{
+    #Index<Demographic>([\.demographic])
+    @Attribute(.unique) var id: UUID
+    var demographic: String
+        
+    init(id: UUID, demographic: String) {
+        self.id = id
+        self.demographic = demographic
+    }
 }
 
 extension Demographic {
-
-    static let testList: [Demographic] = [
+    nonisolated(unsafe) static let testList: [Demographic] = [
         Demographic(
             id: UUID(uuidString: "CE425E7E-C7CD-42DB-ADE3-1AB9AD16386D")!,
             demographic: "Seinen"
@@ -25,7 +32,7 @@ extension Demographic {
         ),
     ]
 
-    static let test: Demographic = Demographic(
+    nonisolated(unsafe) static let test: Demographic = Demographic(
         id: UUID(uuidString: "CE425E7E-C7CD-42DB-ADE3-1AB9AD16386D")!,
         demographic: "Seinen"
     )

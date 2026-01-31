@@ -14,3 +14,15 @@ struct CollectionDTO: Codable {
     let volumesOwned: [Int]
     let manga: MangaDTO
 }
+
+extension CollectionDTO {
+    var toCollection: Collection {
+        Collection(
+            id: id,
+            completeCollection: completeCollection,
+            readingVolume: readingVolume,
+            volumesOwned: volumesOwned,
+            manga: manga.toManga
+        )
+    }
+}

@@ -20,11 +20,12 @@ struct Collections: CollectionEndpoint {
     
     func getCollection() async -> [Collection] {
         do {
-            return try await apiClient.get(
+            let dto: [CollectionDTO] = try await apiClient.get(
                 path: "collection/manga",
                 queryParameters: [:],
                 temporaryAuth: nil
             )
+            return dto.map(\.toCollection)
         } catch {
             return []
         }
@@ -32,11 +33,12 @@ struct Collections: CollectionEndpoint {
     
     func getMangaFromCollection(id: String) async -> Collection? {
         do {
-            return try await apiClient.get(
+            let dto: CollectionDTO = try await apiClient.get(
                 path: "collection/manga/\(id)",
                 queryParameters: [:],
                 temporaryAuth: nil
             )
+            return dto.toCollection
         } catch {
             return nil
         }

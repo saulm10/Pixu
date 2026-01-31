@@ -6,18 +6,35 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Collection: Codable, Identifiable {
-    let id: UUID
-    let completeCollection: Bool
-    let readingVolume: Int?
-    let volumesOwned: [Int]
-    let manga : Manga
+@Model
+final class Collection{
+    #Index<Collection>([\.id])
+    @Attribute(.unique) var id: UUID
+    var completeCollection: Bool
+    var readingVolume: Int?
+    var volumesOwned: [Int]
+    @Relationship var manga : Manga
+    
+    init(
+        id: UUID,
+        completeCollection: Bool,
+        readingVolume: Int? = nil,
+        volumesOwned: [Int],
+        manga: Manga
+    ) {
+        self.id = id
+        self.completeCollection = completeCollection
+        self.readingVolume = readingVolume
+        self.volumesOwned = volumesOwned
+        self.manga = manga
+    }
 }
 
 extension Collection {
     
-    static let testList: [Collection] = [
+    nonisolated(unsafe) static let testList: [Collection] = [
         Collection(
             id: UUID(),
             completeCollection: true,
@@ -34,7 +51,7 @@ extension Collection {
         )
     ]
     
-    static let test = Collection(
+    nonisolated(unsafe) static let test = Collection(
         id: UUID(),
         completeCollection: true,
         readingVolume: 1,

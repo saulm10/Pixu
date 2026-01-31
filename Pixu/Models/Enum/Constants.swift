@@ -10,4 +10,6 @@ import Foundation
 
 enum KeyChainK: String {
     case token
+    case login
+    case password
 }

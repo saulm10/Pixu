@@ -9,24 +9,24 @@ import Foundation
 import NetworkAPI
 
 protocol MangasEndpoint {
-    func getBestMangas(page: Int, per: Int) async -> PageDTO<Manga>
-    func getAllMangas(page: Int, per: Int) async -> PageDTO<Manga>
+    func getBestMangas(page: Int, per: Int) async -> [Manga]
+    func getAllMangas(page: Int, per: Int) async -> [Manga]
     func getMangasByGenre(genre: String, page: Int, per: Int) async
-        -> PageDTO<Manga>
+        -> [Manga]
     func getMangasByDemographic(demographic: String, page: Int, per: Int) async
-        -> PageDTO<Manga>
+        -> [Manga]
     func getMangasByTheme(theme: String, page: Int, per: Int) async
-        -> PageDTO<Manga>
+        -> [Manga]
     func getMangasByAuthor(authorId: UUID, page: Int, per: Int) async
-        -> PageDTO<Manga>
+        -> [Manga]
 }
 
 struct Mangas: MangasEndpoint {
     let apiClient = NetworkManager.shared.client
 
-    func getBestMangas(page: Int = 1, per: Int = 10) async -> PageDTO<Manga> {
+    func getBestMangas(page: Int = 1, per: Int = 10) async -> [Manga] {
         do {
-            return try await apiClient.get(
+            let dto: PageDTO<MangaDTO> = try await apiClient.get(
                 path: "list/bestMangas",
                 queryParameters: [
                     "page": page.description,
@@ -34,17 +34,15 @@ struct Mangas: MangasEndpoint {
                 ],
                 temporaryAuth: nil
             )
+            return dto.items.map(\.toManga)
         } catch {
-            return PageDTO<Manga>(
-                items: [],
-                metadata: PageMetadata(page: 1, per: 10, total: 0)
-            )
+            return []
         }
     }
 
-    func getAllMangas(page: Int = 1, per: Int = 10) async -> PageDTO<Manga> {
+    func getAllMangas(page: Int = 1, per: Int = 10) async -> [Manga] {
         do {
-            return try await apiClient.get(
+            let dto: PageDTO<MangaDTO> = try await apiClient.get(
                 path: "list/mangas",
                 queryParameters: [
                     "page": page.description,
@@ -52,19 +50,17 @@ struct Mangas: MangasEndpoint {
                 ],
                 temporaryAuth: nil
             )
+            return dto.items.map(\.toManga)
         } catch {
-            return PageDTO<Manga>(
-                items: [],
-                metadata: PageMetadata(page: 1, per: 10, total: 0)
-            )
+            return []
         }
     }
 
     func getMangasByGenre(genre: String, page: Int = 1, per: Int = 10) async
-        -> PageDTO<Manga>
+        -> [Manga]
     {
         do {
-            return try await apiClient.get(
+            let dto: PageDTO<MangaDTO> = try await apiClient.get(
                 path: "list/mangaByGenre/\(genre)",
                 queryParameters: [
                     "page": page.description,
@@ -72,11 +68,9 @@ struct Mangas: MangasEndpoint {
                 ],
                 temporaryAuth: nil
             )
+            return dto.items.map(\.toManga)
         } catch {
-            return PageDTO<Manga>(
-                items: [],
-                metadata: PageMetadata(page: 1, per: 10, total: 0)
-            )
+            return []
         }
     }
 
@@ -84,9 +78,9 @@ struct Mangas: MangasEndpoint {
         demographic: String,
         page: Int = 1,
         per: Int = 10
-    ) async -> PageDTO<Manga> {
+    ) async -> [Manga] {
         do {
-            return try await apiClient.get(
+            let dto: PageDTO<MangaDTO> = try await apiClient.get(
                 path: "list/mangaByDemographic/\(demographic)",
                 queryParameters: [
                     "page": page.description,
@@ -94,19 +88,17 @@ struct Mangas: MangasEndpoint {
                 ],
                 temporaryAuth: nil
             )
+            return dto.items.map(\.toManga)
         } catch {
-            return PageDTO<Manga>(
-                items: [],
-                metadata: PageMetadata(page: 1, per: 10, total: 0)
-            )
+            return []
         }
     }
 
     func getMangasByTheme(theme: String, page: Int = 1, per: Int = 10) async
-        -> PageDTO<Manga>
+        -> [Manga]
     {
         do {
-            return try await apiClient.get(
+            let dto: PageDTO<MangaDTO> = try await apiClient.get(
                 path: "list/mangaByTheme/\(theme)",
                 queryParameters: [
                     "page": page.description,
@@ -114,19 +106,17 @@ struct Mangas: MangasEndpoint {
                 ],
                 temporaryAuth: nil
             )
+            return dto.items.map(\.toManga)
         } catch {
-            return PageDTO<Manga>(
-                items: [],
-                metadata: PageMetadata(page: 1, per: 10, total: 0)
-            )
+            return []
         }
     }
 
     func getMangasByAuthor(authorId: UUID, page: Int = 1, per: Int = 10) async
-        -> PageDTO<Manga>
+        -> [Manga]
     {
         do {
-            return try await apiClient.get(
+            let dto: PageDTO<MangaDTO> = try await apiClient.get(
                 path: "list/mangaByAuthor/\(authorId)",
                 queryParameters: [
                     "page": page.description,
@@ -134,85 +124,57 @@ struct Mangas: MangasEndpoint {
                 ],
                 temporaryAuth: nil
             )
+            return dto.items.map(\.toManga)
         } catch {
-            return PageDTO<Manga>(
-                items: [],
-                metadata: PageMetadata(page: 1, per: 10, total: 0)
-            )
+            return []
         }
     }
 }
 
 struct MangasTest: MangasEndpoint {
-    func getBestMangas(page: Int = 1, per: Int = 10) async -> PageDTO<Manga> {
-        return PageDTO<Manga>(
-            items: Manga.testList,
-            metadata: PageMetadata(
-                page: page,
-                per: per,
-                total: Manga.testList.count
-            )
-        )
+    func getBestMangas(page: Int = 1, per: Int = 10) async -> [Manga] {
+        return Manga.testList
     }
 
-    func getAllMangas(page: Int = 1, per: Int = 10) async -> PageDTO<Manga> {
-        return PageDTO<Manga>(
-            items: Manga.testList,
-            metadata: PageMetadata(
-                page: page,
-                per: per,
-                total: Manga.testList.count
-            )
-        )
+    func getAllMangas(page: Int = 1, per: Int = 10) async -> [Manga] {
+        return Manga.testList
     }
 
     func getMangasByGenre(genre: String, page: Int = 1, per: Int = 10) async
-        -> PageDTO<Manga>
+        -> [Manga]
     {
         let filtered = Manga.testList.filter { manga in
             manga.genres.contains { $0.genre == genre }
         }
-        return PageDTO<Manga>(
-            items: filtered,
-            metadata: PageMetadata(page: page, per: per, total: filtered.count)
-        )
+        return filtered
     }
 
     func getMangasByDemographic(
         demographic: String,
         page: Int = 1,
         per: Int = 10
-    ) async -> PageDTO<Manga> {
+    ) async -> [Manga] {
         let filtered = Manga.testList.filter { manga in
             manga.demographics.contains { $0.demographic == demographic }
         }
-        return PageDTO<Manga>(
-            items: filtered,
-            metadata: PageMetadata(page: page, per: per, total: filtered.count)
-        )
+        return filtered
     }
 
     func getMangasByTheme(theme: String, page: Int = 1, per: Int = 10) async
-        -> PageDTO<Manga>
+        -> [Manga]
     {
         let filtered = Manga.testList.filter { manga in
             manga.themes.contains { $0.theme == theme }
         }
-        return PageDTO<Manga>(
-            items: filtered,
-            metadata: PageMetadata(page: page, per: per, total: filtered.count)
-        )
+        return filtered
     }
 
     func getMangasByAuthor(authorId: UUID, page: Int = 1, per: Int = 10) async
-        -> PageDTO<Manga>
+        -> [Manga]
     {
         let filtered = Manga.testList.filter { manga in
             manga.authors.contains { $0.id == authorId }
         }
-        return PageDTO<Manga>(
-            items: filtered,
-            metadata: PageMetadata(page: page, per: per, total: filtered.count)
-        )
+        return filtered
     }
 }

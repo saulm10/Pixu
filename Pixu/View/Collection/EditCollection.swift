@@ -18,7 +18,7 @@ struct EditMangaView: View {
                     HStack {
                         AsyncImage(
                             url: URL(
-                                string: vm.collection.manga.cleanMainPicture
+                                string: vm.collection.manga.mainPicture
                             )
                         ) { image in
                             image

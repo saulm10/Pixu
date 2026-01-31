@@ -49,8 +49,8 @@ struct MangaDetail: View {
 
                     
                     // Botón de MyAnimeList
-                    if !manga.cleanURL.isEmpty {
-                        malButton                        
+                    if !manga.url.isEmpty {
+                        malButton
                     }
                 }
                 .padding(.horizontal)
@@ -74,7 +74,7 @@ struct MangaDetail: View {
     private var heroSection: some View {
         ZStack(alignment: .bottomTrailing) {
             // Imagen principal con gradiente
-            AsyncImage(url: URL(string: manga.cleanMainPicture)) { phase in
+            AsyncImage(url: URL(string: manga.mainPicture)) { phase in
                 switch phase {
                 case .success(let image):
                     image
@@ -115,7 +115,7 @@ struct MangaDetail: View {
         HStack(spacing: 6) {
             Image(systemName: "star.fill")
                 .font(.system(size: 14, weight: .semibold))
-            Text(String(format: "%.2f", manga.score))
+            Text(String(format: "%.2f", manga.score ?? 0))
                 .font(.system(size: 16, weight: .bold))
         }
         .foregroundStyle(.white)
@@ -133,7 +133,7 @@ struct MangaDetail: View {
                 .font(.system(size: 18, weight: .bold))
                 .foregroundStyle(.yellow)
             
-            Text(String(format: "%.2f", manga.score))
+            Text(String(format: "%.2f", manga.score ?? 0))
                 .font(.system(size: 24, weight: .bold))
                 .foregroundStyle(.white)
         }
@@ -159,7 +159,7 @@ struct MangaDetail: View {
                     .foregroundStyle(Color.primary.opacity(0.7))
             }
             
-            Text(manga.titleJapanese)
+            Text(manga.titleJapanese ?? "")
                 .font(.system(size: 16))
                 .foregroundStyle(Color.primary.opacity(0.6))
         }
@@ -178,7 +178,7 @@ struct MangaDetail: View {
             
             StatCardManga(
                 icon: "list.bullet.rectangle.fill",
-                value: "\(manga.chapters)",
+                value: "\(manga.chapters, default: "")",
                 label: "Capítulos"
             )
             
@@ -205,7 +205,7 @@ struct MangaDetail: View {
         case "currently_publishing": return "Publicando"
         case "finished": return "Finalizado"
         case "on_hiatus": return "Hiatus"
-        default: return manga.status
+        default: return manga.status ?? ""
         }
     }
     
@@ -354,7 +354,7 @@ struct MangaDetail: View {
     
     // MARK: - MAL Button
     private var malButton: some View {
-        Link(destination: URL(string: manga.cleanURL)!) {
+        Link(destination: URL(string: manga.url)!) {
             HStack {
                 Image(systemName: "link.circle.fill")
                     .font(.system(size: 20))

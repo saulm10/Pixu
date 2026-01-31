@@ -53,9 +53,9 @@ final class HomeTabVM {
         guard let page = await bestMangasPS.nextPage() else { return }
         
         let response = await apiManager.manga.getBestMangas(page: page, per: 20)
-        bestMangas.append(contentsOf: response.items)
+        bestMangas.append(contentsOf: response)
         
-        let hasMore = response.items.count == 20
+        let hasMore = response.count == 20
         await bestMangasPS.finishLoading(hasMore: hasMore)
     }
     
@@ -71,9 +71,9 @@ final class HomeTabVM {
             page: page,
             per: 20
         )
-        filteredMangas.append(contentsOf: response.items)
+        filteredMangas.append(contentsOf: response)
         
-        let hasMore = response.items.count == 20
+        let hasMore = response.count == 20
         await filteredMangasPS.finishLoading(hasMore: hasMore)
     }
     

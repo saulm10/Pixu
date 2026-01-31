@@ -11,11 +11,11 @@ import NetworkAPI
 protocol SearchEndpoint {
     func searchMangasBeginsWith(search: String) async -> [Manga]
     func searchMangasContains(search: String, page: Int, per: Int) async
-        -> PageDTO<Manga>
+        -> [Manga]
     func searchAuthors(search: String) async -> [Author]
     func getMangaById(id: String) async -> Manga?
     func advancedSearchMangas(input: CustomSearchInputDTO, page: Int, per: Int)
-        async -> PageDTO<Manga>
+        async -> [Manga]
 }
 
 struct Searchs: SearchEndpoint {
@@ -23,21 +23,22 @@ struct Searchs: SearchEndpoint {
 
     func searchMangasBeginsWith(search: String) async -> [Manga] {
         do {
-            return try await apiClient.get(
+            let dto: [MangaDTO] = try await apiClient.get(
                 path: "search/mangasBeginsWith/\(search)",
                 queryParameters: [:],
                 temporaryAuth: nil
             )
+            return dto.map(\.toManga)
         } catch {
             return []
         }
     }
 
     func searchMangasContains(search: String, page: Int = 1, per: Int = 10)
-        async -> PageDTO<Manga>
+        async -> [Manga]
     {
         do {
-            return try await apiClient.get(
+            let dto: PageDTO<MangaDTO> = try await apiClient.get(
                 path: "search/mangasContains/\(search)",
                 queryParameters: [
                     "page": page.description,
@@ -45,21 +46,20 @@ struct Searchs: SearchEndpoint {
                 ],
                 temporaryAuth: nil
             )
+            return dto.items.map(\.toManga)
         } catch {
-            return PageDTO<Manga>(
-                items: [],
-                metadata: PageMetadata(page: 1, per: 10, total: 0)
-            )
+            return []
         }
     }
 
     func searchAuthors(search: String) async -> [Author] {
         do {
-            return try await apiClient.get(
+            let dto: [AuthorDTO] = try await apiClient.get(
                 path: "search/author/\(search)",
                 queryParameters: [:],
                 temporaryAuth: nil
             )
+            return dto.map(\.toAuthor)
         } catch {
             return []
         }
@@ -67,11 +67,12 @@ struct Searchs: SearchEndpoint {
 
     func getMangaById(id: String) async -> Manga? {
         do {
-            return try await apiClient.get(
+            let dto: MangaDTO = try await apiClient.get(
                 path: "search/manga/\(id)",
                 queryParameters: [:],
                 temporaryAuth: nil
             )
+            return dto.toManga
         } catch {
             return nil
         }
@@ -81,9 +82,9 @@ struct Searchs: SearchEndpoint {
         input: CustomSearchInputDTO,
         page: Int = 1,
         per: Int = 10
-    ) async -> PageDTO<Manga> {
+    ) async -> [Manga] {
         do {
-            return try await apiClient.post(
+            let dto: PageDTO<MangaDTO> = try await apiClient.post(
                 path: "search/manga",
                 body: input,
                 queryParameters: [
@@ -92,11 +93,9 @@ struct Searchs: SearchEndpoint {
                 ],
                 temporaryAuth: nil
             )
+            return dto.items.map(\.toManga)
         } catch {
-            return PageDTO<Manga>(
-                items: [],
-                metadata: PageMetadata(page: 1, per: 10, total: 0)
-            )
+            return []
         }
     }
 }
@@ -112,7 +111,7 @@ struct SearchsTest: SearchEndpoint {
     }
 
     func searchMangasContains(search: String, page: Int = 1, per: Int = 10)
-        async -> PageDTO<Manga>
+        async -> [Manga]
     {
         let filtered = Manga.testList.filter { manga in
             manga.title.lowercased().contains(search.lowercased())
@@ -120,10 +119,7 @@ struct SearchsTest: SearchEndpoint {
                     search.lowercased()
                 ) ?? false)
         }
-        return PageDTO<Manga>(
-            items: filtered,
-            metadata: PageMetadata(page: page, per: per, total: filtered.count)
-        )
+        return filtered
     }
 
     func searchAuthors(search: String) async -> [Author] {
@@ -141,7 +137,7 @@ struct SearchsTest: SearchEndpoint {
         input: CustomSearchInputDTO,
         page: Int = 1,
         per: Int = 10
-    ) async -> PageDTO<Manga> {
+    ) async -> [Manga] {
         var filtered = Manga.testList
 
         if let title = input.searchTitle {
@@ -198,9 +194,6 @@ struct SearchsTest: SearchEndpoint {
             }
         }
 
-        return PageDTO<Manga>(
-            items: filtered,
-            metadata: PageMetadata(page: page, per: per, total: filtered.count)
-        )
+        return filtered
     }
 }

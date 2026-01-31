@@ -6,15 +6,23 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Theme: Codable, Identifiable, Equatable, Hashable {
-    let id: UUID
-    let theme: String
+@Model
+final class Theme{
+    #Index<Theme>([\.theme])
+    @Attribute(.unique) var id: UUID
+    var theme: String
+
+    init(id: UUID, theme: String) {
+        self.id = id
+        self.theme = theme
+    }
 }
 
 extension Theme {
 
-    static let testList: [Theme] = [
+    nonisolated(unsafe) static let testList: [Theme] = [
         Theme(
             id: UUID(uuidString: "82728A80-0DBE-4B64-A295-A25555A4A4A5")!,
             theme: "Gore"
@@ -37,7 +45,7 @@ extension Theme {
         ),
     ]
 
-    static let test: Theme = Theme(
+    nonisolated(unsafe) static let test: Theme = Theme(
         id: UUID(uuidString: "82728A80-0DBE-4B64-A295-A25555A4A4A5")!,
         theme: "Gore"
     )

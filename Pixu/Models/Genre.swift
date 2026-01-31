@@ -6,15 +6,23 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Genre: Codable, Identifiable, Equatable, Hashable {
-    let id: UUID
-    let genre: String
+@Model
+final class Genre {
+    #Index<Genre>([\.genre])
+    @Attribute(.unique) var id: UUID
+    var genre: String
+    
+    init(id: UUID, genre: String) {
+        self.id = id
+        self.genre = genre
+    }
 }
 
 extension Genre {
 
-    static let testList: [Genre] = [
+    nonisolated(unsafe) static let testList: [Genre] = [
         Genre(
             id: UUID(uuidString: "72C8E862-334F-4F00-B8EC-E1E4125BB7CD")!,
             genre: "Action"
@@ -37,7 +45,7 @@ extension Genre {
         ),
     ]
 
-    static let test: Genre = Genre(
+    nonisolated(unsafe) static let test: Genre = Genre(
         id: UUID(uuidString: "72C8E862-334F-4F00-B8EC-E1E4125BB7CD")!,
         genre: "Action"
     )

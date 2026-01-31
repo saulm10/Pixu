@@ -6,17 +6,27 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Author: Codable, Identifiable, Equatable, Hashable {
-    let id: UUID
-    let firstName: String
-    let lastName: String
-    let role: String
+@Model
+final class Author {
+    #Index<Author>([\.id])
+    @Attribute(.unique) var id: UUID
+    var firstName: String
+    var lastName: String
+    var role: String
+    
+    init(id: UUID, firstName: String, lastName: String, role: String) {
+        self.id = id
+        self.firstName = firstName
+        self.lastName = lastName
+        self.role = role
+    }
 }
 
 extension Author {
 
-    static let testList: [Author] = [
+    nonisolated(unsafe) static let testList: [Author] = [
         Author(
             id: UUID(uuidString: "6F0B6948-08C4-4761-8BE1-192E68AB0A2F")!,
             firstName: "Kentarou",
@@ -49,7 +59,7 @@ extension Author {
         ),
     ]
 
-    static let test: Author = Author(
+    nonisolated(unsafe) static let test: Author = Author(
         id: UUID(uuidString: "6F0B6948-08C4-4761-8BE1-192E68AB0A2F")!,
         firstName: "Kentarou",
         lastName: "Miura",

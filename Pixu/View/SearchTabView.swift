@@ -68,51 +68,48 @@ struct SearchTabView: View {
         LazyVStack(alignment: .leading, spacing: 24) {
             // Chips de filtros
             filterChips
-                .padding(.horizontal)
 
             // Contenido principal
             contentBody
-        }
+        }.padding(.horizontal)
     }
 
     private var filterChips: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                // Chip de resetear solo visible si hay filtros activos
-                if hasActiveFilters {
-                    Chip(
-                        title: "Limpiar",
-                        isSelected: false,
-                        onTap: {
-                            Task {
-                                await vm.clearAllFilters()
-                            }
+        HStack(spacing: 8) {
+            // Chip de resetear solo visible si hay filtros activos
+            if hasActiveFilters {
+                Chip(
+                    title: "Limpiar",
+                    isSelected: false,
+                    onTap: {
+                        Task {
+                            await vm.clearAllFilters()
                         }
-                    )
-                }
-
-                Chip(
-                    title: vm.selectedDemographic.isEmpty
-                        ? "Público"
-                        : "Público (\(vm.selectedDemographic.count))",
-                    isSelected: !vm.selectedDemographic.isEmpty,
-                    onTap: { showDemographics = true }
-                )
-
-                Chip(
-                    title: vm.selectedGenre.isEmpty
-                        ? "Género" : "Género (\(vm.selectedGenre.count))",
-                    isSelected: !vm.selectedGenre.isEmpty,
-                    onTap: { showGenres = true }
-                )
-
-                Chip(
-                    title: vm.selectedTheme.isEmpty
-                        ? "Tema" : "Tema (\(vm.selectedTheme.count))",
-                    isSelected: !vm.selectedTheme.isEmpty,
-                    onTap: { showThemes = true }
+                    }
                 )
             }
+
+            Chip(
+                title: vm.selectedDemographic.isEmpty
+                    ? "Público"
+                    : "Público (\(vm.selectedDemographic.count))",
+                isSelected: !vm.selectedDemographic.isEmpty,
+                onTap: { showDemographics = true }
+            )
+
+            Chip(
+                title: vm.selectedGenre.isEmpty
+                    ? "Género" : "Género (\(vm.selectedGenre.count))",
+                isSelected: !vm.selectedGenre.isEmpty,
+                onTap: { showGenres = true }
+            )
+
+            Chip(
+                title: vm.selectedTheme.isEmpty
+                    ? "Tema" : "Tema (\(vm.selectedTheme.count))",
+                isSelected: !vm.selectedTheme.isEmpty,
+                onTap: { showThemes = true }
+            )
         }
     }
 
@@ -150,7 +147,6 @@ struct SearchTabView: View {
                 }
             }
         }
-        .padding(.horizontal)
     }
 
     private var LoadingMangasList: some View {
@@ -166,7 +162,6 @@ struct SearchTabView: View {
                     .frame(height: 250)
             }
         }
-        .padding(.horizontal)
     }
 
     private var ListEmptyView: some View {
@@ -189,7 +184,6 @@ struct SearchTabView: View {
                 )
             }
         }
-        .padding()
     }
 
     private var hasActiveFilters: Bool {

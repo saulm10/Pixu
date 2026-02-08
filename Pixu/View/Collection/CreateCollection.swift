@@ -11,7 +11,7 @@ struct AddMangaView: View {
     @Environment(\.dismiss) var dismiss
     @State var vm = CreateCollectionVM()
     
-    let onSave: (Collection) -> Void
+    let onSave: (UserCollection) -> Void
     
     var body: some View {
         NavigationStack {

@@ -9,10 +9,12 @@ import Foundation
 import SwiftData
 
 @Model
-final class Theme{
-    #Index<Theme>([\.theme])
+final class Theme {
     @Attribute(.unique) var id: UUID
     var theme: String
+
+    @Relationship(inverse: \Manga.themes)
+    var mangas: [Manga] = []
 
     init(id: UUID, theme: String) {
         self.id = id

@@ -6,12 +6,16 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct UserView: View {
     @Environment(MainTabVM.self) private var mainTabVM
 
     @Bindable var vm: UserVM
     @State var userVM: UserAccountVM = UserAccountVM()
+    
+    @Query(sort: \UserCollection.manga.title) private var collections:
+        [UserCollection]
 
     var body: some View {
         NavigationStack {
@@ -19,7 +23,7 @@ struct UserView: View {
                 content
             }
             .navigationDestination(item: $vm.selectedManga) { manga in
-                MangaDetail(manga: manga)
+                MangaDetail(vm: MangaDetailVM(manga: manga))
             }
             .toolbarRole(.editor)
             .navigationBarTitleDisplayMode(.inline)
@@ -38,9 +42,6 @@ struct UserView: View {
                     }
                 }
             }
-            .task {
-                await vm.loadCollections()
-            }
             .globalBackground()
         }
     }
@@ -49,7 +50,7 @@ struct UserView: View {
         ZStack {
             if vm.isLoading {
                 ProgressView("Cargando colección...")
-            } else if vm.collections.isEmpty {
+            } else if collections.isEmpty {
                 emptyStateView
             } else {
                 LazyVStack(spacing: 20) {
@@ -82,7 +83,7 @@ struct UserView: View {
             HStack(spacing: 12) {
                 StatCard(
                     title: "Total Mangas",
-                    value: "\(vm.collections.count)",
+                    value: "\(collections.count)",
                     icon: "books.vertical.fill",
                     color: .blue
                 )
@@ -117,15 +118,15 @@ struct UserView: View {
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            //            VStack(spacing: 8) {
-            //                ForEach(vm.collections) { collection in
-            //                    CollectionRowView(
-            //                        collection: collection,
-            //                        onEdit: { selectedCollectionForEdit = collection },
-            //                        onDelete: { vm.deleteCollection(collection.manga.id) }
-            //                    )
-            //                }
-            //            }
+                        VStack(spacing: 8) {
+                            ForEach(collections) { collection in
+                                CollectionRowView(
+                                    collection: collection,
+                                    onEdit: { /*selectedCollectionForEdit = collection*/ },
+                                    onDelete: { /*vm.deleteCollection(collection.manga.id)*/ }
+                                )
+                            }
+                        }
         }
     }
 
@@ -187,7 +188,7 @@ struct StatCard: View {
 }
 
 struct MangaRowView: View {
-    let manga: Collection
+    let manga: UserCollection
     let onEdit: () -> Void
     let onDelete: () -> Void
 
@@ -309,7 +310,7 @@ struct MangaRowView: View {
 }
 
 struct CollectionRowView: View {
-    let collection: Collection
+    let collection: UserCollection
     let onEdit: () -> Void
     let onDelete: () -> Void
 

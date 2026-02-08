@@ -10,10 +10,12 @@ import SwiftData
 
 @Model
 final class Genre {
-    #Index<Genre>([\.genre])
     @Attribute(.unique) var id: UUID
     var genre: String
-    
+
+    @Relationship(inverse: \Manga.genres)
+    var mangas: [Manga] = []
+
     init(id: UUID, genre: String) {
         self.id = id
         self.genre = genre

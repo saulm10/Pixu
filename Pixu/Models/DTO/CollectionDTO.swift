@@ -10,14 +10,14 @@ import Foundation
 struct CollectionDTO: Codable {
     let id: UUID
     let completeCollection: Bool
-    let readingVolume: Int
+    let readingVolume: Int?
     let volumesOwned: [Int]
     let manga: MangaDTO
 }
 
 extension CollectionDTO {
-    var toCollection: Collection {
-        Collection(
+    var toCollection: UserCollection {
+        UserCollection(
             id: id,
             completeCollection: completeCollection,
             readingVolume: readingVolume,

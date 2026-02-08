@@ -37,7 +37,7 @@ class CreateCollectionVM: ObservableObject {
         availableMangas = Manga.testList
     }
     
-    func createCollectionRequest() -> Collection? {
+    func createCollectionRequest() -> UserCollection? {
         guard let mangaId = selectedMangaId else { return nil }
         
         let volumes: [Int]

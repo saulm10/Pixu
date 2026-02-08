@@ -10,12 +10,14 @@ import SwiftData
 
 @Model
 final class Author {
-    #Index<Author>([\.id])
     @Attribute(.unique) var id: UUID
     var firstName: String
     var lastName: String
     var role: String
-    
+
+    @Relationship(inverse: \Manga.authors)
+    var mangas: [Manga] = []
+
     init(id: UUID, firstName: String, lastName: String, role: String) {
         self.id = id
         self.firstName = firstName

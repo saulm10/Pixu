@@ -9,7 +9,7 @@ import Foundation
 import NetworkAPI
 import SwiftUI
 
-protocol APIManagerProtocol {
+protocol APIManagerProtocol: Sendable {
     var search: SearchEndpoint { get }
     var collection: CollectionEndpoint { get }
     var manga: MangasEndpoint { get }

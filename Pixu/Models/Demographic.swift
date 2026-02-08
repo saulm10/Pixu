@@ -9,11 +9,13 @@ import Foundation
 import SwiftData
 
 @Model
-final class Demographic{
-    #Index<Demographic>([\.demographic])
+final class Demographic {
     @Attribute(.unique) var id: UUID
     var demographic: String
-        
+
+    @Relationship(inverse: \Manga.demographics)
+    var mangas: [Manga] = []
+
     init(id: UUID, demographic: String) {
         self.id = id
         self.demographic = demographic

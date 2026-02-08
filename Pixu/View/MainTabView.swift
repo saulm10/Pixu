@@ -7,6 +7,7 @@
 
 import Combine
 import SwiftUI
+import ToastService
 
 struct MainTabView: View {
     @Environment(AuthStatus.self) private var authStatus
@@ -63,7 +64,7 @@ struct MainTabView: View {
         .overlay {
             if showSplash {
                 SplashAnimationView()
-                  .transition(.opacity)
+                    .transition(.opacity)
             }
         }
         .task {
@@ -72,6 +73,7 @@ struct MainTabView: View {
                 showSplash = false
             }
         }
+        .toastOverlay()
     }
 }
 

@@ -20,7 +20,7 @@ struct SearchTabView: View {
                 content
             }
             .navigationDestination(item: $vm.selectedManga) { manga in
-                MangaDetail(manga: manga)
+                MangaDetail(vm: MangaDetailVM(manga: manga))
             }
             .toolbarRole(.editor)
             .navigationBarTitleDisplayMode(.inline)

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ToastService
 
 #if DEBUG
 struct AppEnvironmentModifier: PreviewModifier {
@@ -25,17 +26,15 @@ struct AppEnvironmentModifier: PreviewModifier {
         content
             .environment(context.authStatus)
             .environment(context.mainTabVM)
+            .toastOverlay()
     }
 }
 
 extension PreviewTrait where T == Preview.ViewTraits {
-    /// Inyecta AuthStatus y MainTabVM simulados.
     static var devEnvironment: Self = .modifier(AppEnvironmentModifier())
 }
 
-#endif
 
-#if DEBUG
 struct AppEnvironmentModifierNoLogin: PreviewModifier {
     struct Context {
         let authStatus: AuthStatus
@@ -54,12 +53,12 @@ struct AppEnvironmentModifierNoLogin: PreviewModifier {
         content
             .environment(context.authStatus)
             .environment(context.mainTabVM)
+            .toastOverlay()
     }
 }
 
 
 extension PreviewTrait where T == Preview.ViewTraits {
-    /// Inyecta AuthStatus y MainTabVM simulados.
     static var devEnvironmentNoLogin: Self = .modifier(AppEnvironmentModifierNoLogin())
 }
 #endif

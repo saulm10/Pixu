@@ -1,5 +1,5 @@
 //
-//  Collection.swift
+//  UserCollection.swift
 //  Pixu
 //
 //  Created by Saul Martinez Diez on 13/1/26.
@@ -9,8 +9,8 @@ import Foundation
 import NetworkAPI
 
 protocol CollectionEndpoint {
-    func getCollection() async -> [Collection]
-    func getMangaFromCollection(id: String) async -> Collection?
+    func getCollection() async -> [UserCollection]
+    func getMangaFromCollection(id: String) async -> UserCollection?
     func addMangaToCollection(input: UserMangaCollectionRequestInputDTO) async -> Bool
     func removeMangaFromCollection(id: String) async -> Bool
 }
@@ -18,7 +18,7 @@ protocol CollectionEndpoint {
 struct Collections: CollectionEndpoint {
     let apiClient = NetworkManager.shared.client
     
-    func getCollection() async -> [Collection] {
+    func getCollection() async -> [UserCollection] {
         do {
             let dto: [CollectionDTO] = try await apiClient.get(
                 path: "collection/manga",
@@ -31,7 +31,7 @@ struct Collections: CollectionEndpoint {
         }
     }
     
-    func getMangaFromCollection(id: String) async -> Collection? {
+    func getMangaFromCollection(id: String) async -> UserCollection? {
         do {
             let dto: CollectionDTO = try await apiClient.get(
                 path: "collection/manga/\(id)",
@@ -46,7 +46,7 @@ struct Collections: CollectionEndpoint {
     
     func addMangaToCollection(input: UserMangaCollectionRequestInputDTO) async -> Bool {
         do {
-            let _: Int = try await apiClient.post(
+            try await apiClient.post(
                 path: "collection/manga",
                 body: input,
                 temporaryAuth: nil
@@ -72,12 +72,12 @@ struct Collections: CollectionEndpoint {
 }
 
 struct CollectionsTest: CollectionEndpoint {
-    func getCollection() async -> [Collection] {
-        return Collection.testList
+    func getCollection() async -> [UserCollection] {
+        return UserCollection.testList
     }
     
-    func getMangaFromCollection(id: String) async -> Collection? {
-        return Collection.testList.first { $0.manga.id.description == id }
+    func getMangaFromCollection(id: String) async -> UserCollection? {
+        return UserCollection.testList.first { $0.manga.id.description == id }
     }
     
     func addMangaToCollection(input: UserMangaCollectionRequestInputDTO) async -> Bool {

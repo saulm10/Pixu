@@ -5,6 +5,7 @@
 //  Created by Saul Martinez Diez on 30/12/25.
 //
 
+import SwiftData
 import SwiftUI
 
 struct HomeTabView: View {
@@ -12,13 +13,16 @@ struct HomeTabView: View {
     @Environment(MainTabVM.self) private var mainTabVM
     @Bindable var vm: HomeTabVM
 
+    @Query(sort: \UserCollection.manga.title) private var collections:
+        [UserCollection]
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 content
             }
             .navigationDestination(item: $vm.selectedManga) { manga in
-                MangaDetail(manga: manga)
+                MangaDetail(vm: MangaDetailVM(manga: manga))
             }
             .toolbarRole(.editor)
             .navigationBarTitleDisplayMode(.inline)
@@ -108,30 +112,18 @@ struct HomeTabView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack {
                         ForEach(
-                            Array(vm.bestMangas.enumerated()),
-                            id: \.element.id
-                        ) { index, manga in
-                            ZStack(alignment: .bottomTrailing) {
-                                MangaCard(manga: manga) {
-                                    vm.selectedManga = manga
-                                }
-                                .onAppear {
-                                    if manga.id == vm.bestMangas.last?.id {
-                                        Task {
-                                            await vm.loadBestMangas()
-                                        }
+                            collections
+                        ) { collection in
+                            MangaCard(manga: collection.manga) {
+                                vm.selectedManga = collection.manga
+                            }
+                            .onAppear {
+                                if collection.manga.id == vm.bestMangas.last?.id
+                                {
+                                    Task {
+                                        await vm.loadBestMangas()
                                     }
                                 }
-
-                                Circle()
-                                    .fill(.brandPrimary)
-                                    .overlay {
-                                        Text((index + 1).description)
-                                            .font(.title)
-                                            .foregroundColor(.textOnPrimary)
-                                            .bold()
-                                    }
-                                    .frame(width: 50)
                             }
                         }
                     }

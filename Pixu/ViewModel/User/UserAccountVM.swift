@@ -11,6 +11,7 @@ import SwiftUI
 @MainActor @Observable
 final class UserAccountVM {
     private let apiManager: APIManager
+    private let databaseManager: DatabaseManager = .shared
     
     let userEmail: String = ""
 
@@ -20,6 +21,9 @@ final class UserAccountVM {
     
     func logOut() -> Bool {
         let result = apiManager.user.logOut()
+        if(result){
+            databaseManager.deleteAllDataSafely()
+        }
         return result ? false: true
     }
 }

@@ -10,21 +10,21 @@ import Foundation
 
 @MainActor @Observable
 class EditColectionVM: ObservableObject {
-    let collection: Collection
+    let collection: UserCollection
     
     var completeCollection: Bool
     var volumesOwnedText: String
     var readingVolume: Int?
     var showDeleteConfirmation = false
     
-    init(collection: Collection) {
+    init(collection: UserCollection) {
         self.collection = collection
         self.completeCollection = collection.completeCollection
         self.volumesOwnedText = collection.volumesOwned.map(String.init).joined(separator: ",")
         self.readingVolume = collection.readingVolume
     }
     
-    func updateCollectionRequest() -> Collection? {
+    func updateCollectionRequest() -> UserCollection? {
         let volumes: [Int]
         if completeCollection {
             let total = collection.manga.volumes ?? 0
@@ -33,7 +33,7 @@ class EditColectionVM: ObservableObject {
             volumes = parseVolumes(from: volumesOwnedText)
         }
         return .test
-//        return Collection(
+//        return UserCollection(
 //            id: collection.id,
 //            completeCollection: collection.manga,
 //            readingVolume: completeCollection,

@@ -14,7 +14,6 @@ final class UserVM {
     
     var state: ViewState = .empty
     
-    var collections: [Collection] = []
     var completeCollectionsCount: Int = 0
     var totalVolumesOwned: Int = 0
     var currentlyReadingCount: Int = 0
@@ -25,19 +24,5 @@ final class UserVM {
 
     init(apiManager: APIManager = .live) {
         self.apiManager = apiManager
-    }
-    
-    func loadCollections() async {
-        isLoading = true
-        collections = await apiManager.collection.getCollection()
-        isLoading = false
-    }
-    
-    func deleteManga(_: Manga){
-        
-    }
-    
-    func deleteCollection (_: Int){
-        
     }
 }

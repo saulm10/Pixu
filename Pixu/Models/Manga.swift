@@ -9,9 +9,8 @@ import Foundation
 import SwiftData
 
 @Model
-final class Manga{
-    #Index<Manga>([\.id])
-    var id: Int
+final class Manga {
+    @Attribute(.unique) var id: Int
     var title: String
     var titleEnglish: String?
     var titleJapanese: String?
@@ -26,11 +25,18 @@ final class Manga{
     var startDate: String?
     var endDate: String?
 
-    @Relationship var genres: [Genre]
-    @Relationship var themes: [Theme]
-    @Relationship var demographics: [Demographic]
-    @Relationship var authors: [Author]
-    
+    @Relationship(deleteRule: .nullify)
+    var genres: [Genre] = []
+
+    @Relationship(deleteRule: .nullify)
+    var themes: [Theme] = []
+
+    @Relationship(deleteRule: .nullify)
+    var demographics: [Demographic] = []
+
+    @Relationship(deleteRule: .nullify)
+    var authors: [Author] = []
+
     init(
         id: Int,
         title: String,
@@ -45,10 +51,11 @@ final class Manga{
         score: Double? = nil,
         status: String? = nil,
         startDate: String? = nil,
-        genres: [Genre],
-        themes: [Theme],
-        demographics: [Demographic],
-        authors: [Author]
+        endDate: String? = nil,
+        genres: [Genre] = [],
+        themes: [Theme] = [],
+        demographics: [Demographic] = [],
+        authors: [Author] = []
     ) {
         self.id = id
         self.title = title
@@ -56,15 +63,21 @@ final class Manga{
         self.titleJapanese = titleJapanese
         self.sypnosis = sypnosis
         self.background = background
-        self.url = url?.replacingOccurrences(of: "\\", with: "")
-            .replacingOccurrences(of: "\"", with: "") ?? ""
-        self.mainPicture = mainPicture?.replacingOccurrences(of: "\\", with: "")
+        // Limpieza de caracteres de escape para evitar errores de URL
+        self.url =
+            url?.replacingOccurrences(of: "\\", with: "").replacingOccurrences(
+                of: "\"",
+                with: ""
+            ) ?? ""
+        self.mainPicture =
+            mainPicture?.replacingOccurrences(of: "\\", with: "")
             .replacingOccurrences(of: "\"", with: "") ?? ""
         self.chapters = chapters
         self.volumes = volumes
         self.score = score
         self.status = status
         self.startDate = startDate
+        self.endDate = endDate
         self.genres = genres
         self.themes = themes
         self.demographics = demographics

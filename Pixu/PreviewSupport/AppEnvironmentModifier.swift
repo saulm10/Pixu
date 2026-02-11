@@ -6,59 +6,67 @@
 //
 
 import SwiftUI
+import SwiftData
 import ToastService
 
 #if DEBUG
-struct AppEnvironmentModifier: PreviewModifier {
-    struct Context {
-        let authStatus: AuthStatus
-        let mainTabVM: MainTabVM
+    struct AppEnvironmentModifier: PreviewModifier {
+        struct Context {
+            let authStatus: AuthStatus
+            let mainTabVM: MainTabVM
+        }
+
+        static func makeSharedContext() async throws -> Context {
+            let auth = AuthStatus(apiManager: .test)
+            let tabs = MainTabVM()
+
+            return Context(authStatus: auth, mainTabVM: tabs)
+        }
+
+        func body(content: Content, context: Context) -> some View {
+            let database = DatabaseManager.shared
+
+            content
+                .environment(context.authStatus)
+                .environment(context.mainTabVM)
+                .modelContainer(database.modelContainer)
+                .toastOverlay()
+        }
     }
 
-    static func makeSharedContext() async throws -> Context {
-        let auth = AuthStatus(apiManager: .test)
-        let tabs = MainTabVM()
-        
-        return Context(authStatus: auth, mainTabVM: tabs)
+    extension PreviewTrait where T == Preview.ViewTraits {
+        static var devEnvironment: Self = .modifier(AppEnvironmentModifier())
     }
 
-    func body(content: Content, context: Context) -> some View {
-        content
-            .environment(context.authStatus)
-            .environment(context.mainTabVM)
-            .toastOverlay()
+    struct AppEnvironmentModifierNoLogin: PreviewModifier {
+        struct Context {
+            let authStatus: AuthStatus
+            let mainTabVM: MainTabVM
+        }
+
+        static func makeSharedContext() async throws -> Context {
+            let auth = AuthStatus(apiManager: .test)
+            let tabs = MainTabVM()
+
+            auth.isLoggedIn = false
+
+            return Context(authStatus: auth, mainTabVM: tabs)
+        }
+
+        func body(content: Content, context: Context) -> some View {
+            let database = DatabaseManager.shared
+            
+            content
+                .environment(context.authStatus)
+                .environment(context.mainTabVM)
+                .modelContainer(database.modelContainer)
+                .toastOverlay()
+        }
     }
-}
 
-extension PreviewTrait where T == Preview.ViewTraits {
-    static var devEnvironment: Self = .modifier(AppEnvironmentModifier())
-}
-
-
-struct AppEnvironmentModifierNoLogin: PreviewModifier {
-    struct Context {
-        let authStatus: AuthStatus
-        let mainTabVM: MainTabVM
+    extension PreviewTrait where T == Preview.ViewTraits {
+        static var devEnvironmentNoLogin: Self = .modifier(
+            AppEnvironmentModifierNoLogin()
+        )
     }
-
-    static func makeSharedContext() async throws -> Context {
-        let auth = AuthStatus(apiManager: .test)
-        let tabs = MainTabVM()
-                
-        return Context(authStatus: auth, mainTabVM: tabs)
-    }
-
-    func body(content: Content, context: Context) -> some View {
-        
-        content
-            .environment(context.authStatus)
-            .environment(context.mainTabVM)
-            .toastOverlay()
-    }
-}
-
-
-extension PreviewTrait where T == Preview.ViewTraits {
-    static var devEnvironmentNoLogin: Self = .modifier(AppEnvironmentModifierNoLogin())
-}
 #endif

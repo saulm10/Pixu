@@ -14,7 +14,7 @@ public struct Chip: View {
     
     public var body: some View {
         Text(title)
-            .font(.system(size: 14, weight: .medium))
+            .font(.system(size: 15, weight: .medium))
             .foregroundStyle(isSelected ? .textOnPrimary : .textOnTertiary)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
@@ -25,5 +25,9 @@ public struct Chip: View {
             .onTapGesture {
                 onTap()
             }
+            .glassEffect(
+                in: Capsule()
+            )
+        
     }
 }

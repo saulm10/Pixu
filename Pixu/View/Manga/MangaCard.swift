@@ -21,18 +21,20 @@ struct MangaCard: View {
     }
 
     var body: some View {
-        ImageUrlCache(
-            manga.mainPicture,
-            contentMode: .fill
-        )
-        .frame(width: 170, height: 250)
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .onTapGesture {
-            onTap()
-        }
-        .glassEffect(
-            in: RoundedRectangle(cornerRadius: 14)
-        )
+        ImageUrlCache(manga.mainPicture)
+            .frame(width: 170, height: 250)
+            .clipped()
+            .overlay(alignment: .topLeading) { 
+                RatingView(rating: manga.score ?? 0)
+                    .padding(8)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .onTapGesture {
+                onTap()
+            }
+            .glassEffect(
+                in: RoundedRectangle(cornerRadius: 14)
+            )
     }
 }
 

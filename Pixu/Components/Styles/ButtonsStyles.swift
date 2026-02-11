@@ -19,6 +19,9 @@ struct PrimaryButtonStyle: ButtonStyle {
             .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
             .opacity(configuration.isPressed ? 0.9 : 1.0)
             .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+            .glassEffect(
+                in: RoundedRectangle(cornerRadius: 18)
+            )
     }
 }
 
@@ -34,6 +37,9 @@ struct SecondaryButtonStyle: ButtonStyle {
             .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
             .opacity(configuration.isPressed ? 0.8 : 1.0)
             .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+            .glassEffect(
+                in: RoundedRectangle(cornerRadius: 18)
+            )
     }
 }
 
@@ -49,6 +55,9 @@ struct TertiaryButtonStyle: ButtonStyle {
             .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
             .opacity(configuration.isPressed ? 0.8 : 1.0)
             .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+            .glassEffect(
+                in: RoundedRectangle(cornerRadius: 18)
+            )
     }
 }
 

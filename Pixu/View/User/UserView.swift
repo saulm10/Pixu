@@ -5,15 +5,16 @@
 //  Created by Saul Martinez Diez on 11/1/26.
 //
 
-import SwiftUI
+import Components
 import SwiftData
+import SwiftUI
 
 struct UserView: View {
     @Environment(MainTabVM.self) private var mainTabVM
 
     @Bindable var vm: UserVM
     @State var userVM: UserAccountVM = UserAccountVM()
-    
+
     @Query(sort: \UserCollection.manga.title) private var collections:
         [UserCollection]
 
@@ -61,18 +62,6 @@ struct UserView: View {
             }
         }
     }
-    
-//    @ViewBuilder
-//    private var contentBody: some View {
-//        switch vm.state {
-//        case .loading:
-//            LoadingMangasList
-//        case .loaded:
-//            MangasList
-//        case .empty:
-//            ListEmptyView
-//        }
-//    }
 
     private var statisticsSection: some View {
         LazyVStack(spacing: 12) {
@@ -111,22 +100,21 @@ struct UserView: View {
         }
     }
 
-    // MARK: - Collections List Section
     private var collectionsListSection: some View {
         LazyVStack(spacing: 12) {
             Text("Mis Mangas")
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                        VStack(spacing: 8) {
-                            ForEach(collections) { collection in
-                                CollectionRowView(
-                                    collection: collection,
-                                    onEdit: { /*selectedCollectionForEdit = collection*/ },
-                                    onDelete: { /*vm.deleteCollection(collection.manga.id)*/ }
-                                )
-                            }
-                        }
+            VStack(spacing: 8) {
+                ForEach(collections) { collection in
+                    CollectionRowView(
+                        collection: collection,
+                        onTap: { vm.selectedManga = collection.manga }
+                    )
+                }
+
+            }
         }
     }
 
@@ -181,138 +169,16 @@ struct StatCard: View {
         }
         .frame(maxWidth: .infinity)
         .padding()
-        .background(Color.white)
         .cornerRadius(12)
-        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
-    }
-}
-
-struct MangaRowView: View {
-    let manga: UserCollection
-    let onEdit: () -> Void
-    let onDelete: () -> Void
-
-    @State private var showDeleteConfirmation = false
-
-    private var progressPercentage: Double {
-        guard let total = manga.manga.volumes, total > 0 else {
-            return 0
-        }
-        return Double(manga.volumesOwned.count) / Double(total)
-    }
-
-    var body: some View {
-        HStack(spacing: 12) {
-            // Portada (placeholder por ahora)
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Color.gray.opacity(0.3))
-                .frame(width: 50, height: 70)
-                .overlay(
-                    Image(systemName: "book.fill")
-                        .foregroundColor(.gray)
-                )
-
-            // Información
-            VStack(alignment: .leading, spacing: 6) {
-                Text(manga.manga.title)
-                    .font(.headline)
-                    .lineLimit(1)
-
-                // Progreso de volúmenes
-                HStack(spacing: 8) {
-                    Text(
-                        "\(manga.volumesOwned.count)/\(manga.manga.volumes ?? 0) tomos"
-                    )
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-
-                    if manga.completeCollection {
-                        HStack(spacing: 4) {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(.green)
-                            Text("Completa")
-                                .font(.caption)
-                                .foregroundColor(.green)
-                        }
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Color.green.opacity(0.1))
-                        .cornerRadius(8)
-                    }
-                }
-
-                // Barra de progreso
-                GeometryReader { geometry in
-                    ZStack(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.gray.opacity(0.2))
-                            .frame(height: 6)
-
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(
-                                manga.completeCollection
-                                    ? Color.green : Color.blue
-                            )
-                            .frame(
-                                width: geometry.size.width * progressPercentage,
-                                height: 6
-                            )
-                    }
-                }
-                .frame(height: 6)
-
-                // Volumen de lectura
-                if let reading = manga.readingVolume {
-                    Text("Leyendo tomo \(reading)")
-                        .font(.caption)
-                        .foregroundColor(.purple)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Color.purple.opacity(0.1))
-                        .cornerRadius(6)
-                } else {
-                    Text("Sin lectura activa")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-            }
-
-            Spacer()
-
-            // Acciones
-            HStack(spacing: 12) {
-                Button(action: onEdit) {
-                    Image(systemName: "pencil.circle.fill")
-                        .font(.title2)
-                        .foregroundColor(.blue)
-                }
-
-                Button(action: { showDeleteConfirmation = true }) {
-                    Image(systemName: "trash.circle.fill")
-                        .font(.title2)
-                        .foregroundColor(.red)
-                }
-            }
-        }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
-        .confirmationDialog(
-            "¿Eliminar este manga de tu colección?",
-            isPresented: $showDeleteConfirmation,
-            titleVisibility: .visible
-        ) {
-            Button("Eliminar", role: .destructive, action: onDelete)
-            Button("Cancelar", role: .cancel) {}
-        }
+        .glassEffect(
+            in: RoundedRectangle(cornerRadius: 12)
+        )
     }
 }
 
 struct CollectionRowView: View {
     let collection: UserCollection
-    let onEdit: () -> Void
-    let onDelete: () -> Void
+    let onTap: () -> Void
 
     @State private var showDeleteConfirmation = false
 
@@ -324,22 +190,9 @@ struct CollectionRowView: View {
     var body: some View {
         HStack(spacing: 12) {
             // Portada
-            AsyncImage(
-                url: URL(string: collection.manga.mainPicture)
-            ) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-            } placeholder: {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.gray.opacity(0.3))
-                    .overlay(
-                        Image(systemName: "book.fill")
-                            .foregroundColor(.gray)
-                    )
-            }
-            .frame(width: 50, height: 70)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            ImageUrlCache(collection.manga.mainPicture)
+                .frame(width: 80, height: 120)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
 
             // Información
             VStack(alignment: .leading, spacing: 6) {
@@ -405,36 +258,12 @@ struct CollectionRowView: View {
                         .foregroundColor(.secondary)
                 }
             }
-
-            Spacer()
-
-            // Acciones
-            HStack(spacing: 12) {
-                Button(action: onEdit) {
-                    Image(systemName: "pencil.circle.fill")
-                        .font(.title2)
-                        .foregroundColor(.blue)
-                }
-
-                Button(action: { showDeleteConfirmation = true }) {
-                    Image(systemName: "trash.circle.fill")
-                        .font(.title2)
-                        .foregroundColor(.red)
-                }
-            }
         }
         .padding()
-        .background(Color.white)
         .cornerRadius(12)
-        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
-        .confirmationDialog(
-            "¿Eliminar este manga de tu colección?",
-            isPresented: $showDeleteConfirmation,
-            titleVisibility: .visible
-        ) {
-            Button("Eliminar", role: .destructive, action: onDelete)
-            Button("Cancelar", role: .cancel) {}
-        }
+        .glassEffect(
+            in: RoundedRectangle(cornerRadius: 14)
+        )
     }
 }
 

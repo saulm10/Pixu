@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct SearchTabView: View {
+    @Environment(MainTabVM.self) private var mainTabVM
     @Bindable var vm: SearchTabVM
 
     @State private var showDemographics: Bool = false
     @State private var showGenres: Bool = false
     @State private var showThemes: Bool = false
+
+    @Namespace private var namespace
 
     var body: some View {
         NavigationStack {
@@ -20,7 +23,10 @@ struct SearchTabView: View {
                 content
             }
             .navigationDestination(item: $vm.selectedManga) { manga in
-                MangaDetail(vm: MangaDetailVM(manga: manga))
+                MangaDetail(
+                    vm: MangaDetailVM(manga: manga),
+                    namespace: namespace
+                )
             }
             .toolbarRole(.editor)
             .navigationBarTitleDisplayMode(.inline)
@@ -30,6 +36,14 @@ struct SearchTabView: View {
                         .font(.largeTitle)
                         .foregroundColor(.primary)
                         .bold()
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        mainTabVM.selection = 1
+                    }) {
+                        CircleAvatar()
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             .task(priority: .userInitiated) {
@@ -62,6 +76,17 @@ struct SearchTabView: View {
             .globalBackground()
         }
         .searchable(text: $vm.searchText, prompt: "Buscar mangas...")
+        .overlay {
+            if vm.state == .empty {
+                ContentUnavailableView(
+                    "No se encontraron resultados",
+                    systemImage: "magnifyingglass",
+                    description: Text(
+                        "Intenta con otros términos de búsqueda o filtros"
+                    )
+                )
+            }
+        }
     }
 
     private var content: some View {
@@ -70,7 +95,7 @@ struct SearchTabView: View {
             filterChips
 
             // Contenido principal
-            contentBody
+            MangasList
         }.padding(.horizontal)
     }
 
@@ -113,18 +138,6 @@ struct SearchTabView: View {
         }
     }
 
-    @ViewBuilder
-    private var contentBody: some View {
-        switch vm.state {
-        case .loading:
-            LoadingMangasList
-        case .loaded:
-            MangasList
-        case .empty:
-            ListEmptyView
-        }
-    }
-
     private var MangasList: some View {
         LazyVGrid(
             columns: [
@@ -133,7 +146,7 @@ struct SearchTabView: View {
             spacing: 16
         ) {
             ForEach(vm.filteredMangas) { manga in
-                MangaCard(manga: manga) {
+                MangaCard(manga: manga, namespace: namespace) {
                     vm.selectedManga = manga
                 }
                 .frame(height: 250)
@@ -145,43 +158,6 @@ struct SearchTabView: View {
                         await vm.loadFilteredMangas()
                     }
                 }
-            }
-        }
-    }
-
-    private var LoadingMangasList: some View {
-        LazyVGrid(
-            columns: [
-                GridItem(.flexible(), spacing: 16),
-                GridItem(.flexible(), spacing: 16),
-            ],
-            spacing: 16
-        ) {
-            ForEach(0..<10, id: \.self) { _ in
-                MangaCard.loading
-                    .frame(height: 250)
-            }
-        }
-    }
-
-    private var ListEmptyView: some View {
-        VStack(spacing: 16) {
-            if hasActiveFilters {
-                ContentUnavailableView(
-                    "No se encontraron resultados",
-                    systemImage: "magnifyingglass",
-                    description: Text(
-                        "Intenta con otros términos de búsqueda o filtros"
-                    )
-                )
-            } else {
-                ContentUnavailableView(
-                    "Busca tu manga favorito",
-                    systemImage: "book.fill",
-                    description: Text(
-                        "Usa la barra de búsqueda o los filtros para encontrar mangas"
-                    )
-                )
             }
         }
     }

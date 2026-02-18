@@ -6,23 +6,30 @@
 //
 
 import SwiftUI
+import Components
 
 struct CircleAvatar: View {
-    @Environment(AuthStatus.self) private var authStatus
-    
+    var big: Bool = false
+    @AppStorage(UserDefaultsK.initial.rawValue) var initial: String = "U"
+    @AppStorage(UserDefaultsK.image.rawValue) var image: String = ""
+
     var body: some View {
+        let big: CGFloat =  big ? 150 : 32
+        
         Circle()
             .fill(Color.clear)
-            .overlay(
-                Text(authStatus.initial)
-                    .font(.title2)
-                    .foregroundColor(.primary)
-                    .bold()
-            )
-            .aspectRatio(1, contentMode: .fit)
-            .frame(width: 32)
+            .frame(width: big, height: big)
+            .overlay {
+                if !image.isEmpty {
+                    ImageUrlCache(image)
+                        .clipShape(Circle())
+                } else {
+                    Text(initial)
+                        .font(.title2)
+                        .foregroundColor(.primary)
+                        .bold()
+                }
+            }
+            .glassEffect(in: Circle())
     }
-}
-#Preview(traits: .devEnvironment) {
-    CircleAvatar()
 }

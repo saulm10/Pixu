@@ -16,7 +16,7 @@ struct AuthenticatedContentModifier: ViewModifier {
             content
         } else {
             AuthPromptCard(onTap: {
-                main.selection = 2
+                main.selection = 1
             })
         }
     }

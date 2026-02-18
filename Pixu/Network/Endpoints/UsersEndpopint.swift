@@ -8,6 +8,7 @@
 import Foundation
 import KeyChain
 import NetworkAPI
+import UserDefaults
 
 protocol UsersEndpoint {
     func createUser(email: String, password: String) async -> Bool
@@ -19,6 +20,7 @@ protocol UsersEndpoint {
 struct Users: UsersEndpoint {
     let apiClient = NetworkManager.shared.client
     let keychain = KeychainManager.shared
+    let userDefaults = UserDefaultsManager.shared
 
     func createUser(email: String, password: String) async -> Bool {
         do {
@@ -45,10 +47,15 @@ struct Users: UsersEndpoint {
 
             await apiClient.updateAuthToken(response.token)
             keychain.save(response.token, forKey: KeyChainK.token.rawValue)
-            keychain.save(email, forKey: KeyChainK.login.rawValue)
             keychain.save(password, forKey: KeyChainK.password.rawValue)
+            userDefaults.save(email, forKey: UserDefaultsK.login.rawValue)
+            if let firstLetter = email.first {
+                userDefaults.save(
+                    String(firstLetter).uppercased(),
+                    forKey: UserDefaultsK.initial.rawValue
+                )
+            }
             return true
-
         } catch {
             return false
         }
@@ -57,8 +64,12 @@ struct Users: UsersEndpoint {
     func loginAuth() async -> Bool {
         guard
             let token: String = keychain.read(forKey: KeyChainK.token.rawValue),
-            let email: String = keychain.read(forKey: KeyChainK.login.rawValue),
-            let password: String = keychain.read(forKey: KeyChainK.password.rawValue)
+            let email: String = userDefaults.read(
+                forKey: UserDefaultsK.login.rawValue
+            ),
+            let password: String = keychain.read(
+                forKey: KeyChainK.password.rawValue
+            )
         else {
             return false
         }
@@ -97,6 +108,9 @@ struct Users: UsersEndpoint {
 
     func logOut() -> Bool {
         keychain.delete(forKey: KeyChainK.token.rawValue)
+        keychain.delete(forKey: KeyChainK.password.rawValue)
+        userDefaults.delete(forKey: UserDefaultsK.login.rawValue)
+        userDefaults.delete(forKey: UserDefaultsK.initial.rawValue)
         return true
     }
 }

@@ -14,7 +14,6 @@ struct MainTabView: View {
 
     @State var vm: MainTabVM = MainTabVM()
     @State var homeTabVM: HomeTabVM = HomeTabVM()
-    @State var scrollTabVM: ScrollTabVM = ScrollTabVM()
     @State var userLoginVM: UserLoginVM = UserLoginVM()
     @State var userVM: UserVM = UserVM()
     @State var searchTabVM: SearchTabVM = SearchTabVM()
@@ -31,16 +30,9 @@ struct MainTabView: View {
                 HomeTabView(vm: homeTabVM)
             }
             Tab(
-                .tabScroll,
-                systemImage: "play.rectangle",
-                value: 1
-            ) {
-                ScrollTabView(vm: scrollTabVM)
-            }
-            Tab(
                 .tabUser,
                 systemImage: "person",
-                value: 2
+                value: 1
             ) {
                 UserTabView(
                     vmLogin: userLoginVM,
@@ -80,7 +72,6 @@ struct MainTabView: View {
 #Preview(traits: .devEnvironment) {
     MainTabView(
         homeTabVM: HomeTabVM(apiManager: .test),
-        scrollTabVM: ScrollTabVM(apiManager: .test),
         userLoginVM: UserLoginVM(apiManager: .test),
         userVM: UserVM(apiManager: .test),
         searchTabVM: SearchTabVM(apiManager: .test)

@@ -15,8 +15,6 @@ final class AuthStatus {
     private let databaseManager: DatabaseManager
 
     var isLoggedIn: Bool = false
-    var initial: String = "U"
-    var login: String = ""
     
     init(
         apiManager: APIManager = .live,

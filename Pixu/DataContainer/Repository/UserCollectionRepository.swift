@@ -13,10 +13,18 @@ extension DatabaseManager {
         do {
             let remoteIDs = remoteItems.map { $0.id }
             
-            try modelContext.delete(model: UserCollection.self, where: #Predicate { collection in
-                !remoteIDs.contains(collection.id)
-            })
+            // Obtener todas las colecciones locales
+            let descriptor = FetchDescriptor<UserCollection>()
+            let localCollections = try modelContext.fetch(descriptor)
+            
+            // Identificar y borrar las colecciones que ya no están en remoto
+            let collectionsToDelete = localCollections.filter { !remoteIDs.contains($0.id) }
+            
+            for collection in collectionsToDelete {
+                try deleteCollection(collection)
+            }
 
+            // Resolver/actualizar las colecciones entrantes
             for incoming in remoteItems {
                 _ = try resolveCollection(incoming)
             }
@@ -94,6 +102,17 @@ extension DatabaseManager {
         } catch {
             print("❌ Error al eliminar colección: \(error.localizedDescription)")
             throw error
+        }
+    }
+    
+    func getAllCollection() -> [UserCollection] {
+        do {
+            let descriptor = FetchDescriptor<UserCollection>()
+            
+            return try modelContext.fetch(descriptor)
+        } catch {
+            print("❌ Error al buscar colección: \(error.localizedDescription)")
+            return []
         }
     }
     

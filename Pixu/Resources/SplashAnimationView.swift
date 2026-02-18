@@ -15,7 +15,6 @@ struct SplashAnimationView: View {
         Image(.pixieHi)
             .resizable()
             .scaledToFit()
-            .frame(width: 350, height: 350)
             .globalBackground()
     }
 }

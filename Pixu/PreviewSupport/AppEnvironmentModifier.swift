@@ -5,8 +5,8 @@
 //  Created by Saul Martinez Diez on 24/1/26.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 import ToastService
 
 #if DEBUG
@@ -14,22 +14,33 @@ import ToastService
         struct Context {
             let authStatus: AuthStatus
             let mainTabVM: MainTabVM
+            let previewContainer: ModelContainer
         }
 
+        @MainActor
         static func makeSharedContext() async throws -> Context {
             let auth = AuthStatus(apiManager: .test)
             let tabs = MainTabVM()
 
-            return Context(authStatus: auth, mainTabVM: tabs)
+            let config = ModelConfiguration(isStoredInMemoryOnly: true)
+            let container = try ModelContainer(
+                for: UserCollection.self,
+                Manga.self,
+                configurations: config
+            )
+
+            return Context(
+                authStatus: auth,
+                mainTabVM: tabs,
+                previewContainer: container
+            )
         }
 
         func body(content: Content, context: Context) -> some View {
-            let database = DatabaseManager.shared
-
             content
                 .environment(context.authStatus)
                 .environment(context.mainTabVM)
-                .modelContainer(database.modelContainer)
+                .modelContainer(context.previewContainer)
                 .toastOverlay()
         }
     }
@@ -55,7 +66,7 @@ import ToastService
 
         func body(content: Content, context: Context) -> some View {
             let database = DatabaseManager.shared
-            
+
             content
                 .environment(context.authStatus)
                 .environment(context.mainTabVM)

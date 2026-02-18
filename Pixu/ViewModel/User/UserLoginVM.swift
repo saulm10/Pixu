@@ -7,6 +7,7 @@
 
 import Combine
 import SwiftUI
+import ToastService
 
 @MainActor @Observable
 final class UserLoginVM {
@@ -22,11 +23,28 @@ final class UserLoginVM {
             email: email,
             password: password
         )
-        if(result){
+        if result {
             let remoteCollections = await apiManager.collection.getCollection()
             databaseManager.syncCollection(remoteItems: remoteCollections)
         }
+
+        if result == false {
+            ToastService.shared.show(
+                type: .error,
+                message: "Correo o contraseña incorrectos"
+            )
+        }
         return result
+    }
+
+    func createUser(email: String, password: String) async {
+        let result = await apiManager.user.createUser(
+            email: email,
+            password: password
+        )
+        guard result else { return }
+        ToastService.shared
+            .show(type: .info, message: "Usuario creado correctamente")
     }
 
     func loginAuth() async -> Bool {

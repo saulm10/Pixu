@@ -6,17 +6,19 @@
 //
 
 import SwiftUI
+import ToastService
 
 @MainActor @Observable
 final class MangaDetailVM {
     private let apiManager: APIManager
     private let databaseManager: DatabaseManager
+    private let toastService: ToastService = .shared
 
     let manga: Manga
-    var collecetion: UserCollection? = nil
+    var collection: UserCollection? = nil
 
     var isInCollection: Bool {
-        collecetion != nil
+        collection != nil
     }
 
     init(
@@ -30,7 +32,7 @@ final class MangaDetailVM {
     }
 
     func searchCollection() async {
-        collecetion = databaseManager.getCollectionByMangaId(idManga: manga.id)
+        collection = databaseManager.getCollectionByMangaId(idManga: manga.id)
     }
 
     func createCollection(collection: UserCollection) async {
@@ -47,9 +49,11 @@ final class MangaDetailVM {
             if result {
                 try databaseManager.createCollection(collection)
                 await searchCollection()
+                toastService.show(type: .success, message: "Manga guardado")
             }
         } catch {
             print("Error al crear colección: \(error.localizedDescription)")
+            toastService.show(type: .error, message: "Error al guardar Manga")
         }
     }
 
@@ -67,23 +71,29 @@ final class MangaDetailVM {
             if result {
                 try databaseManager.updateCollection(collection)
                 await searchCollection()
+                toastService.show(type: .success, message: "Manga actualizdo")
             }
         } catch {
             print(
                 "Error al actualizar colección: \(error.localizedDescription)"
             )
+            toastService.show(type: .error, message: "Error actualizando Manga")
         }
     }
 
-    func deleteCollection() async {
-        guard let collecetion else { return }
-
+    func deleteCollection(collection: UserCollection) async {
         do {
-            try databaseManager.deleteCollection(collecetion)
-            // Limpiar la colección local después de eliminarla
-            self.collecetion = nil
+            let result = await apiManager.collection.removeMangaFromCollection(id: collection.manga.id)
+        
+            if result {
+                try databaseManager.deleteCollection(collection)
+                self.collection = nil
+                toastService.show(type: .success, message: "Manga eliminado")
+            }
         } catch {
             print("Error al eliminar colección: \(error.localizedDescription)")
+            toastService.show(type: .error, message: "Error eliminando Manga")
+
         }
     }
 }

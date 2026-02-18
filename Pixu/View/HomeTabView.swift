@@ -11,10 +11,15 @@ import SwiftUI
 struct HomeTabView: View {
     @Environment(AuthStatus.self) private var authStatus
     @Environment(MainTabVM.self) private var mainTabVM
-    @Bindable var vm: HomeTabVM
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @Query(sort: \UserCollection.manga.title) private var collections:
-        [UserCollection]
+    private var isCompact: Bool {
+        horizontalSizeClass == .compact
+    }
+
+    @Bindable var vm: HomeTabVM
+    @Query(sort: \UserCollection.manga.title) private var collections: [UserCollection]
+    @Namespace private var namespace
 
     var body: some View {
         NavigationStack {
@@ -22,7 +27,7 @@ struct HomeTabView: View {
                 content
             }
             .navigationDestination(item: $vm.selectedManga) { manga in
-                MangaDetail(vm: MangaDetailVM(manga: manga))
+                MangaDetail(vm: MangaDetailVM(manga: manga), namespace: namespace)
             }
             .toolbarRole(.editor)
             .navigationBarTitleDisplayMode(.inline)
@@ -33,7 +38,6 @@ struct HomeTabView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 55, height: 55)
-
                         Text("Pixie")
                             .font(.largeTitle)
                             .foregroundColor(.primary)
@@ -41,9 +45,7 @@ struct HomeTabView: View {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        mainTabVM.selection = 2
-                    }) {
+                    Button(action: { mainTabVM.selection = 1 }) {
                         CircleAvatar()
                     }
                     .buttonStyle(.plain)
@@ -53,127 +55,127 @@ struct HomeTabView: View {
                 await vm.loadData()
             }
             .globalBackground()
-        }.refreshable {
-            Task {
-                await vm.loadData(refresh: true)
-            }
+        }
+        .refreshable {
+            Task { await vm.loadData(refresh: true) }
         }
     }
 
     private var content: some View {
         LazyVStack(alignment: .leading, spacing: 24) {
-
+            
             // Sección: Mejores mangas
-            LazyVStack(alignment: .leading, spacing: 12) {
-                Text("Mejores mangas:")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .padding(.horizontal)
+            sectionHeader("Mejores mangas:")
+            horizontalScroll(vm.bestMangas, skeleton: { MangaCard.loading }) { manga in
+                MangaHCard(manga: manga, namespace: namespace) { vm.selectedManga = manga }
+                    .frame(width: isCompact ? nil : 450)
+                    .onAppear {
+                        if manga.id == vm.bestMangas.last?.id {
+                            Task { await vm.loadBestMangas() }
+                        }
+                    }
+            }
+            
+            // Sección: Random mangas by theme
+            sectionHeader("Descubre mangas de: \(vm.selectedTheme ?? "")")
+            horizontalScroll(vm.mangasRandomTheme, skeleton: { MangaCard.loading }) { manga in
+                MangaCard(manga: manga, namespace: namespace) { vm.selectedManga = manga }
+                    .onAppear {
+                        if manga.id == vm.mangasRandomTheme.last?.id {
+                            Task { await vm.loadRandomThemeMangas() }
+                        }
+                    }
+            }
+        
 
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack {
-                        ForEach(
-                            Array(vm.bestMangas.enumerated()),
-                            id: \.element.id
-                        ) { index, manga in
-                            ZStack(alignment: .bottomTrailing) {
-                                MangaCard(manga: manga) {
-                                    vm.selectedManga = manga
-                                }
-                                .onAppear {
-                                    if manga.id == vm.bestMangas.last?.id {
-                                        Task {
-                                            await vm.loadBestMangas()
-                                        }
-                                    }
-                                }
-
-                                Circle()
-                                    .fill(.brandPrimary)
-                                    .overlay {
-                                        Text((index + 1).description)
-                                            .font(.title)
-                                            .foregroundColor(.textOnPrimary)
-                                            .bold()
-                                    }.frame(width: 50)
-                            }
+            // Sección: Colección
+            if !collections.isEmpty {
+                sectionHeader("Colección:")
+                horizontalScroll(collections, skeleton: { MangaCard.loading }) { collection in
+                    MangaCard(manga: collection.manga, namespace: namespace) {
+                        vm.selectedManga = collection.manga
+                    }
+                    .onAppear {
+                        if collection.manga.id == vm.bestMangas.last?.id {
+                            Task { await vm.loadBestMangas() }
                         }
                     }
                 }
+                .requiresAuthentication()
             }
 
-            // Sección: Colección propia
-            LazyVStack(alignment: .leading, spacing: 12) {
-                Text("Colección:")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .padding(.horizontal)
-
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack {
-                        ForEach(
-                            collections
-                        ) { collection in
-                            MangaCard(manga: collection.manga) {
-                                vm.selectedManga = collection.manga
-                            }
-                            .onAppear {
-                                if collection.manga.id == vm.bestMangas.last?.id
-                                {
-                                    Task {
-                                        await vm.loadBestMangas()
-                                    }
-                                }
-                            }
+            // Sección: Random mangas by demographic
+            sectionHeader("Descubre mangas de: \(vm.selectedDemographic ?? "")")
+            horizontalScroll(vm.mangasRandomDemographic, skeleton: { MangaCard.loading }) { manga in
+                MangaCard(manga: manga, namespace: namespace) { vm.selectedManga = manga }
+                    .onAppear {
+                        if manga.id == vm.mangasRandomDemographic.last?.id {
+                            Task { await vm.loadRandomDemographicsMangas() }
                         }
                     }
-                }
-            }.requiresAuthentication()
+            }
 
             // Sección: Mangas por género
-            LazyVStack(alignment: .leading, spacing: 12) {
-                Text("Mangas por género:")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .padding(.horizontal)
-
-                // Chips de géneros
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(spacing: 12) {
-                        ForEach(vm.genres, id: \.self) { genre in
-                            Chip(
-                                title: genre,
-                                isSelected: vm.selectedGenre == genre
-                            ) {
-                                vm.selectedGenre = genre
-                            }
+            sectionHeader("Mangas por género:")
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack {
+                    ForEach(vm.genres, id: \.self) { genre in
+                        Chip(title: genre, isSelected: vm.selectedGenre == genre) {
+                            vm.selectedGenre = genre
                         }
-                    }
-                    .padding(.horizontal)
-                }
-
-                // Grid de mangas filtrados
-                LazyVGrid(
-                    columns: [
-                        GridItem(.adaptive(minimum: 170))
-                    ],
-                ) {
-                    ForEach(vm.filteredMangas) { manga in
-                        MangaCard(manga: manga) {
-                            vm.selectedManga = manga
-                        }
-                        .onAppear {
-                            if manga.id == vm.filteredMangas.last?.id {
-                                Task {
-                                    await vm.loadFilteredMangas()
-                                }
-                            }
-                        }
-
                     }
                 }
             }
-        }.padding(.horizontal)
+
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 170))]) {
+                if vm.filteredMangas.isEmpty {
+                    ForEach(0..<6, id: \.self) { _ in
+                        MangaCard.loading
+                    }
+                } else {
+                    ForEach(vm.filteredMangas) { manga in
+                        MangaCard(manga: manga, namespace: namespace) { vm.selectedManga = manga }
+                            .onAppear {
+                                if manga.id == vm.filteredMangas.last?.id {
+                                    Task { await vm.loadFilteredMangas() }
+                                }
+                            }
+                    }
+                }
+            }
+        }
+        .padding(.leading)
+    }
+
+
+    private func sectionHeader(_ title: String) -> some View {
+        Text(title)
+            .font(.title2)
+            .fontWeight(.bold)
+            .padding(.horizontal)
+    }
+
+    private func horizontalScroll<T: Identifiable, C: View, S: View>(
+        _ items: [T],
+        skeletonCount: Int = 4,
+        @ViewBuilder skeleton: @escaping () -> S,
+        @ViewBuilder content: @escaping (T) -> C
+    ) -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            LazyHStack {
+                if items.isEmpty {
+                    ForEach(0..<skeletonCount, id: \.self) { i in
+                        skeleton()
+                            .id("skeleton_\(i)")
+                    }
+                } else {
+                    ForEach(items) { item in
+                        content(item)
+                            .id(item.id)
+                    }
+                }
+            }
+        }
     }
 }
 

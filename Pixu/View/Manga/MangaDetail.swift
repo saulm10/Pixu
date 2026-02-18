@@ -5,6 +5,7 @@
 //  Created by Saul Martinez Diez on 15/1/26.
 //
 
+import Components
 import SwiftData
 import SwiftUI
 
@@ -13,11 +14,15 @@ struct MangaDetail: View {
 
     @State private var showingCollectionSheet = false
 
+    @AppStorage(UserDefaultsK.image.rawValue) var storedImage: String = ""
+
+    let namespace: Namespace.ID
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 // Hero Section con imagen y score
-                heroSection
+                imageSection
 
                 // Content Section
                 VStack(alignment: .leading, spacing: 24) {
@@ -54,14 +59,28 @@ struct MangaDetail: View {
                 .padding(.bottom, 32)
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Menu {
+                    Button {
+                        storedImage = vm.manga.mainPicture
+                    } label: {
+                        Label("Establecer como icono", systemImage: "person")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                }
+            }
+        }
         .globalBackground()
         .ignoresSafeArea(edges: .top)
         .sheet(isPresented: $showingCollectionSheet) {
             CollectionConfigSheet(
-                collection: vm.collecetion,
+                collection: vm.collection,
                 manga: vm.manga,
                 createCollection: vm.createCollection,
-                updateCollection: vm.updateCollection
+                updateCollection: vm.updateCollection,
+                deleteCollection: vm.deleteCollection,
             )
         }.task {
             await vm.searchCollection()
@@ -69,39 +88,21 @@ struct MangaDetail: View {
     }
 
     // MARK: - Hero Section
-    private var heroSection: some View {
+    private var imageSection: some View {
         ZStack(alignment: .bottomTrailing) {
-            // Imagen principal con gradiente
-            AsyncImage(url: URL(string: vm.manga.mainPicture)) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(height: 400)
-                        .clipped()
-                        .overlay {
-                            LinearGradient(
-                                colors: [.clear, .black.opacity(0.7)],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        }
-                case .failure(_):
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                        .frame(height: 400)
-                case .empty:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                        .frame(height: 400)
-                        .overlay {
-                            ProgressView()
-                        }
-                @unknown default:
-                    EmptyView()
+            ImageUrlCache(vm.manga.mainPicture)
+                .frame(height: 400)
+                .clipped()
+                .overlay {
+                    LinearGradient(
+                        colors: [.clear, .black.opacity(0.7)],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
                 }
-            }
+                .navigationTransition(
+                    .zoom(sourceID: vm.manga.id, in: namespace)
+                )
 
             // Score badge
             scoreBadge
@@ -256,7 +257,7 @@ struct MangaDetail: View {
 
     private var collectionSummary: some View {
         Group {
-            if let collection = vm.collecetion {
+            if let collection = vm.collection {
                 HStack(spacing: 4) {
                     if collection.completeCollection {
                         Image(systemName: "star.fill")
@@ -530,6 +531,7 @@ struct CollectionConfigSheet: View {
     @State private var isNew: Bool
     let createCollection: (UserCollection) async -> Void
     let updateCollection: (UserCollection) async -> Void
+    let deleteCollection: (UserCollection) async -> Void
 
     @Environment(\.dismiss) private var dismiss
 
@@ -537,11 +539,13 @@ struct CollectionConfigSheet: View {
         collection: UserCollection? = nil,
         manga: Manga,
         createCollection: @escaping (UserCollection) async -> Void,
-        updateCollection: @escaping (UserCollection) async -> Void
+        updateCollection: @escaping (UserCollection) async -> Void,
+        deleteCollection: @escaping (UserCollection) async -> Void,
     ) {
         self.manga = manga
         self.createCollection = createCollection
         self.updateCollection = updateCollection
+        self.deleteCollection = deleteCollection
 
         if let collection = collection {
             self._collection = State(initialValue: collection)
@@ -573,8 +577,6 @@ struct CollectionConfigSheet: View {
                     if !collection.volumesOwned.isEmpty {
                         readingVolumeSection
                     }
-
-                    //removeButton
                 }
                 .padding()
             }
@@ -685,33 +687,39 @@ struct CollectionConfigSheet: View {
                 }
                 .padding(.horizontal, 4)
             }
+            Spacer()
+            if !isNew {
+                removeButton
+            }
         }
     }
 
-    //    private var removeButton: some View {
-    //        Button(role: .destructive) {
-    //            collection.isInCollection = false
-    //            collection.volumesOwned.removeAll()
-    //            collection.readingVolume = nil
-    //            collection.completeCollection = false
-    //            dismiss()
-    //        } label: {
-    //            HStack {
-    //                Image(systemName: "trash.fill")
-    //                Text("Eliminar de la colección")
-    //            }
-    //            .font(.system(size: 17, weight: .semibold))
-    //            .foregroundStyle(.white)
-    //            .frame(maxWidth: .infinity)
-    //            .padding()
-    //            .background {
-    //                RoundedRectangle(cornerRadius: 12)
-    //                    .fill(Color.red)
-    //            }
-    //        }
-    //    }
-
-    // MARK: - Actions
+    private var removeButton: some View {
+        Text("Eliminar colección")
+            .font(.system(size: 15, weight: .medium))
+            .foregroundStyle(.primary)
+            .frame(
+                maxWidth: .infinity,
+                minHeight: 40,
+                maxHeight: 40,
+                alignment: .center
+            ).padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background {
+                Capsule()
+                    .fill(.red)
+            }
+            .onTapGesture {
+                let collectionToDelete = collection
+                Task {
+                    await deleteCollection(collectionToDelete)
+                }
+                dismiss()
+            }
+            .glassEffect(
+                in: Capsule()
+            )
+    }
 
     private func saveCollection() {
         let collectionToSave = collection
@@ -800,5 +808,8 @@ struct CollectionConfigSheet: View {
 }
 
 #Preview(traits: .devEnvironment) {
-    MangaDetail(vm: MangaDetailVM(manga: Manga.test))
+    @Previewable @Namespace var namespace
+    NavigationStack {
+        MangaDetail(vm: MangaDetailVM(manga: Manga.test), namespace: namespace)
+    }
 }

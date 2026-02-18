@@ -44,8 +44,8 @@ extension MangaDTO {
             mainPicture: (mainPicture ?? "")
                 .trimmingCharacters(in: .whitespacesAndNewlines)
                 .replacingOccurrences(of: "\"", with: ""),
-            chapters: chapters ?? 0,
-            volumes: volumes ?? 0,
+            chapters: chapters ?? 1,
+            volumes: volumes ?? 1,
             score: score,
             status: status,
             startDate: startDate ?? "",

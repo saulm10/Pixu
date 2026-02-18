@@ -76,41 +76,6 @@ struct LoginSheet: View {
             ZStack {
                 ScrollView {
                     VStack(spacing: 24) {
-                        // Botones sociales
-                        VStack(spacing: 12) {
-                            Button(action: {}) {
-                                HStack {
-                                    Image(systemName: "g.circle.fill")
-                                        .font(.title2)
-                                    Text(.globalContinueGoogle)
-                                        .font(.headline)
-                                }
-                            }.buttonStyle(.tertiary)
-
-                            Button(action: {}) {
-                                HStack {
-                                    Image(systemName: "apple.logo")
-                                        .font(.title2)
-                                    Text(.globalContinueApple)
-                                        .font(.headline)
-                                }
-                            }.buttonStyle(.tertiary)
-                        }
-
-                        // Divisor
-                        HStack {
-                            Rectangle()
-                                .fill(Color.gray.opacity(0.3))
-                                .frame(height: 1)
-                            Text(verbatim: "o")
-                                .foregroundColor(.gray)
-                                .padding(.horizontal, 16)
-                            Rectangle()
-                                .fill(Color.gray.opacity(0.3))
-                                .frame(height: 1)
-                        }
-                        .padding(.vertical, 8)
-
                         // Campos de texto
                         VStack(spacing: 16) {
                             VStack(alignment: .leading, spacing: 8) {
@@ -131,6 +96,14 @@ struct LoginSheet: View {
                                     .roundedTextFieldStyle()
                             }
                         }
+                        
+                        // Divisor
+                        HStack {
+                            Rectangle()
+                                .fill(Color.gray.opacity(0.3))
+                                .frame(height: 1)
+                        }
+                        .padding(.vertical, 8)
 
                         // Botón de iniciar sesión
                         Button(
@@ -178,41 +151,6 @@ struct RegisterSheet: View {
             ZStack {
                 ScrollView {
                     VStack(spacing: 24) {
-                        // Botones sociales
-                        VStack(spacing: 12) {
-                            Button(action: {}) {
-                                HStack {
-                                    Image(systemName: "g.circle.fill")
-                                        .font(.title2)
-                                    Text(.globalContinueGoogle)
-                                        .font(.headline)
-                                }
-                            }.buttonStyle(.tertiary)
-
-                            Button(action: {}) {
-                                HStack {
-                                    Image(systemName: "apple.logo")
-                                        .font(.title2)
-                                    Text(.globalContinueApple)
-                                        .font(.headline)
-                                }
-                            }.buttonStyle(.tertiary)
-                        }
-
-                        // Divisor
-                        HStack {
-                            Rectangle()
-                                .fill(Color.gray.opacity(0.3))
-                                .frame(height: 1)
-                            Text(verbatim: "o")
-                                .foregroundColor(.gray)
-                                .padding(.horizontal, 16)
-                            Rectangle()
-                                .fill(Color.gray.opacity(0.3))
-                                .frame(height: 1)
-                        }
-                        .padding(.vertical, 8)
-
                         // Campos de texto
                         VStack(spacing: 16) {
                             VStack(alignment: .leading, spacing: 8) {
@@ -237,6 +175,14 @@ struct RegisterSheet: View {
                                     password.count >= 8 ? .green : .gray
                                 )
                         }
+                        
+                        // Divisor
+                        HStack {
+                            Rectangle()
+                                .fill(Color.gray.opacity(0.3))
+                                .frame(height: 1)
+                        }
+                        .padding(.vertical, 8)
 
                         // Botón de registro
                         Button(action: {}) {

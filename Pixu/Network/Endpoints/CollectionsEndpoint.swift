@@ -12,7 +12,7 @@ protocol CollectionEndpoint {
     func getCollection() async -> [UserCollection]
     func getMangaFromCollection(id: String) async -> UserCollection?
     func addMangaToCollection(input: UserMangaCollectionRequestInputDTO) async -> Bool
-    func removeMangaFromCollection(id: String) async -> Bool
+    func removeMangaFromCollection(id: Int) async -> Bool
 }
 
 struct Collections: CollectionEndpoint {
@@ -57,9 +57,9 @@ struct Collections: CollectionEndpoint {
         }
     }
     
-    func removeMangaFromCollection(id: String) async -> Bool {
+    func removeMangaFromCollection(id: Int) async -> Bool {
         do {
-            let _: Int = try await apiClient.delete(
+            try await apiClient.delete(
                 path: "collection/manga/\(id)",
                 queryParameters: [:],
                 temporaryAuth: nil
@@ -84,7 +84,7 @@ struct CollectionsTest: CollectionEndpoint {
         return true
     }
     
-    func removeMangaFromCollection(id: String) async -> Bool {
+    func removeMangaFromCollection(id: Int) async -> Bool {
         return true
     }
 }

@@ -102,8 +102,8 @@ struct RoundedTextFieldModifier: ViewModifier {
             .overlay(
                 RoundedRectangle(cornerRadius: 18)
                     .stroke(
-                        isFocused ? Color.accentColor : Color.primary.opacity(0.3),
-                        lineWidth: isFocused ? 2 : 1.5
+                        isFocused ? Color.accentColor : Color.primary,
+                        lineWidth: isFocused ? 4 : 3
                     )
             )
             .cornerRadius(18)

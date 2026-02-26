@@ -7,7 +7,7 @@
 
 import Combine
 import SwiftUI
-import ToastService
+import Shared
 
 @MainActor @Observable
 final class HomeTabVM {
@@ -69,9 +69,6 @@ final class HomeTabVM {
         selectedDemographic = demographics.randomElement()
 
         await loadBestMangas()
-//        await loadRandomThemeMangas()
-//        await loadRandomDemographicsMangas()
-//        await loadFilteredMangas()
 
         hasLoaded = true
     }

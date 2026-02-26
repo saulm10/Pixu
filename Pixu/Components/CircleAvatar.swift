@@ -5,8 +5,8 @@
 //  Created by Saul Martinez Diez on 15/1/26.
 //
 
-import SwiftUI
 import Components
+import SwiftUI
 
 struct CircleAvatar: View {
     var big: Bool = false
@@ -14,8 +14,8 @@ struct CircleAvatar: View {
     @AppStorage(UserDefaultsK.image.rawValue) var image: String = ""
 
     var body: some View {
-        let big: CGFloat =  big ? 150 : 32
-        
+        let big: CGFloat = big ? 150 : 32
+
         Circle()
             .fill(Color.clear)
             .frame(width: big, height: big)
@@ -26,7 +26,6 @@ struct CircleAvatar: View {
                 } else {
                     Text(initial)
                         .font(.title2)
-                        .foregroundColor(.primary)
                         .bold()
                 }
             }

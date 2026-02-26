@@ -2,7 +2,7 @@
 //  MangaDetail.swift
 //  Pixu
 //
-//  Created by Saul Martinez Diez on 15/1/26.
+//  Rediseño — Estilo editorial, tipografía rounded, dividers, sin glass cards
 //
 
 import Components
@@ -13,51 +13,62 @@ struct MangaDetail: View {
     @State var vm: MangaDetailVM
 
     @State private var showingCollectionSheet = false
+    @State private var scoreAnimated: Double = 0
 
     @AppStorage(UserDefaultsK.image.rawValue) var storedImage: String = ""
+    @AppStorage(UserDefaultsK.showAdultContent.rawValue) private
+        var showAdultContent: Bool = false
 
     let namespace: Namespace.ID
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                // Hero Section con imagen y score
-                imageSection
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack(spacing: 0) {
+                heroSection
 
-                // Content Section
-                VStack(alignment: .leading, spacing: 24) {
-                    // Títulos
-                    titleSection
+                VStack(spacing: 0) {
+                    titleBlock
+                    Divider().padding(.horizontal, 20)
+                    statsRow
+                    Divider().padding(.horizontal, 20)
+                    collectionBlock
+                    Divider().padding(.horizontal, 20)
+                    synopsisBlock
+                    Divider().padding(.horizontal, 20)
+                    publicationBlock
+                    Divider().padding(.horizontal, 20)
 
-                    // Status y Stats
-                    statsSection
-
-                    // Botón de colección
-                    collectionButton
-
-                    // Sinopsis
-                    synopsisSection
-
-                    // Tags (Genres, Themes, Demographics)
-                    tagsSection
-
-                    // Autores
-                    authorsSection
-
-                    // Background info
-                    if let background = vm.manga.background, !background.isEmpty
+                    if !vm.manga.genres.isEmpty || !vm.manga.themes.isEmpty
+                        || !vm.manga.demographics.isEmpty
                     {
-                        backgroundSection
+                        tagsBlock
+                        Divider().padding(.horizontal, 20)
                     }
 
-                    // Botón de MyAnimeList
+                    if !vm.manga.authors.isEmpty {
+                        authorsBlock
+                        Divider().padding(.horizontal, 20)
+                    }
+
+                    if !vm.filteredMangas.isEmpty {
+                        relatedBlock
+                        Divider().padding(.horizontal, 20)
+                    }
+
+                    if let bg = vm.manga.background, !bg.isEmpty {
+                        backgroundBlock(bg)
+                        Divider().padding(.horizontal, 20)
+                    }
+
                     if !vm.manga.url.isEmpty {
-                        malButton
+                        malBlock
                     }
                 }
-                .padding(.horizontal)
-                .padding(.bottom, 32)
-            }
+                .padding(.bottom, 40)
+            }.globalBackground()
+        }
+        .navigationDestination(item: $vm.selectedManga) { manga in
+            MangaDetail(vm: MangaDetailVM(manga: manga), namespace: namespace)
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -65,14 +76,16 @@ struct MangaDetail: View {
                     Button {
                         storedImage = vm.manga.mainPicture
                     } label: {
-                        Label("Establecer como icono", systemImage: "person")
-                    }
+                        Label(
+                            .mangadeetailToolUsericonset,
+                            systemImage: "person.crop.circle"
+                        )
+                    }.tint(.primary)
                 } label: {
                     Image(systemName: "ellipsis")
                 }
             }
         }
-        .globalBackground()
         .ignoresSafeArea(edges: .top)
         .sheet(isPresented: $showingCollectionSheet) {
             CollectionConfigSheet(
@@ -80,115 +93,370 @@ struct MangaDetail: View {
                 manga: vm.manga,
                 createCollection: vm.createCollection,
                 updateCollection: vm.updateCollection,
-                deleteCollection: vm.deleteCollection,
+                deleteCollection: vm.deleteCollection
             )
-        }.task {
+        }
+        .task {
             await vm.searchCollection()
+            await vm.loadFilteredMangas()
+            withAnimation(.easeInOut(duration: 1.2).delay(0.4)) {
+                scoreAnimated = vm.manga.score ?? 0
+            }
         }
     }
 
-    // MARK: - Hero Section
-    private var imageSection: some View {
-        ZStack(alignment: .bottomTrailing) {
-            ImageUrlCache(vm.manga.mainPicture)
-                .frame(height: 400)
-                .clipped()
-                .overlay {
-                    LinearGradient(
-                        colors: [.clear, .black.opacity(0.7)],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                }
-                .navigationTransition(
-                    .zoom(sourceID: vm.manga.id, in: namespace)
+    private var heroSection: some View {
+        ZStack(alignment: .bottomLeading) {
+            ImageUrlCache(
+                vm.manga.mainPicture,
+                blurred: !showAdultContent && vm.manga.isAdultContent
+            )
+            .frame(height: 380)
+            .clipped()
+            .overlay {
+                LinearGradient(
+                    stops: [
+                        .init(color: .clear, location: 0.3),
+                        .init(color: .black.opacity(0.75), location: 1),
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
                 )
+            }
+            .navigationTransition(.zoom(sourceID: vm.manga.id, in: namespace))
 
-            // Score badge
-            scoreBadge
-                .padding(16)
-        }
-    }
-
-    private var scoreButton: some View {
-        HStack(spacing: 6) {
-            Image(systemName: "star.fill")
-                .font(.system(size: 14, weight: .semibold))
-            Text(String(format: "%.2f", vm.manga.score ?? 0))
-                .font(.system(size: 16, weight: .bold))
-        }
-        .foregroundStyle(.white)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background {
-            Capsule()
-                .fill(.brandPrimary)
-        }
-    }
-
-    private var scoreBadge: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "star.fill")
-                .font(.system(size: 18, weight: .bold))
-                .foregroundStyle(.yellow)
-
-            Text(String(format: "%.2f", vm.manga.score ?? 0))
-                .font(.system(size: 24, weight: .bold))
-                .foregroundStyle(.white)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
-        .background {
-            Capsule()
-                .fill(.ultraThinMaterial)
-                .shadow(color: .black.opacity(0.3), radius: 8, y: 4)
-        }
-    }
-
-    // MARK: - Title Section
-    private var titleSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(vm.manga.title)
-                .font(.system(size: 32, weight: .bold))
-                .foregroundStyle(Color.primary)
-
-            if let englishTitle = vm.manga.titleEnglish,
-                englishTitle != vm.manga.title
-            {
-                Text(englishTitle)
-                    .font(.system(size: 18, weight: .medium))
-                    .foregroundStyle(Color.primary.opacity(0.7))
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    MangaScoreGauge(score: scoreAnimated)
+                        .frame(width: 80, height: 80)
+                        .padding(16)
+                }
             }
 
-            Text(vm.manga.titleJapanese ?? "")
-                .font(.system(size: 16))
-                .foregroundStyle(Color.primary.opacity(0.6))
+            VStack(alignment: .leading) {
+                Spacer()
+                HStack(spacing: 6) {
+                    Circle()
+                        .fill(statusColor)
+                        .frame(width: 8, height: 8)
+                    Text(statusShort)
+                        .foregroundStyle(.white)
+                        .font(.caption)
+                        .bold()
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(.ultraThinMaterial, in: Capsule())
+                .padding(16)
+            }
         }
-        .padding(.top, 24)
+        .frame(height: 380)
     }
 
-    // MARK: - Stats Section
-    private var statsSection: some View {
-        HStack(spacing: 16) {
-            StatCardManga(
-                icon: "book.closed.fill",
-                value: vm.manga.volumes != nil ? "\(vm.manga.volumes!)" : "?",
-                label: "Volúmenes",
-                iconColor: Color.brandPrimary
-            )
+    private var titleBlock: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(vm.manga.title)
+                .font(.largeTitle)
+                .bold()
 
-            StatCardManga(
-                icon: "list.bullet.rectangle.fill",
-                value: "\(vm.manga.chapters, default: "")",
-                label: "Capítulos"
-            )
+            if let eng = vm.manga.titleEnglish, eng != vm.manga.title {
+                Text(eng)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+            }
 
-            StatCardManga(
-                icon: statusIcon,
-                value: statusText,
-                label: "Estado",
-                iconColor: statusColor
+            if let jp = vm.manga.titleJapanese {
+                Text(jp)
+                    .foregroundStyle(.tertiary)
+                    .font(.subheadline)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 20)
+    }
+
+    private var statsRow: some View {
+        HStack(spacing: 0) {
+            DetailStatPill(
+                value: vm.manga.volumes.map { "\($0)" } ?? "—",
+                label: .mangadetailVolumes,
+                icon: "book.closed.fill"
             )
+            Divider().frame(height: 40)
+            DetailStatPill(
+                value: vm.manga.chapters.map { "\($0)" } ?? "—",
+                label: .mangadetailChapters,
+                icon: "list.bullet.rectangle.fill"
+            )
+            Divider().frame(height: 40)
+            DetailStatPill(
+                value: vm.manga.score.map { score in
+                    "\(score, specifier: "%.2f")"
+                } ?? "—",
+                label: .mangadetailScore,
+                icon: "star.fill"
+            )
+            Divider().frame(height: 40)
+            DetailStatPill(
+                value: statusShort,
+                label: .mangadetailState,
+                icon: statusIcon
+            )
+        }
+        .padding(.vertical, 20)
+        .padding(.horizontal, 20)
+    }
+
+    private var collectionBlock: some View {
+        Button {
+            showingCollectionSheet = true
+        } label: {
+            HStack(spacing: 14) {
+                Image(
+                    systemName: vm.isInCollection
+                        ? "checkmark.circle.fill" : "plus.circle.fill"
+                )
+                .foregroundStyle(vm.isInCollection ? .green : .primary)
+                .font(.title)
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(
+                        vm.isInCollection
+                            ? "mangadetail_inCollection"
+                            : "mangadetail_addtocollection"
+                    )
+                    .font(.footnote)
+
+                    if let col = vm.collection {
+                        Text(
+                            .mangadetailVolumenes(
+                                col.volumesOwned.count,
+                                vm.manga.volumes ?? 0
+                            )
+                        )
+                        .foregroundStyle(.secondary)
+                        .font(.footnote)
+
+                    } else {
+                        Text(.mangadetailManagecollection)
+                            .foregroundStyle(.secondary)
+                            .font(.footnote)
+
+                    }
+                }
+
+                Spacer()
+
+                if let col = vm.collection, !col.completeCollection,
+                    let total = vm.manga.volumes, total > 0
+                {
+                    CollectionProgressRing(
+                        progress: Double(col.volumesOwned.count)
+                            / Double(total),
+                        color: .primary
+                    )
+                    .frame(width: 36, height: 36)
+                }
+
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(.tertiary)
+                    .font(.footnote)
+
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 18)
+        }
+        .requiresAuthentication()
+    }
+
+    private var synopsisBlock: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            SectionLabel(title: .mangadetailSynopsis, icon: "text.alignleft")
+            Text(vm.manga.sypnosis ?? "mangadetail_nosynopsis")
+                .font(.callout)
+                .foregroundStyle(.primary.opacity(0.85))
+                .lineSpacing(5)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 20)
+    }
+
+    private var publicationBlock: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            SectionLabel(title: .mangadetailPublication, icon: "calendar")
+
+            HStack(spacing: 0) {
+                VStack(spacing: 3) {
+                    Image(systemName: "play.circle.fill")
+                        .font(.title3)
+                    Text(.mangadetailStart)
+                        .foregroundStyle(.secondary)
+                        .font(.caption2)
+                        .textCase(.uppercase)
+                        .tracking(0.8)
+                    Text(formattedDate(vm.manga.startDate))
+                        .font(.headline)
+                        .bold()
+                }
+                .frame(maxWidth: .infinity)
+
+                Rectangle()
+                    .frame(height: 2)
+                    .frame(maxWidth: .infinity)
+
+                VStack(spacing: 3) {
+                    Image(
+                        systemName: vm.manga.status == "finished"
+                            ? "checkmark.circle.fill" : "ellipsis.circle.fill"
+                    )
+                    .font(.title3)
+                    .foregroundStyle(statusColor)
+                    Text(
+                        vm.manga.status == "finished"
+                            ? "mangadetail_state_end" : "mangadetail_state"
+                    )
+                    .foregroundStyle(.secondary)
+                    .font(.caption2)
+                    .textCase(.uppercase)
+                    .tracking(0.8)
+                    Text(
+                        vm.manga.status == "finished"
+                            ? LocalizedStringResource(
+                                stringLiteral: formattedDate(vm.manga.endDate)
+                            ) : statusShort
+                    )
+                    .font(.headline)
+                    .bold()
+                }
+                .frame(maxWidth: .infinity)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 20)
+    }
+
+    private var tagsBlock: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            SectionLabel(title: .mangadetailClassification, icon: "tag.fill")
+
+            if !vm.manga.genres.isEmpty {
+                ChipGroup(
+                    title: .mangadetailClassificationGenres,
+                    items: vm.manga.genres.map {
+                        $0.genre
+                    },
+                    color: .primary
+                )
+            }
+            if !vm.manga.themes.isEmpty {
+                ChipGroup(
+                    title: .mangadetailClassificationThemes,
+                    items: vm.manga.themes.map {
+                        $0.theme
+                    },
+                    color: .primary
+                )
+            }
+            if !vm.manga.demographics.isEmpty {
+                ChipGroup(
+                    title: .mangadetailClassificationDemography,
+                    items: vm.manga.demographics.map {
+                        $0.demographic
+                    },
+                    color: .primary
+                )
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 20)
+    }
+
+    private var authorsBlock: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            SectionLabel(title: .mangadetailAuthors, icon: "person.2.fill")
+
+            VStack(spacing: 0) {
+                ForEach(Array(vm.manga.authors.enumerated()), id: \.element.id)
+                { index, author in
+                    if index > 0 { Divider().padding(.leading, 54) }
+                    AuthorDetailRow(author: author)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 20)
+    }
+
+    private var relatedBlock: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            SectionLabel(
+                title: .mangadetailAlsolike,
+                icon: "books.vertical.fill"
+            )
+            .padding(.horizontal, 20)
+
+            horizontalScroll(vm.filteredMangas, skeleton: { MangaCard.loading })
+            { manga in
+                MangaCard(manga: manga, namespace: namespace) {
+                    vm.selectedManga = manga
+                }
+                .onAppear {
+                    if manga.id == vm.filteredMangas.last?.id {
+                        Task { await vm.loadFilteredMangas() }
+                    }
+                }
+            }
+        }
+        .padding(.vertical, 20)
+    }
+
+    private func backgroundBlock(_ text: String) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            SectionLabel(
+                title: .mangadetailAdditionalinfo,
+                icon: "info.circle.fill"
+            )
+            Text(text)
+                .font(.subheadline)
+                .foregroundStyle(.primary.opacity(0.8))
+                .lineSpacing(5)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 20)
+    }
+
+    private var malBlock: some View {
+        Link(destination: URL(string: vm.manga.url)!) {
+            HStack(spacing: 12) {
+                Image(systemName: "safari.fill")
+                    .foregroundStyle(.blue)
+                    .font(.title2)
+                Text(.mangadetailShowinMyAnime)
+                    .font(.headline)
+                Spacer()
+                Image(systemName: "arrow.up.right")
+                    .foregroundStyle(.secondary)
+                    .font(.footnote)
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 18)
+        }
+    }
+
+    private var statusShort: LocalizedStringResource {
+        switch vm.manga.status {
+        case "currently_publishing": return .mangadetailStateActive
+        case "finished": return .mangadetailStateEnd
+        case "on_hiatus": return .mangadetailStatePause
+        default: return "—"
         }
     }
 
@@ -201,259 +469,215 @@ struct MangaDetail: View {
         }
     }
 
-    private var statusText: String {
-        switch vm.manga.status {
-        case "currently_publishing": return "Publicando"
-        case "finished": return "Finalizado"
-        case "on_hiatus": return "Hiatus"
-        default: return vm.manga.status ?? ""
-        }
-    }
-
     private var statusColor: Color {
         switch vm.manga.status {
         case "currently_publishing": return .green
-        case "finished": return .blue
+        case "finished": return .green
         case "on_hiatus": return .orange
         default: return .gray
         }
     }
 
-    // MARK: - UserCollection Button
-    private var collectionButton: some View {
-        Button {
-            showingCollectionSheet = true
-        } label: {
-            HStack {
-                Image(
-                    systemName: vm.isInCollection
-                        ? "checkmark.circle.fill" : "plus.circle.fill"
-                )
-                .font(.system(size: 20, weight: .semibold))
-
-                Text(
-                    vm.isInCollection ? "En mi colección" : "Añadir a colección"
-                )
-                .font(.system(size: 17, weight: .semibold))
-
-                Spacer()
-
-                if vm.isInCollection {
-                    collectionSummary
-                }
-            }
-            .foregroundStyle(vm.isInCollection ? .white : .brandPrimary)
-            .padding()
-            .background {
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(
-                        vm.isInCollection
-                            ? Color.brandPrimary
-                            : Color.brandPrimary.opacity(0.15)
-                    )
-            }
-        }.requiresAuthentication()
-    }
-
-    private var collectionSummary: some View {
-        Group {
-            if let collection = vm.collection {
-                HStack(spacing: 4) {
-                    if collection.completeCollection {
-                        Image(systemName: "star.fill")
-                            .font(.system(size: 12))
-                        Text("Completa")
-                            .font(.system(size: 14, weight: .medium))
-                    } else {
-                        Text(
-                            "\(collection.volumesOwned.count)/\(vm.manga.volumes ?? 0)"
-                        )
-                        .font(.system(size: 14, weight: .medium))
-                    }
-                }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 5)
-                .background {
-                    Capsule()
-                        .fill(.white.opacity(0.2))
-                }
+    private func formattedDate(_ raw: String?) -> String {
+        guard let raw else { return "—" }
+        let input = String(raw.prefix(10))
+        let pairs: [(String, String)] = [
+            ("yyyy-MM-dd", "MMM yyyy"),
+            ("yyyy-MM", "MMM yyyy"),
+            ("yyyy", "yyyy"),
+        ]
+        for (inFmt, outFmt) in pairs {
+            let parser = DateFormatter()
+            parser.dateFormat = inFmt
+            if let date = parser.date(from: input) {
+                let out = DateFormatter()
+                out.locale = Locale(identifier: "es_ES")
+                out.dateFormat = outFmt
+                return out.string(from: date).capitalized
             }
         }
-    }
-
-    // MARK: - Synopsis Section
-    private var synopsisSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Sinopsis")
-                .font(.system(size: 22, weight: .bold))
-                .foregroundStyle(Color.primary)
-
-            Text(vm.manga.sypnosis ?? "")
-                .font(.system(size: 16))
-                .foregroundStyle(Color.primary.opacity(0.8))
-                .lineSpacing(4)
-        }
-    }
-
-    // MARK: - Tags Section
-    private var tagsSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            if !vm.manga.genres.isEmpty {
-                TagGroup(
-                    title: "Géneros",
-                    items: vm.manga.genres.map { $0.genre },
-                    color: .blue
-                )
-            }
-
-            if !vm.manga.themes.isEmpty {
-                TagGroup(
-                    title: "Temas",
-                    items: vm.manga.themes.map { $0.theme },
-                    color: .purple
-                )
-            }
-
-            if !vm.manga.demographics.isEmpty {
-                TagGroup(
-                    title: "Demografía",
-                    items: vm.manga.demographics.map { $0.demographic },
-                    color: .orange
-                )
-            }
-        }
-    }
-
-    // MARK: - Authors Section
-    private var authorsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Autores")
-                .font(.system(size: 22, weight: .bold))
-                .foregroundStyle(Color.primary)
-
-            VStack(alignment: .leading, spacing: 8) {
-                ForEach(vm.manga.authors, id: \.id) { author in
-                    HStack {
-                        Image(systemName: "person.circle.fill")
-                            .font(.system(size: 20))
-                            .foregroundStyle(Color.brandPrimary)
-
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("\(author.firstName) \(author.lastName)")
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundStyle(Color.primary)
-
-                            Text(author.role)
-                                .font(.system(size: 14))
-                                .foregroundStyle(Color.primary.opacity(0.6))
-                        }
-
-                        Spacer()
-                    }
-                    .padding(.vertical, 8)
-                    .padding(.horizontal, 12)
-                    .background {
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(Color.primary.opacity(0.05))
-                    }
-                }
-            }
-        }
-    }
-
-    // MARK: - Background Section
-    private var backgroundSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Información adicional")
-                .font(.system(size: 22, weight: .bold))
-                .foregroundStyle(Color.primary)
-
-            Text(vm.manga.background ?? "")
-                .font(.system(size: 16))
-                .foregroundStyle(Color.primary.opacity(0.8))
-                .lineSpacing(4)
-        }
-    }
-
-    // MARK: - MAL Button
-    private var malButton: some View {
-        Link(destination: URL(string: vm.manga.url)!) {
-            HStack {
-                Image(systemName: "link.circle.fill")
-                    .font(.system(size: 20))
-
-                Text("Ver en MyAnimeList")
-                    .font(.system(size: 17, weight: .medium))
-
-                Spacer()
-
-                Image(systemName: "arrow.up.right")
-                    .font(.system(size: 14, weight: .semibold))
-            }
-            .foregroundStyle(Color.primary)
-            .padding()
-            .background {
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.primary.opacity(0.1))
-            }
-        }
+        return raw
     }
 }
 
-// MARK: - Supporting Views
-struct StatCardManga: View {
-    let icon: String
-    let value: String
-    let label: String
-    var iconColor: Color = .brandPrimary
+private struct MangaScoreGauge: View {
+    let score: Double
+    private var progress: Double { score / 10.0 }
+
+    private var gaugeColor: Color {
+        switch score {
+        case 8...: return .yellow
+        case 6..<8: return .green
+        case 4..<6: return .orange
+        default: return score == 0 ? .gray : .red
+        }
+    }
 
     var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: icon)
-                .font(.system(size: 24, weight: .semibold))
-                .foregroundStyle(iconColor)
+        ZStack {
+            Circle()
+                .trim(from: 0, to: 0.75)
+                .stroke(
+                    Color.white.opacity(0.15),
+                    style: StrokeStyle(lineWidth: 6, lineCap: .round)
+                )
+                .rotationEffect(.degrees(135))
 
-            Text(value)
-                .font(.system(size: 18, weight: .bold))
-                .foregroundStyle(Color.primary)
+            Circle()
+                .trim(from: 0, to: progress * 0.75)
+                .stroke(
+                    gaugeColor,
+                    style: StrokeStyle(lineWidth: 6, lineCap: .round)
+                )
+                .rotationEffect(.degrees(135))
 
-            Text(label)
-                .font(.system(size: 12, weight: .medium))
-                .foregroundStyle(Color.primary.opacity(0.6))
+            VStack(spacing: 0) {
+                Text(
+                    verbatim: score > 0 ? String(format: "%.1f", score) : "N/A"
+                )
+                .foregroundStyle(.white)
+                .font(.title2)
+                .bold()
+                Text(.mangadetailScore)
+                    .foregroundStyle(.white.opacity(0.6))
+                    .font(.caption2)
+                    .bold()
+                    .kerning(1.2)
+            }
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 16)
-        .background {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color.primary.opacity(0.05))
-        }
+        .background(Circle().fill(.ultraThinMaterial))
     }
 }
 
-struct TagGroup: View {
-    let title: String
+private struct DetailStatPill: View {
+    let value: LocalizedStringResource
+    let label: LocalizedStringResource
+    let icon: String
+
+    var body: some View {
+        VStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(.title3)
+                .bold()
+                .minimumScaleFactor(0.6)
+                .lineLimit(1)
+            Text(label)
+                .foregroundStyle(.secondary)
+                .font(.caption2)
+                .textCase(.uppercase)
+                .tracking(0.5)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+private struct SectionLabel: View {
+    let title: LocalizedStringResource
+    let icon: String
+
+    var body: some View {
+        Label(title, systemImage: icon)
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .textCase(.uppercase)
+            .tracking(1)
+    }
+}
+
+private struct ChipGroup: View {
+    let title: LocalizedStringResource
     let items: [String]
     let color: Color
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(.system(size: 18, weight: .bold))
-                .foregroundStyle(Color.primary)
+                .foregroundStyle(.secondary)
+                .font(.caption)
 
             FlowLayout(spacing: 8) {
                 ForEach(items, id: \.self) { item in
                     Text(item)
-                        .font(.system(size: 14, weight: .medium))
+                        .font(.footnote)
                         .foregroundStyle(color)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
-                        .background {
-                            Capsule()
-                                .fill(color.opacity(0.15))
-                        }
+                        .background(color.opacity(0.12), in: Capsule())
+                        .overlay(
+                            Capsule().strokeBorder(
+                                color.opacity(0.25),
+                                lineWidth: 1
+                            )
+                        )
                 }
             }
+        }
+    }
+}
+
+private struct AuthorDetailRow: View {
+    let author: Author
+
+    var initials: String {
+        [author.firstName.prefix(1), author.lastName.prefix(1)].joined()
+    }
+
+    var avatarColor: Color {
+        let colors: [Color] = [
+            .blue, .purple, .pink, .orange, .teal, .green, .indigo,
+        ]
+        return colors[abs(author.firstName.hashValue) % colors.count]
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(avatarColor.opacity(0.18))
+                    .frame(width: 42, height: 42)
+                Text(initials)
+                    .foregroundStyle(avatarColor)
+                    .font(.subheadline)
+                    .bold()
+
+            }
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(verbatim: "\(author.firstName) \(author.lastName)")
+                    .font(.subheadline)
+                    .bold()
+                Text(author.role)
+                    .foregroundStyle(.secondary)
+                    .font(.footnote)
+            }
+
+            Spacer()
+        }
+        .padding(.vertical, 8)
+    }
+}
+
+private struct CollectionProgressRing: View {
+    let progress: Double
+    let color: Color
+
+    var body: some View {
+        ZStack {
+            Circle().stroke(color.opacity(0.2), lineWidth: 4)
+            Circle()
+                .trim(from: 0, to: progress)
+                .stroke(
+                    color,
+                    style: StrokeStyle(lineWidth: 4, lineCap: .round)
+                )
+                .rotationEffect(.degrees(-90))
+            Text(verbatim: "\(Int(progress * 100))%")
+                .foregroundStyle(color)
+                .font(.caption2)
+                .bold()
         }
     }
 }
@@ -466,12 +690,11 @@ struct FlowLayout: Layout {
         subviews: Subviews,
         cache: inout ()
     ) -> CGSize {
-        let result = FlowResult(
+        FlowResult(
             in: proposal.replacingUnspecifiedDimensions().width,
             subviews: subviews,
             spacing: spacing
-        )
-        return result.size
+        ).size
     }
 
     func placeSubviews(
@@ -504,27 +727,22 @@ struct FlowLayout: Layout {
             var x: CGFloat = 0
             var y: CGFloat = 0
             var lineHeight: CGFloat = 0
-
             for subview in subviews {
                 let size = subview.sizeThatFits(.unspecified)
-
                 if x + size.width > maxWidth && x > 0 {
                     x = 0
                     y += lineHeight + spacing
                     lineHeight = 0
                 }
-
                 positions.append(CGPoint(x: x, y: y))
                 lineHeight = max(lineHeight, size.height)
                 x += size.width + spacing
             }
-
             self.size = CGSize(width: maxWidth, height: y + lineHeight)
         }
     }
 }
 
-// MARK: - UserCollection Config Sheet
 struct CollectionConfigSheet: View {
     let manga: Manga
     @State private var collection: UserCollection
@@ -540,7 +758,7 @@ struct CollectionConfigSheet: View {
         manga: Manga,
         createCollection: @escaping (UserCollection) async -> Void,
         updateCollection: @escaping (UserCollection) async -> Void,
-        deleteCollection: @escaping (UserCollection) async -> Void,
+        deleteCollection: @escaping (UserCollection) async -> Void
     ) {
         self.manga = manga
         self.createCollection = createCollection
@@ -566,34 +784,29 @@ struct CollectionConfigSheet: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
+            ScrollView(.vertical) {
                 VStack(alignment: .leading, spacing: 24) {
                     completeCollectionSection
-
                     if !collection.completeCollection {
                         volumesSelectionSection
                     }
-
-                    if !collection.volumesOwned.isEmpty {
-                        readingVolumeSection
-                    }
+                    if !collection.volumesOwned.isEmpty { readingVolumeSection }
                 }
                 .padding()
             }
             .globalBackground()
-            .navigationTitle("Configurar colección")
+            .navigationTitle(.mangaCollectioTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Guardar") {
+                    Button(.globalSave) {
                         saveCollection()
                         dismiss()
                     }
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.headline)
                 }
-
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancelar") {
+                    Button(.globalClose) {
                         dismiss()
                     }
                 }
@@ -601,17 +814,15 @@ struct CollectionConfigSheet: View {
         }
     }
 
-    // MARK: - Sections
-
     private var completeCollectionSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Toggle(isOn: $collection.completeCollection) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Colección completa")
-                        .font(.system(size: 17, weight: .semibold))
-                    Text("Tienes todos los volúmenes")
-                        .font(.system(size: 14))
+                    Text(.mangacollectionCollectionfull)
+                        .font(.headline)
+                    Text(.mangacollectionAllvolumes)
                         .foregroundStyle(Color.primary.opacity(0.6))
+                        .font(.subheadline)
                 }
             }
             .tint(.brandPrimary)
@@ -622,20 +833,20 @@ struct CollectionConfigSheet: View {
             }
         }
         .padding()
-        .background {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color.primary.opacity(0.05))
-        }
+        .background(
+            Color.primary.opacity(0.05),
+            in: RoundedRectangle(cornerRadius: 12)
+        )
     }
 
     private var volumesSelectionSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Volúmenes que posees")
-                .font(.system(size: 20, weight: .bold))
-
-            Text("Selecciona los volúmenes que tienes en tu colección")
-                .font(.system(size: 14))
+            Text(.mangacollectionVolumesown)
+                .font(.title3)
+                .bold()
+            Text(.mangacollectionVolumesuhave)
                 .foregroundStyle(Color.primary.opacity(0.6))
+                .font(.headline)
 
             if let totalVolumes = manga.volumes {
                 LazyVGrid(
@@ -657,12 +868,9 @@ struct CollectionConfigSheet: View {
 
     private var readingVolumeSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Volumen que estás leyendo")
-                .font(.system(size: 20, weight: .bold))
-
-            Text("Opcional: marca cuál estás leyendo actualmente")
-                .font(.system(size: 14))
-                .foregroundStyle(Color.primary.opacity(0.6))
+            Text(.mangacollectionCurrentreading)
+                .font(.title3)
+                .bold()
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
@@ -672,11 +880,8 @@ struct CollectionConfigSheet: View {
                     ) {
                         collection.readingVolume = nil
                     }
-
-                    ForEach(
-                        Array(collection.volumesOwned).sorted(),
-                        id: \.self
-                    ) { volume in
+                    ForEach(Array(collection.volumesOwned).sorted(), id: \.self)
+                    { volume in
                         ReadingVolumeButton(
                             number: volume,
                             isSelected: collection.readingVolume == volume
@@ -687,110 +892,35 @@ struct CollectionConfigSheet: View {
                 }
                 .padding(.horizontal, 4)
             }
+
             Spacer()
+
             if !isNew {
-                removeButton
+                Button {
+                    let col = collection
+                    Task { await deleteCollection(col) }
+                    dismiss()
+                } label: {
+                    Label(.mangacollectionDelete, systemImage: "trash")
+                        .foregroundStyle(.white)
+                        .font(.subheadline)
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .background(
+                            .red.opacity(0.85),
+                            in: RoundedRectangle(cornerRadius: 14)
+                        )
+                }
             }
         }
-    }
-
-    private var removeButton: some View {
-        Text("Eliminar colección")
-            .font(.system(size: 15, weight: .medium))
-            .foregroundStyle(.primary)
-            .frame(
-                maxWidth: .infinity,
-                minHeight: 40,
-                maxHeight: 40,
-                alignment: .center
-            ).padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background {
-                Capsule()
-                    .fill(.red)
-            }
-            .onTapGesture {
-                let collectionToDelete = collection
-                Task {
-                    await deleteCollection(collectionToDelete)
-                }
-                dismiss()
-            }
-            .glassEffect(
-                in: Capsule()
-            )
     }
 
     private func saveCollection() {
-        let collectionToSave = collection
+        let col = collection
         Task {
             if isNew {
-                await createCollection(collectionToSave)
+                await createCollection(col)
             } else {
-                await updateCollection(collectionToSave)
-            }
-        }
-    }
-
-    struct VolumeButton: View {
-        let number: Int
-        let isSelected: Bool
-        let action: () -> Void
-
-        var body: some View {
-            Button(action: action) {
-                Text("\(number)")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(isSelected ? .white : .primary)
-                    .frame(width: 60, height: 60)
-                    .background {
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(
-                                isSelected
-                                    ? Color.brandPrimary
-                                    : Color.primary.opacity(0.1)
-                            )
-                    }
-                    .overlay {
-                        if isSelected {
-                            RoundedRectangle(cornerRadius: 10)
-                                .strokeBorder(
-                                    Color.brandPrimary.opacity(0.5),
-                                    lineWidth: 2
-                                )
-                        }
-                    }
-            }
-        }
-    }
-
-    struct ReadingVolumeButton: View {
-        let number: Int?
-        let isSelected: Bool
-        let action: () -> Void
-
-        var body: some View {
-            Button(action: action) {
-                HStack(spacing: 8) {
-                    Image(
-                        systemName: number == nil ? "book.closed" : "book.pages"
-                    )
-                    .font(.system(size: 16, weight: .semibold))
-
-                    Text(number == nil ? "Ninguno" : "Vol. \(number!)")
-                        .font(.system(size: 16, weight: .semibold))
-                }
-                .foregroundStyle(isSelected ? .white : .primary)
-                .padding(.horizontal, 20)
-                .padding(.vertical, 12)
-                .background {
-                    Capsule()
-                        .fill(
-                            isSelected
-                                ? Color.brandPrimary
-                                : Color.primary.opacity(0.1)
-                        )
-                }
+                await updateCollection(col)
             }
         }
     }
@@ -805,11 +935,66 @@ struct CollectionConfigSheet: View {
             collection.volumesOwned.append(volume)
         }
     }
+
+    struct VolumeButton: View {
+        let number: Int
+        let isSelected: Bool
+        let action: () -> Void
+        var body: some View {
+            Button(action: action) {
+                Text("\(number)")
+                    .foregroundStyle(isSelected ? .white : .primary)
+                    .font(.callout)
+                    .frame(width: 60, height: 60)
+                    .background(
+                        isSelected
+                            ? Color.brandPrimary : Color.primary.opacity(0.1),
+                        in: RoundedRectangle(cornerRadius: 10)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10).strokeBorder(
+                            isSelected
+                                ? Color.brandPrimary.opacity(0.5) : .clear,
+                            lineWidth: 2
+                        )
+                    )
+            }
+        }
+    }
+
+    struct ReadingVolumeButton: View {
+        let number: Int?
+        let isSelected: Bool
+        let action: () -> Void
+        var body: some View {
+            Button(action: action) {
+                HStack(spacing: 8) {
+                    Image(
+                        systemName: number == nil ? "book.closed" : "book.pages"
+                    )
+                    .font(.callout)
+                    Text(.globalVol(numVolumens: number ?? 0))
+                        .font(.callout)
+                }
+                .foregroundStyle(isSelected ? .white : .primary)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 12)
+                .background(
+                    isSelected
+                        ? Color.brandPrimary : Color.primary.opacity(0.1),
+                    in: Capsule()
+                )
+            }
+        }
+    }
 }
 
 #Preview(traits: .devEnvironment) {
     @Previewable @Namespace var namespace
     NavigationStack {
-        MangaDetail(vm: MangaDetailVM(manga: Manga.test), namespace: namespace)
+        MangaDetail(
+            vm: MangaDetailVM(manga: Manga.testList[3]),
+            namespace: namespace
+        )
     }
 }

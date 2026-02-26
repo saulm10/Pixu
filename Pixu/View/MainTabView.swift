@@ -15,7 +15,7 @@ struct MainTabView: View {
     @State var vm: MainTabVM = MainTabVM()
     @State var homeTabVM: HomeTabVM = HomeTabVM()
     @State var userLoginVM: UserLoginVM = UserLoginVM()
-    @State var userVM: UserVM = UserVM()
+    @State var userCollectionVM: UserCollectionVM = UserCollectionVM()
     @State var searchTabVM: SearchTabVM = SearchTabVM()
 
     @State private var showSplash = true
@@ -30,13 +30,13 @@ struct MainTabView: View {
                 HomeTabView(vm: homeTabVM)
             }
             Tab(
-                .tabUser,
-                systemImage: "person",
+                .tabCollection,
+                systemImage: "books.vertical",
                 value: 1
             ) {
                 UserTabView(
                     vmLogin: userLoginVM,
-                    vmUser: userVM
+                    vmUser: userCollectionVM
                 )
             }
             Tab(
@@ -48,7 +48,8 @@ struct MainTabView: View {
                 SearchTabView(vm: searchTabVM)
             }
         }
-        .tint(Color.brandPrimary)
+        .tint(Color.brandPrimary) 
+        .foregroundStyle(.primary)
         .tabBarMinimizeBehavior(.onScrollDown)
         .tabViewStyle(.sidebarAdaptable)
         .defaultAdaptableTabBarPlacement(.tabBar)
@@ -73,7 +74,7 @@ struct MainTabView: View {
     MainTabView(
         homeTabVM: HomeTabVM(apiManager: .test),
         userLoginVM: UserLoginVM(apiManager: .test),
-        userVM: UserVM(apiManager: .test),
+        userCollectionVM: UserCollectionVM(apiManager: .test),
         searchTabVM: SearchTabVM(apiManager: .test)
     )
 }

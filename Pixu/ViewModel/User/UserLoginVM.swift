@@ -37,14 +37,19 @@ final class UserLoginVM {
         return result
     }
 
-    func createUser(email: String, password: String) async {
+    func createUser(email: String, password: String) async -> Bool {
         let result = await apiManager.user.createUser(
             email: email,
             password: password
         )
-        guard result else { return }
+        guard result else {
+            ToastService.shared
+                .show(type: .error, message: "No se pudo crear el usuario")
+            return false
+        }
         ToastService.shared
             .show(type: .info, message: "Usuario creado correctamente")
+        return true
     }
 
     func loginAuth() async -> Bool {

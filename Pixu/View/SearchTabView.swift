@@ -32,15 +32,14 @@ struct SearchTabView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Buscar")
+                    Text(.tabsearchTitle)
                         .font(.largeTitle)
-                        .foregroundColor(.primary)
                         .bold()
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        mainTabVM.selection = 1
-                    }) {
+                    NavigationLink {
+                        UserAcountView(vm: UserAccountVM())
+                    } label: {
                         CircleAvatar()
                     }
                     .buttonStyle(.plain)
@@ -51,7 +50,7 @@ struct SearchTabView: View {
             }
             .sheet(isPresented: $showDemographics) {
                 SearchablePickerView(
-                    title: "Seleccionar Público",
+                    title: .tabsearchSheetSelectaudience,
                     items: vm.demographics,
                     selectedItems: $vm.selectedDemographic,
                     itemLabel: { $0 }
@@ -59,7 +58,7 @@ struct SearchTabView: View {
             }
             .sheet(isPresented: $showGenres) {
                 SearchablePickerView(
-                    title: "Seleccionar Géneros",
+                    title: .tabsearchSheetSelectagenres,
                     items: vm.genres,
                     selectedItems: $vm.selectedGenre,
                     itemLabel: { $0 }
@@ -67,7 +66,7 @@ struct SearchTabView: View {
             }
             .sheet(isPresented: $showThemes) {
                 SearchablePickerView(
-                    title: "Seleccionar Temas",
+                    title: .tabsearchSheetSelecthemes,
                     items: vm.themes,
                     selectedItems: $vm.selectedTheme,
                     itemLabel: { $0 }
@@ -75,14 +74,14 @@ struct SearchTabView: View {
             }
             .globalBackground()
         }
-        .searchable(text: $vm.searchText, prompt: "Buscar mangas...")
+        .searchable(text: $vm.searchText, prompt: .tabsearchPrompt)
         .overlay {
             if vm.state == .empty {
                 ContentUnavailableView(
-                    "No se encontraron resultados",
+                    .tabsearchNoresults,
                     systemImage: "magnifyingglass",
                     description: Text(
-                        "Intenta con otros términos de búsqueda o filtros"
+                        .tabsearchNoresultstext
                     )
                 )
             }
@@ -101,10 +100,9 @@ struct SearchTabView: View {
 
     private var filterChips: some View {
         HStack(spacing: 8) {
-            // Chip de resetear solo visible si hay filtros activos
             if hasActiveFilters {
                 Chip(
-                    title: "Limpiar",
+                    title: .tabsearchClean,
                     isSelected: false,
                     onTap: {
                         Task {
@@ -116,22 +114,26 @@ struct SearchTabView: View {
 
             Chip(
                 title: vm.selectedDemographic.isEmpty
-                    ? "Público"
-                    : "Público (\(vm.selectedDemographic.count))",
+                    ? .tabsearchAudience
+                    : .tabsearchAudiencenum(
+                        variableName: vm.selectedDemographic.count
+                    ),
                 isSelected: !vm.selectedDemographic.isEmpty,
                 onTap: { showDemographics = true }
             )
 
             Chip(
                 title: vm.selectedGenre.isEmpty
-                    ? "Género" : "Género (\(vm.selectedGenre.count))",
+                    ? .tabsearchGenre
+                    : .tabsearchGenrenum(variableName: vm.selectedGenre.count),
                 isSelected: !vm.selectedGenre.isEmpty,
                 onTap: { showGenres = true }
             )
 
             Chip(
                 title: vm.selectedTheme.isEmpty
-                    ? "Tema" : "Tema (\(vm.selectedTheme.count))",
+                    ? .tabsearchTheme
+                    : .tabsearchThemenum(variableName: vm.selectedTheme.count),
                 isSelected: !vm.selectedTheme.isEmpty,
                 onTap: { showThemes = true }
             )
@@ -151,7 +153,6 @@ struct SearchTabView: View {
                 }
                 .frame(height: 250)
                 .task {
-                    // Cargar más cuando llegamos al penúltimo elemento
                     if let lastManga = vm.filteredMangas.dropLast(1).last,
                         manga.id == lastManga.id
                     {

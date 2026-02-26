@@ -31,7 +31,9 @@ struct MangaDTO: Codable, Sendable {
 
 extension MangaDTO {
     var toManga: Manga {
-        Manga(
+        let isHentai = genres.contains { $0.genre.lowercased() == "hentai" }
+
+        return Manga(
             id: id,
             title: title,
             titleEnglish: titleEnglish,
@@ -49,11 +51,12 @@ extension MangaDTO {
             score: score,
             status: status,
             startDate: startDate ?? "",
-            
+            endDate: endDate ?? "",
+            isAdultContent: isHentai,
             genres: genres.map(\.toGenre),
             themes: themes.map(\.toTheme),
             demographics: demographics.map(\.toDemographic),
-            authors: authors.map(\.toAuthor)
+            authors: authors.map(\.toAuthor),
         )
     }
 }

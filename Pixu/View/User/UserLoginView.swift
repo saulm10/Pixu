@@ -5,6 +5,7 @@
 //  Created by Saul Martinez Diez on 11/1/26.
 //
 import SwiftUI
+import ToastService
 
 struct UserLoginView: View {
     @Bindable var vm: UserLoginVM
@@ -57,7 +58,7 @@ struct UserLoginView: View {
             LoginSheet(vm: vm)
         }
         .sheet(isPresented: $showRegister) {
-            RegisterSheet()
+            RegisterSheet(vm: vm)
         }
         .globalBackground()
     }
@@ -80,7 +81,7 @@ struct LoginSheet: View {
                         VStack(spacing: 16) {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(.globalEmail)
-                                    .foregroundColor(.gray)
+                                    .foregroundStyle(.gray)
                                     .font(.subheadline)
                                 TextField("", text: $email)
                                     .keyboardType(.emailAddress)
@@ -90,13 +91,13 @@ struct LoginSheet: View {
 
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(.globalPassword)
-                                    .foregroundColor(.gray)
+                                    .foregroundStyle(.gray)
                                     .font(.subheadline)
                                 SecureField("", text: $password)
                                     .roundedTextFieldStyle()
                             }
                         }
-                        
+
                         // Divisor
                         HStack {
                             Rectangle()
@@ -130,20 +131,30 @@ struct LoginSheet: View {
                     Button(.globalClose) {
                         dismiss()
                     }
-                    .foregroundColor(.purple)
                 }
             }
-        }
+        }.presentationDragIndicator(.visible)
     }
 }
 
 struct RegisterSheet: View {
+    @Bindable var vm: UserLoginVM
+
     @Environment(\.dismiss) var dismiss
     @State private var email = ""
     @State private var password = ""
 
     var isValidPassword: Bool {
         password.count >= 8
+    }
+
+    var isValidEmail: Bool {
+        let regex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/
+        return email.wholeMatch(of: regex) != nil
+    }
+
+    var isValidForm: Bool {
+        isValidPassword && isValidEmail
     }
 
     var body: some View {
@@ -155,27 +166,31 @@ struct RegisterSheet: View {
                         VStack(spacing: 16) {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(.globalEmail)
-                                    .foregroundColor(.gray)
+                                    .foregroundStyle(.gray)
                                     .font(.subheadline)
                                 TextField("", text: $email)
                                     .keyboardType(.emailAddress)
                                     .textInputAutocapitalization(.never)
                                     .roundedTextFieldStyle()
                             }
+                            Text(.userloginEmailok)
+                                .foregroundStyle(
+                                    isValidEmail ? .green : .gray
+                                )
 
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(.globalPassword)
-                                    .foregroundColor(.gray)
+                                    .foregroundStyle(.gray)
                                     .font(.subheadline)
                                 SecureField("", text: $password)
                                     .roundedTextFieldStyle()
                             }
-                            Text("Mínimo 8 caracteres")
-                                .foregroundColor(
-                                    password.count >= 8 ? .green : .gray
+                            Text(.userloginMinchars)
+                                .foregroundStyle(
+                                    isValidPassword ? .green : .gray
                                 )
                         }
-                        
+
                         // Divisor
                         HStack {
                             Rectangle()
@@ -185,11 +200,21 @@ struct RegisterSheet: View {
                         .padding(.vertical, 8)
 
                         // Botón de registro
-                        Button(action: {}) {
+                        Button(action: {
+                            Task {
+                                let result = await vm.createUser(
+                                    email: email,
+                                    password: password
+                                )
+                                if result {
+                                    dismiss()
+                                }
+                            }
+                        }) {
                             Text(.userLoginButtonSignup)
-
-                        }.buttonStyle(.primary)
-                            .disabled(!isValidPassword)
+                        }
+                        .buttonStyle(.primary)
+                        .disabled(!isValidForm)
                     }
                     .padding(24)
                 }
@@ -201,10 +226,11 @@ struct RegisterSheet: View {
                     Button(.globalClose) {
                         dismiss()
                     }
-                    .foregroundColor(.purple)
                 }
             }
         }
+        .toastOverlay()
+        .presentationDragIndicator(.visible)
     }
 }
 

@@ -11,12 +11,12 @@ struct UserTabView: View {
     @Environment(AuthStatus.self) private var authStatus
 
     @Bindable var vmLogin: UserLoginVM
-    @Bindable var vmUser: UserVM
+    @Bindable var vmUser: UserCollectionVM
 
     var body: some View {
         Group {
             if authStatus.isLoggedIn {
-                UserView(vm: vmUser)
+                UserCollectionView(vm: vmUser)
             } else {
                 UserLoginView(vm: vmLogin)
             }
@@ -27,6 +27,6 @@ struct UserTabView: View {
 #Preview(traits: .devEnvironment) {
     UserTabView(
         vmLogin: UserLoginVM(apiManager: .test),
-        vmUser: UserVM(apiManager: .test)
+        vmUser: UserCollectionVM(apiManager: .test)
     )
 }

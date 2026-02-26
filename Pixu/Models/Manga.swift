@@ -24,6 +24,7 @@ final class Manga {
     var status: String?
     var startDate: String?
     var endDate: String?
+    var isAdultContent: Bool
 
     @Relationship(deleteRule: .nullify)
     var genres: [Genre] = []
@@ -52,6 +53,7 @@ final class Manga {
         status: String? = nil,
         startDate: String? = nil,
         endDate: String? = nil,
+        isAdultContent: Bool = false,
         genres: [Genre] = [],
         themes: [Theme] = [],
         demographics: [Demographic] = [],
@@ -63,7 +65,6 @@ final class Manga {
         self.titleJapanese = titleJapanese
         self.sypnosis = sypnosis
         self.background = background
-        // Limpieza de caracteres de escape para evitar errores de URL
         self.url =
             url?.replacingOccurrences(of: "\\", with: "").replacingOccurrences(
                 of: "\"",
@@ -78,6 +79,7 @@ final class Manga {
         self.status = status
         self.startDate = startDate
         self.endDate = endDate
+        self.isAdultContent = isAdultContent
         self.genres = genres
         self.themes = themes
         self.demographics = demographics

@@ -54,7 +54,7 @@ struct PlaceholderTextFieldStyle: TextFieldStyle {
         ZStack(alignment: .leading) {
             if text.isEmpty {
                 Text(placeholder)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
                     .padding(.horizontal, 16)
             }
             

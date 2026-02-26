@@ -15,5 +15,6 @@ enum KeyChainK: String {
 enum UserDefaultsK: String {
     case initial
     case login
+    case showAdultContent
     case image
 }

@@ -12,6 +12,8 @@ struct MangaCard: View {
     let manga: Manga
     let namespace: Namespace.ID
     let onTap: () -> Void
+    
+    @AppStorage(UserDefaultsK.showAdultContent.rawValue) private var showAdultContent: Bool = false
 
     init(
         manga: Manga,
@@ -26,21 +28,13 @@ struct MangaCard: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             // Imagen principal
-            ImageUrlCache(manga.mainPicture)
+            ImageUrlCache(
+                manga.mainPicture,
+                blurred: !showAdultContent && manga.isAdultContent
+            )
                 .scaledToFill()
                 .frame(width: 170, height: 250)
                 .clipped()
-            
-            // Gradient overlay en la parte inferior
-            LinearGradient(
-                colors: [
-                    .clear,
-                    .black.opacity(0.3),
-                    .black.opacity(0.7)
-                ],
-                startPoint: .center,
-                endPoint: .bottom
-            )
             
             // Rating en la esquina superior
             VStack {
@@ -61,7 +55,6 @@ struct MangaCard: View {
                     .fontWeight(.semibold)
                     .foregroundStyle(.white)
                     .lineLimit(2)
-                    .shadow(color: .black.opacity(0.5), radius: 2, x: 0, y: 1)
                 
                 if let japaneseTitle = manga.titleJapanese {
                     Text(japaneseTitle)
@@ -75,7 +68,6 @@ struct MangaCard: View {
         }
         .frame(width: 170, height: 250)
         .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
         .glassEffect(in: RoundedRectangle(cornerRadius: 16))
         .matchedTransitionSource(id: manga.id, in: namespace)
         .onTapGesture {
@@ -146,7 +138,6 @@ private struct MangaCardSkeleton: View {
         }
         .frame(width: 170, height: 250)
         .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
         .glassEffect(in: RoundedRectangle(cornerRadius: 16))
         .onAppear {
             withAnimation(

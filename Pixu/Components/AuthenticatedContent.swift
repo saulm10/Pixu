@@ -31,23 +31,17 @@ private struct AuthPromptCard: View {
             .frame(height: 150)
             .overlay {
                 HStack(spacing: 16) {
-                    // Contenido: texto y botón
                     VStack(alignment: .leading, spacing: 12) {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Inicia sesión")
+                            Text(.authcomponentTitle)
                                 .font(.headline)
-                                .foregroundStyle(.primary)
-
-                            Text(
-                                "Crea una cuenta o inicia sesión para empezar"
-                            )
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(2)
+                            Text(.authcomponentText)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(2)
                         }
-
                         Button(action: onTap) {
-                            Text("Comenzar")
+                            Text(.authcomponentBtnstart)
                                 .font(.subheadline.weight(.semibold))
                                 .frame(maxWidth: .infinity)
                         }.buttonStyle(.primary)

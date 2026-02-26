@@ -13,6 +13,8 @@ struct CollectionRowCard: View {
     let onTap: () -> Void
 
     @State private var showDeleteConfirmation = false
+    @AppStorage(UserDefaultsK.showAdultContent.rawValue) private
+        var showAdultContent: Bool = false
 
     private var progressPercentage: Double {
         guard let total = collection.manga.volumes, total > 0 else { return 0 }
@@ -22,10 +24,14 @@ struct CollectionRowCard: View {
     var body: some View {
         HStack(spacing: 12) {
             // Portada con gradient overlay
-            ImageUrlCache(collection.manga.mainPicture)
-                .scaledToFill()
-                .frame(width: 100, height: 140)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+            ImageUrlCache(
+                collection.manga.mainPicture,
+                blurred: !showAdultContent && collection.manga.isAdultContent
+
+            )
+            .scaledToFill()
+            .frame(width: 100, height: 140)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
 
             // Información
             VStack(alignment: .leading, spacing: 6) {
@@ -34,7 +40,6 @@ struct CollectionRowCard: View {
                     .font(.title3)
                     .fontWeight(.bold)
                     .lineLimit(2)
-                    .foregroundColor(.primary)
 
                 // Título japonés si existe
                 if let japaneseTitle = collection.manga.titleJapanese {
@@ -49,16 +54,15 @@ struct CollectionRowCard: View {
                 // Progreso compacto
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 8) {
-                        Text(
+                        Text(verbatim: 
                             "\(collection.volumesOwned.count)/\(collection.manga.volumes ?? 0)"
                         )
                         .font(.caption)
                         .fontWeight(.semibold)
-                        .foregroundColor(.primary)
 
                         Spacer()
 
-                        Text("\(Int(progressPercentage * 100))%")
+                        Text(verbatim: "\(Int(progressPercentage * 100))%")
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                     }
@@ -74,13 +78,17 @@ struct CollectionRowCard: View {
                                 .fill(
                                     collection.completeCollection
                                         ? Color.green
-                                        : Color.brandPrimary
+                                        : .primary
                                 )
                                 .frame(
-                                    width: geometry.size.width * progressPercentage,
+                                    width: geometry.size.width
+                                        * progressPercentage,
                                     height: 6
                                 )
-                                .animation(.spring(response: 0.6), value: progressPercentage)
+                                .animation(
+                                    .spring(response: 0.6),
+                                    value: progressPercentage
+                                )
                         }
                     }
                     .frame(height: 6)
@@ -94,7 +102,6 @@ struct CollectionRowCard: View {
                             Text(genre.genre)
                                 .font(.caption2)
                                 .fontWeight(.medium)
-                                .foregroundStyle(.primary)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 4)
                                 .background {
@@ -117,7 +124,7 @@ struct CollectionRowCard: View {
 
                     if let reading = collection.readingVolume {
                         CompactBadge(icon: "book.fill")
-                        Text("Vol. \(reading)")
+                        Text(.globalVol(numVolumens: reading))
                             .font(.caption2)
                     }
                 }
@@ -145,7 +152,6 @@ private struct CompactBadge: View {
     var body: some View {
         Image(systemName: icon)
             .font(.caption)
-            .foregroundColor(.primary)
             .padding(4)
             .background {
                 Circle()

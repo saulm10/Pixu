@@ -12,6 +12,8 @@ struct UserAcountView: View {
     @Environment(AuthStatus.self) private var authStatus
 
     @AppStorage(UserDefaultsK.login.rawValue) var login: String = ""
+    @AppStorage(UserDefaultsK.showAdultContent.rawValue) var showAdultContent:
+        Bool = false
     @AppStorage(UserDefaultsK.image.rawValue) var image: String = ""
 
     @State private var showDeleteCollectionAlert = false
@@ -29,13 +31,12 @@ struct UserAcountView: View {
     private var currentLanguage: String {
         let locale = Locale.current
         return locale.localizedString(forIdentifier: locale.identifier)?
-            .capitalized ?? "Desconocido"
+            .capitalized ?? "-"
     }
 
     var body: some View {
         NavigationStack {
             List {
-                // SECCIÓN 1: Perfil de Usuario
                 Section {
                     HStack {
                         Spacer()
@@ -56,79 +57,93 @@ struct UserAcountView: View {
                             image = ""
                         } label: {
                             Label(
-                                "Quitar icono de perfil",
+                                .useraccountRemoveicon,
                                 systemImage: "person.crop.circle.badge.xmark"
                             )
                         }
                     }
                 }
 
-                // SECCIÓN 2: Preferencias de la App
-                Section("Preferencias") {
-                    // Idioma (Informativo)
+                Section(.useraccountPreferences) {
                     HStack {
-                        Label("Idioma de la aplicación", systemImage: "globe")
+                        Label(.useraccountApplanguaje, systemImage: "globe")
                         Spacer()
                         Text(currentLanguage)
                             .foregroundStyle(.secondary)
                     }
-                }
 
-                // SECCIÓN 3: Gestión de Datos
-                Section("Datos") {
-                    Button(role: .destructive) {
-                        showDeleteCollectionAlert = true
-                    } label: {
-                        Label(
-                            "Borrar toda mi colección",
-                            systemImage: "trash.fill"
-                        )
+                    Toggle(isOn: $showAdultContent) {
+                        Label(.useraccountAdultcontent, systemImage: "eye.fill")
                     }
                 }
 
-                // SECCIÓN 4: Información de la App
-                Section("Acerca de Pixu") {
+                if authStatus.isLoggedIn {
+                    Section(.useraccountData) {
+                        Button(role: .destructive) {
+                            showDeleteCollectionAlert = true
+                        } label: {
+                            Label(
+                                .useraccountDeletecollection,
+                                systemImage: "trash.fill"
+                            )
+                        }
+                    }
+                }
+
+                Section(.useraccountAbout) {
                     HStack {
-                        Label("Versión", systemImage: "info.circle.fill")
+                        Label(
+                            .useraccountVersion,
+                            systemImage: "info.circle.fill"
+                        )
                         Spacer()
                         Text(appVersion)
                             .foregroundStyle(.secondary)
                     }
                 }
 
-                // SECCIÓN 5: Zona de Peligro (Cerrar Sesión)
-                Section {
-                    Button(action: {
-                        showLogoutAlert = true
-                    }) {
-                        HStack {
-                            Spacer()
-                            Text("Cerrar Sesión")
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.red)
-                            Spacer()
+                if authStatus.isLoggedIn {
+                    Section {
+                        Button(action: {
+                            showLogoutAlert = true
+                        }) {
+                            HStack {
+                                Spacer()
+                                Text(.useraccountLogout)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.red)
+                                Spacer()
+                            }
                         }
                     }
                 }
             }
-            .navigationTitle("Configuración")
+            .navigationTitle(.useraccountTitle)
             .navigationBarTitleDisplayMode(.inline)
-            .alert("¿Borrar colección?", isPresented: $showDeleteCollectionAlert) {
-                Button("Cancelar", role: .cancel) {}
-                Button("Borrar", role: .destructive) {
-                    // TODO: Llama a la función de tu ViewModel para borrar de SwiftData
-                    // vm.deleteAllUserCollection()
+            .alert(
+                .useraccountAlerDeletecollection,
+                isPresented: $showDeleteCollectionAlert
+            ) {
+                Button(.globalClose, role: .cancel) {}
+                Button(.useraccountAlerDeletecollectionok, role: .destructive) {
+                    Task {
+                        await vm.deleteAllCollection()
+                    }
                 }
             } message: {
-                Text("Esta acción eliminará todos los mangas de tu colección. No se puede deshacer.")
+                Text(
+                    .useraccountAlerDeletecollectionmesage
+                )
             }
-            .alert("¿Cerrar sesión?", isPresented: $showLogoutAlert) {
-                Button("Cancelar", role: .cancel) {}
-                Button("Cerrar sesión", role: .destructive) {
+            .alert(.useraccountAlerLogout, isPresented: $showLogoutAlert) {
+                Button(.globalClose, role: .cancel) {}
+                Button(.useraccountAlerLogoutok, role: .destructive) {
                     authStatus.isLoggedIn = vm.logOut()
                 }
             } message: {
-                Text("Se cerrará tu sesión actual y volverás a la pantalla de inicio.")
+                Text(
+                    .useraccountAlerLogoutmesage
+                )
             }
         }
         .listStyle(.insetGrouped)

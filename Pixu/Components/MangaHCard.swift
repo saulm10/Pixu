@@ -12,13 +12,15 @@ struct MangaHCard: View {
     let manga: Manga
     let namespace: Namespace.ID
     let onTap: () -> Void
-    
+
+    @AppStorage(UserDefaultsK.showAdultContent.rawValue) private
+        var showAdultContent: Bool = false
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    
+
     private var isCompact: Bool {
         horizontalSizeClass == .compact
     }
-    
+
     init(
         manga: Manga,
         namespace: Namespace.ID,
@@ -28,28 +30,31 @@ struct MangaHCard: View {
         self.namespace = namespace
         self.onTap = onTap
     }
-    
+
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             // Imagen de fondo con gradient overlay
-            ImageUrlCache(manga.mainPicture)
-                .scaledToFill()
-                .frame(height: 250)
-                .clipped()
-                .overlay {
-                    LinearGradient(
-                        colors: [
-                            .clear,
-                            .clear,
-                            .black.opacity(0.7),
-                            .black.opacity(0.9)
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                }
-                .matchedTransitionSource(id: manga.id, in: namespace)
-            
+            ImageUrlCache(
+                manga.mainPicture,
+                blurred: !showAdultContent && manga.isAdultContent
+            )
+            .scaledToFill()
+            .frame(height: 250)
+            .clipped()
+            .overlay {
+                LinearGradient(
+                    colors: [
+                        .clear,
+                        .clear,
+                        .black.opacity(0.7),
+                        .black.opacity(0.9),
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            }
+            .matchedTransitionSource(id: manga.id, in: namespace)
+
             // Rating en la esquina superior derecha
             VStack {
                 HStack {
@@ -61,7 +66,7 @@ struct MangaHCard: View {
                 }
                 Spacer()
             }
-            
+
             // Contenido sobre el gradient
             VStack(alignment: .leading, spacing: 6) {
                 // Título en japonés
@@ -71,15 +76,14 @@ struct MangaHCard: View {
                         .foregroundStyle(.white.opacity(0.7))
                         .lineLimit(1)
                 }
-                
+
                 // Título principal
                 Text(manga.title)
                     .font(.title3)
                     .fontWeight(.bold)
                     .foregroundStyle(.white)
                     .lineLimit(2)
-                    .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
-                
+
                 // Géneros
                 if !manga.genres.isEmpty {
                     HStack(spacing: 6) {
@@ -101,7 +105,7 @@ struct MangaHCard: View {
                         }
                     }
                 }
-                
+
                 // Información adicional
                 HStack(spacing: 12) {
                     if let chapters = manga.chapters, chapters > 0 {
@@ -109,7 +113,7 @@ struct MangaHCard: View {
                             .font(.caption)
                             .foregroundStyle(.white.opacity(0.8))
                     }
-                    
+
                     if let volumes = manga.volumes, volumes > 0 {
                         Label("\(volumes)", systemImage: "books.vertical.fill")
                             .font(.caption)
@@ -119,10 +123,14 @@ struct MangaHCard: View {
             }
             .padding(16)
         }
-        .frame(minWidth: 325, maxWidth: isCompact ? 325 : 500, minHeight: 250, maxHeight: 250 )
+        .frame(
+            minWidth: 325,
+            maxWidth: isCompact ? 325 : 500,
+            minHeight: 250,
+            maxHeight: 250
+        )
         .clipShape(RoundedRectangle(cornerRadius: 20))
         .glassEffect(in: RoundedRectangle(cornerRadius: 20))
-        .shadow(color: .black.opacity(0.2), radius: 10, x: 0, y: 5)
         .onTapGesture {
             onTap()
         }
@@ -140,11 +148,11 @@ extension MangaHCard {
 private struct MangaHCardSkeleton: View {
     @State private var isAnimating = false
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    
+
     private var isCompact: Bool {
         horizontalSizeClass == .compact
     }
-    
+
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             // Fondo animado
@@ -165,31 +173,31 @@ private struct MangaHCardSkeleton: View {
                         colors: [
                             .clear,
                             .clear,
-                            .black.opacity(0.3)
+                            .black.opacity(0.3),
                         ],
                         startPoint: .top,
                         endPoint: .bottom
                     )
                 }
-            
+
             // Contenido skeleton
             VStack(alignment: .leading, spacing: 8) {
                 // Título japonés
                 RoundedRectangle(cornerRadius: 4)
                     .fill(.white.opacity(0.3))
                     .frame(width: 120, height: 12)
-                
+
                 // Título principal
                 VStack(alignment: .leading, spacing: 4) {
                     RoundedRectangle(cornerRadius: 6)
                         .fill(.white.opacity(0.4))
                         .frame(maxWidth: 250, maxHeight: 20)
-                    
+
                     RoundedRectangle(cornerRadius: 6)
                         .fill(.white.opacity(0.4))
                         .frame(maxWidth: 180, maxHeight: 20)
                 }
-                
+
                 // Géneros
                 HStack(spacing: 6) {
                     ForEach(0..<3, id: \.self) { _ in
@@ -198,13 +206,13 @@ private struct MangaHCardSkeleton: View {
                             .frame(width: 60, height: 22)
                     }
                 }
-                
+
                 // Info adicional
                 HStack(spacing: 12) {
                     RoundedRectangle(cornerRadius: 4)
                         .fill(.white.opacity(0.3))
                         .frame(width: 50, height: 12)
-                    
+
                     RoundedRectangle(cornerRadius: 4)
                         .fill(.white.opacity(0.3))
                         .frame(width: 50, height: 12)
@@ -214,7 +222,6 @@ private struct MangaHCardSkeleton: View {
         }
         .frame(maxWidth: isCompact ? .infinity : 500, minHeight: 200)
         .glassEffect(in: RoundedRectangle(cornerRadius: 20))
-        .shadow(color: .black.opacity(0.2), radius: 10, x: 0, y: 5)
         .onAppear {
             withAnimation(
                 .easeInOut(duration: 2)

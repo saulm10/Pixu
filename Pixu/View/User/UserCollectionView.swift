@@ -1,5 +1,5 @@
 //
-//  UserView.swift
+//  UserCollectionView.swift
 //  Pixu
 //
 //  Created by Saul Martinez Diez on 11/1/26.
@@ -9,10 +9,9 @@ import Components
 import SwiftData
 import SwiftUI
 
-struct UserView: View {
+struct UserCollectionView: View {
     @Environment(MainTabVM.self) private var mainTabVM
-    @Bindable var vm: UserVM
-    @State var userVM: UserAccountVM = UserAccountVM()
+    @Bindable var vm: UserCollectionVM
 
     @Namespace private var namespace
     @State private var selectedView = 0
@@ -20,9 +19,9 @@ struct UserView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 0) {
-                Picker("Vista", selection: $selectedView) {
-                    Text("Colleción").tag(0)
-                    Text("Estadísticas").tag(1)
+                Picker("", selection: $selectedView) {
+                    Text(.usercollectionTabCollection).tag(0)
+                    Text(.usercollectionTabStatics).tag(1)
                 }
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
@@ -47,14 +46,13 @@ struct UserView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Mi colección")
+                    Text(.usercollectionTabTitle)
                         .font(.largeTitle)
-                        .foregroundColor(.primary)
                         .bold()
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
-                        UserAcountView(vm: userVM)
+                        UserAcountView(vm: UserAccountVM())
                     } label: {
                         CircleAvatar()
                     }
@@ -69,36 +67,39 @@ struct UserView: View {
     }
 
     private var collectionsListSection: some View {
-        ScrollView{
+        ScrollView {
             LazyVStack(spacing: 12) {
                 HStack {
-                    TextField("Buscar mangas...", text: $vm.searchText)
-                        .submitLabel(.search)
-                        .roundedTextFieldStyle()
+                    TextField(
+                        .usercollectionCollectionSearch,
+                        text: $vm.searchText
+                    )
+                    .submitLabel(.search)
+                    .roundedTextFieldStyle()
 
                     if !vm.searchText.isEmpty {
                         Button(action: { vm.searchText = "" }) {
                             Image(systemName: "xmark.circle.fill")
-                                .foregroundColor(.gray)
+                                .foregroundStyle(.gray)
                         }
                     }
                 }
 
                 HStack {
-                    Text("Mis Mangas")
+                    Text(.usercollectionCollectionMymangas)
                         .font(.title2)
                         .bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
 
                     Chip(
-                        title: "100%",
+                        title: .global100,
                         icon: "checkmark.circle.fill",
                         isSelected: vm.completCollections
                     ) {
                         vm.completCollections.toggle()
                     }
                     Chip(
-                        title: "Leyendo",
+                        title: .usercollectionCollectionReading,
                         icon: "book.fill",
                         isSelected: vm.readingCollection
                     ) {
@@ -109,17 +110,17 @@ struct UserView: View {
                 if vm.filteredCollection.isEmpty {
                     VStack {
                         ContentUnavailableView(
-                            "No tienes mangas en tu colección",
+                            .usercollectionCollectionNomangas,
                             systemImage: "books.vertical",
                             description: Text(
-                                "Añade un manga"
+                                .usercollectionCollectionAddmanga
                             ),
                         )
                         Button {
                             mainTabVM.selection = 3
                         } label: {
                             Label(
-                                "Añadir mi primer manga",
+                                .usercollectionCollectionAddmangatext,
                                 systemImage: "plus.circle.fill"
                             )
                         }
@@ -133,8 +134,8 @@ struct UserView: View {
                     )
                 }
 
-            }
-        }.padding()
+            }.padding()
+        }
     }
 
     private var statisticsSection: some View {
@@ -144,37 +145,25 @@ struct UserView: View {
                 // --- CABECERA ---
                 HStack(alignment: .lastTextBaseline) {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Tu colección")
+                        Text(.usercollectionStaticsTitle)
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .textCase(.uppercase)
                             .tracking(1.5)
-                        Text("\(vm.totalMangas) mangas")
-                            .font(
-                                .system(
-                                    size: 34,
-                                    weight: .black,
-                                    design: .rounded
-                                )
-                            )
-                            .foregroundStyle(.primary)
+                        Text(.usercollectionTotalmangas(vm.totalMangas))
+                            .font(.title)
+                            .bold()
                     }
                     Spacer()
                     VStack(alignment: .trailing, spacing: 2) {
-                        Text("tomos")
+                        Text(.usercollectionStaticsVolumes)
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .textCase(.uppercase)
                             .tracking(1.5)
                         Text("\(vm.totalVolumesOwned)")
-                            .font(
-                                .system(
-                                    size: 34,
-                                    weight: .black,
-                                    design: .rounded
-                                )
-                            )
-                            .foregroundStyle(.primary)
+                            .font(.title)
+                            .bold()
                     }
                 }
                 .padding(.horizontal, 20)
@@ -187,25 +176,25 @@ struct UserView: View {
                 HStack(spacing: 0) {
                     StatPill(
                         value: "\(vm.completeCollectionsCount)",
-                        label: "Completos",
+                        label: .usercollectionStaticsComplete,
                         icon: "checkmark.seal.fill"
                     )
                     Divider().frame(height: 40)
                     StatPill(
                         value: "\(vm.currentlyReadingCount)",
-                        label: "Leyendo",
+                        label: .usercollectionStaticsReading,
                         icon: "book.fill"
                     )
                     Divider().frame(height: 40)
                     StatPill(
                         value: "\(vm.failingMangasCount)",
-                        label: "Suspensos",
+                        label: .usercollectionStaticsSuspended,
                         icon: "xmark.circle.fill"
                     )
                     Divider().frame(height: 40)
                     StatPill(
                         value: "\(vm.uncommonMangasCount)",
-                        label: "Raros",
+                        label: .usercollectionStaticsRares,
                         icon: "sparkles"
                     )
                 }
@@ -217,7 +206,8 @@ struct UserView: View {
                 // --- DISTRIBUCIÓN DE NOTAS ---
                 VStack(alignment: .leading, spacing: 14) {
                     Label(
-                        "Distribución de notas",
+                        LocalizedStringResource
+                            .usercollectionStaticsMarksdistribution,
                         systemImage: "chart.bar.fill"
                     )
                     .font(.caption)
@@ -268,21 +258,19 @@ struct UserView: View {
                 // --- MEDIA TOP 5 ---
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Label("Media del Top 5", systemImage: "star.fill")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .textCase(.uppercase)
-                            .tracking(1)
-                        Text(String(format: "%.1f", vm.top5Average))
-                            .font(
-                                .system(
-                                    size: 48,
-                                    weight: .black,
-                                    design: .rounded
-                                )
-                            )
-                            .foregroundStyle(.primary)
-                        Text("sobre 10")
+                        Label(
+                            LocalizedStringResource
+                                .usercollectionStaticsTop5Avr,
+                            systemImage: "star.fill"
+                        )
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .textCase(.uppercase)
+                        .tracking(1)
+                        Text(String(format: "%.1f", Double(vm.top5Average)))
+                            .font(.largeTitle)
+                            .bold()
+                        Text(.usercollectionStaticsAbout10)
                             .font(.caption)
                             .foregroundStyle(.tertiary)
                     }
@@ -321,7 +309,7 @@ struct UserView: View {
                     VStack(spacing: 0) {
                         if let best = vm.bestManga {
                             ExtremeRow(
-                                label: "Mejor valorado",
+                                label: .usercollectionStaticsBestmanga,
                                 manga: best,
                                 isTop: true
                             )
@@ -329,7 +317,7 @@ struct UserView: View {
                         }
                         if let worst = vm.worstManga {
                             ExtremeRow(
-                                label: "Peor valorado",
+                                label: .usercollectionStaticsWorstmanga,
                                 manga: worst,
                                 isTop: false
                             )
@@ -338,7 +326,6 @@ struct UserView: View {
                     .padding(.vertical, 4)
                 }
             }
-            .padding(.bottom, 32)
         }
     }
 
@@ -346,7 +333,7 @@ struct UserView: View {
 
     private struct StatPill: View {
         let value: String
-        let label: String
+        let label: LocalizedStringResource
         let icon: String
 
         var body: some View {
@@ -355,10 +342,10 @@ struct UserView: View {
                     .font(.caption2)
                     .foregroundStyle(.secondary)
                 Text(value)
-                    .font(.system(size: 20, weight: .bold, design: .rounded))
-                    .foregroundStyle(.primary)
+                    .font(.title)
+                    .bold()
                 Text(label)
-                    .font(.system(size: 9, weight: .medium))
+                    .font(.caption2)
                     .foregroundStyle(.secondary)
                     .textCase(.uppercase)
                     .tracking(0.5)
@@ -392,8 +379,9 @@ struct UserView: View {
                         .animation(.spring(duration: 0.5), value: fraction)
                 }
                 Text(label)
-                    .font(.system(size: 8, weight: .semibold))
                     .foregroundStyle(.secondary)
+                    .font(.caption2)
+                    .bold()
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
             }
@@ -402,7 +390,7 @@ struct UserView: View {
     }
 
     private struct ExtremeRow: View {
-        let label: String
+        let label: LocalizedStringResource
         let manga: Manga
         let isTop: Bool
 
@@ -431,10 +419,9 @@ struct UserView: View {
 
                 if let score = manga.score {
                     Text(String(format: "%.1f", score))
-                        .font(
-                            .system(size: 20, weight: .black, design: .rounded)
-                        )
                         .foregroundStyle(isTop ? .green : .red)
+                        .font(.title)
+                        .bold()
                 }
             }
             .padding(.horizontal, 20)
@@ -446,7 +433,7 @@ struct UserView: View {
 #Preview(traits: .devEnvironment) {
     TabView {
         Tab {
-            UserView(vm: UserVM(apiManager: .test))
+            UserCollectionView(vm: UserCollectionVM(apiManager: .test))
         }
     }
 }

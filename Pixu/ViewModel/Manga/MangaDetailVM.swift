@@ -6,8 +6,7 @@
 //
 
 import SwiftUI
-import ToastService
-import Shared
+import CommonsLib
 
 @MainActor @Observable
 final class MangaDetailVM {

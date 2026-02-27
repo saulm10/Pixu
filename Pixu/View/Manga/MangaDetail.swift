@@ -5,7 +5,7 @@
 //  Rediseño — Estilo editorial, tipografía rounded, dividers, sin glass cards
 //
 
-import Components
+import CommonsLib
 import SwiftData
 import SwiftUI
 
@@ -791,6 +791,7 @@ struct CollectionConfigSheet: View {
                         volumesSelectionSection
                     }
                     if !collection.volumesOwned.isEmpty { readingVolumeSection }
+                    if !isNew { deleteCorrectionButton }
                 }
                 .padding()
             }
@@ -894,23 +895,23 @@ struct CollectionConfigSheet: View {
             }
 
             Spacer()
-
-            if !isNew {
-                Button {
-                    let col = collection
-                    Task { await deleteCollection(col) }
-                    dismiss()
-                } label: {
-                    Label(.mangacollectionDelete, systemImage: "trash")
-                        .foregroundStyle(.white)
-                        .font(.subheadline)
-                        .frame(maxWidth: .infinity, minHeight: 44)
-                        .background(
-                            .red.opacity(0.85),
-                            in: RoundedRectangle(cornerRadius: 14)
-                        )
-                }
-            }
+        }
+    }
+    
+    private var deleteCorrectionButton: some View {
+        Button {
+            let col = collection
+            Task { await deleteCollection(col) }
+            dismiss()
+        } label: {
+            Label(.mangacollectionDelete, systemImage: "trash")
+                .foregroundStyle(.white)
+                .font(.subheadline)
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .background(
+                    .red.opacity(0.85),
+                    in: RoundedRectangle(cornerRadius: 14)
+                )
         }
     }
 

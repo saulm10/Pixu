@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import NetworkAPI
+import CommonsLib
 
 protocol MangasEndpoint {
     func getBestMangas(page: Int, per: Int) async -> [Manga]

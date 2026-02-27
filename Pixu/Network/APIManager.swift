@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import NetworkAPI
+import CommonsLib
 import SwiftUI
 
 protocol APIManagerProtocol: Sendable {

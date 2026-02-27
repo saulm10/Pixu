@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import NetworkAPI
+import CommonsLib
 
 protocol AuthorsEndpoint {
     func getAllAuthors() async -> [Author]

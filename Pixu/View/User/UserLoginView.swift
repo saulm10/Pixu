@@ -5,7 +5,7 @@
 //  Created by Saul Martinez Diez on 11/1/26.
 //
 import SwiftUI
-import ToastService
+import CommonsLib
 
 struct UserLoginView: View {
     @Bindable var vm: UserLoginVM
@@ -19,7 +19,7 @@ struct UserLoginView: View {
                 Spacer()
 
                 // Logo
-                Image(.pixieHi)
+                Image(.logoSimple)
                     .resizable()
                     .scaledToFit()
                     .padding()

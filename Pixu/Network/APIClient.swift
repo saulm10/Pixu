@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import NetworkAPI
+import CommonsLib
 
 struct NetworkManager {
     static let shared = NetworkManager()

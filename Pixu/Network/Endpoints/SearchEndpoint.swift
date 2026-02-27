@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import NetworkAPI
+import CommonsLib
 
 protocol SearchEndpoint {
     func searchMangasBeginsWith(search: String) async -> [Manga]

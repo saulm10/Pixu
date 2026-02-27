@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-import ToastService
+import CommonsLib
 
 @MainActor @Observable
 final class UserAccountVM {

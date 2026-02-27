@@ -12,7 +12,7 @@ struct SplashAnimationView: View {
     @State private var isBreathing = false
 
     var body: some View {
-        Image(.pixieHi)
+        Image(.logoSimple)
             .resizable()
             .scaledToFit()
             .globalBackground()

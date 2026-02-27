@@ -73,19 +73,20 @@ struct SearchTabView: View {
                 )
             }
             .globalBackground()
-        }
-        .searchable(text: $vm.searchText, prompt: .tabsearchPrompt)
-        .overlay {
-            if vm.state == .empty {
-                ContentUnavailableView(
-                    .tabsearchNoresults,
-                    systemImage: "magnifyingglass",
-                    description: Text(
-                        .tabsearchNoresultstext
+            .overlay {
+                if vm.state == .empty {
+                    ContentUnavailableView(
+                        .tabsearchNoresults,
+                        systemImage: "magnifyingglass",
+                        description: Text(
+                            .tabsearchNoresultstext
+                        )
                     )
-                )
+                }
             }
         }
+        .searchable(text: $vm.searchText, prompt: .tabsearchPrompt)
+        
     }
 
     private var content: some View {

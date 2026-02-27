@@ -7,7 +7,7 @@
 
 import Combine
 import SwiftUI
-import Shared
+import CommonsLib
 
 enum ViewState {
     case loading

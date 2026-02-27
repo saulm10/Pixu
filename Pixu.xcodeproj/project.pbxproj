@@ -39,7 +39,8 @@
 		0172A3E62F255B960084879E /* AppEnvironmentModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0172A3E52F255B960084879E /* AppEnvironmentModifier.swift */; };
 		0172A3EC2F2697B10084879E /* AuthenticatedContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0172A3EB2F2697A40084879E /* AuthenticatedContent.swift */; };
 		0172A3EE2F27E27B0084879E /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0172A3ED2F27E27B0084879E /* Launch Screen.storyboard */; };
-		0172A3F02F2817270084879E /* SplashAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0172A3EF2F2817270084879E /* SplashAnimationView.swift */; };
+		0175F8DB2F51BEC300378DD2 /* pixie_video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 0175F8DA2F51BEC300378DD2 /* pixie_video.mp4 */; };
+		0175F8DD2F51C1F300378DD2 /* SplashAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0175F8DC2F51C1F300378DD2 /* SplashAnimationView.swift */; };
 		0184180A2F02D01F0064494B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 018418052F02D01F0064494B /* Assets.xcassets */; };
 		0184180B2F02D01F0064494B /* PixuIconApp.icon in Resources */ = {isa = PBXBuildFile; fileRef = 018418082F02D01F0064494B /* PixuIconApp.icon */; };
 		0184180C2F02D01F0064494B /* PixuApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018418072F02D01F0064494B /* PixuApp.swift */; };
@@ -113,7 +114,8 @@
 		0172A3E52F255B960084879E /* AppEnvironmentModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironmentModifier.swift; sourceTree = "<group>"; };
 		0172A3EB2F2697A40084879E /* AuthenticatedContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedContent.swift; sourceTree = "<group>"; };
 		0172A3ED2F27E27B0084879E /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
-		0172A3EF2F2817270084879E /* SplashAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashAnimationView.swift; sourceTree = "<group>"; };
+		0175F8DA2F51BEC300378DD2 /* pixie_video.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = pixie_video.mp4; sourceTree = "<group>"; };
+		0175F8DC2F51C1F300378DD2 /* SplashAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashAnimationView.swift; sourceTree = "<group>"; };
 		018417EC2F02C6DB0064494B /* Pixu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pixu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		018418052F02D01F0064494B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		018418072F02D01F0064494B /* PixuApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixuApp.swift; sourceTree = "<group>"; };
@@ -306,10 +308,11 @@
 		018418062F02D01F0064494B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				0175F8DC2F51C1F300378DD2 /* SplashAnimationView.swift */,
 				015A04862F040248007AA3F7 /* Localizable.xcstrings */,
 				018418052F02D01F0064494B /* Assets.xcassets */,
 				0172A3ED2F27E27B0084879E /* Launch Screen.storyboard */,
-				0172A3EF2F2817270084879E /* SplashAnimationView.swift */,
+				0175F8DA2F51BEC300378DD2 /* pixie_video.mp4 */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -484,6 +487,7 @@
 				0184180B2F02D01F0064494B /* PixuIconApp.icon in Resources */,
 				0172A3EE2F27E27B0084879E /* Launch Screen.storyboard in Resources */,
 				015A04872F040248007AA3F7 /* Localizable.xcstrings in Resources */,
+				0175F8DB2F51BEC300378DD2 /* pixie_video.mp4 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -532,7 +536,6 @@
 				01AEBE7D2F1004720041E55C /* UsersEndpopint.swift in Sources */,
 				0172A3EC2F2697B10084879E /* AuthenticatedContent.swift in Sources */,
 				01EBC0C02F16A27100BF31FF /* ThemeDTO.swift in Sources */,
-				0172A3F02F2817270084879E /* SplashAnimationView.swift in Sources */,
 				01EBC0D22F19134900BF31FF /* CircleAvatar.swift in Sources */,
 				01EBC0E62F1BA04D00BF31FF /* PageDTO.swift in Sources */,
 				014EDAC92F327AF000561D0F /* AuthorRepository.swift in Sources */,
@@ -554,6 +557,7 @@
 				01EBC0DE2F1B9E9700BF31FF /* DemographicsEndpoint.swift in Sources */,
 				01EBC0DC2F1B9AF900BF31FF /* AuthorEndpoint.swift in Sources */,
 				01EBC0EE2F1BA81F00BF31FF /* UserMangaCollectionRequestInputDTO.swift in Sources */,
+				0175F8DD2F51C1F300378DD2 /* SplashAnimationView.swift in Sources */,
 				014EDACB2F327B5200561D0F /* GenreRepository.swift in Sources */,
 				015A04622F03FB66007AA3F7 /* MainTabView.swift in Sources */,
 				01EBC0BE2F16A26A00BF31FF /* DemographicDTO.swift in Sources */,

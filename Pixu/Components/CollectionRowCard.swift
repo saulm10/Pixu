@@ -5,7 +5,7 @@
 //  Created by Saul Martinez Diez on 16/2/26.
 //
 
-import Components
+import CommonsLib
 import SwiftUI
 
 struct CollectionRowCard: View {

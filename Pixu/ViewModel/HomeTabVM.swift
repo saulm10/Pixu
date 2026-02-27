@@ -7,7 +7,7 @@
 
 import Combine
 import SwiftUI
-import Shared
+import CommonsLib
 
 @MainActor @Observable
 final class HomeTabVM {

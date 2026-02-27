@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import NetworkAPI
+import CommonsLib
 
 protocol DemographicsEndpoint {
     func getAllDemographics() async -> [String]

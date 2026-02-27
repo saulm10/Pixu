@@ -5,7 +5,7 @@
 //  Created by Saul Martinez Diez on 15/1/26.
 //
 
-import Components
+import CommonsLib
 import SwiftUI
 
 struct MangaCard: View {

@@ -7,7 +7,7 @@
 
 import Combine
 import SwiftUI
-import ToastService
+import CommonsLib
 
 struct MainTabView: View {
     @Environment(AuthStatus.self) private var authStatus
@@ -61,7 +61,7 @@ struct MainTabView: View {
             }
         }
         .task {
-            try? await Task.sleep(for: .milliseconds(1500))
+            try? await Task.sleep(for: .milliseconds(600))
             withAnimation {
                 showSplash = false
             }

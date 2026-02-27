@@ -5,7 +5,7 @@
 //  Created by Saul Martinez Diez on 11/1/26.
 //
 
-import Components
+import CommonsLib
 import SwiftData
 import SwiftUI
 
@@ -107,26 +107,6 @@ struct UserCollectionView: View {
                     }
                 }
 
-                if vm.filteredCollection.isEmpty {
-                    VStack {
-                        ContentUnavailableView(
-                            .usercollectionCollectionNomangas,
-                            systemImage: "books.vertical",
-                            description: Text(
-                                .usercollectionCollectionAddmanga
-                            ),
-                        )
-                        Button {
-                            mainTabVM.selection = 3
-                        } label: {
-                            Label(
-                                .usercollectionCollectionAddmangatext,
-                                systemImage: "plus.circle.fill"
-                            )
-                        }
-                        .buttonStyle(.primary)
-                    }
-                }
                 ForEach(vm.filteredCollection) { collection in
                     CollectionRowCard(
                         collection: collection,
@@ -134,7 +114,28 @@ struct UserCollectionView: View {
                     )
                 }
 
-            }.padding()
+            }
+            .padding()
+        }
+        .overlay {
+            if vm.filteredCollection.isEmpty {
+                ContentUnavailableView {
+                    Label(
+                        .usercollectionCollectionNomangas,
+                        systemImage: "books.vertical"
+                    )
+                } description: {
+
+                    Text(.usercollectionCollectionAddmanga)
+                } actions: {
+                    Button {
+                        mainTabVM.selection = 3
+                    } label: {
+                        Text("Añadir mi primer manga")
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            }
         }
     }
 
@@ -206,8 +207,7 @@ struct UserCollectionView: View {
                 // --- DISTRIBUCIÓN DE NOTAS ---
                 VStack(alignment: .leading, spacing: 14) {
                     Label(
-                        LocalizedStringResource
-                            .usercollectionStaticsMarksdistribution,
+                        .usercollectionStaticsMarksdistribution,
                         systemImage: "chart.bar.fill"
                     )
                     .font(.caption)
@@ -259,8 +259,7 @@ struct UserCollectionView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Label(
-                            LocalizedStringResource
-                                .usercollectionStaticsTop5Avr,
+                            .usercollectionStaticsTop5Avr,
                             systemImage: "star.fill"
                         )
                         .font(.caption)
@@ -328,8 +327,6 @@ struct UserCollectionView: View {
             }
         }
     }
-
-    // MARK: - Subcomponentes
 
     private struct StatPill: View {
         let value: String
